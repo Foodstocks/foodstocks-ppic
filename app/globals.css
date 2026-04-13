@@ -1,37 +1,44 @@
 @import "tailwindcss";
 
-/* ── Dark theme (default) ─────────────────────────── */
+/* ── Light theme (default) ────────────────────────── */
 :root {
-  --bg-primary: #0f1117;
-  --bg-surface: #1a1d27;
-  --bg-card: #1e2132;
-  --bg-hover: #252840;
-  --border: #2a2d3e;
-  --border-subtle: #1a1d27;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --text-faint: #475569;
-  --accent-blue: #3b82f6;
-  --accent-green: #10b981;
-  --accent-yellow: #f59e0b;
-  --accent-red: #ef4444;
-  --accent-purple: #8b5cf6;
-  --accent-orange: #f97316;
+  --bg-primary:   #F7F8FA;
+  --bg-surface:   #FFFFFF;
+  --bg-card:      #FFFFFF;
+  --bg-hover:     #F1F3F7;
+  --bg-selected:  #EEF2FF;
+  --border:       #E4E7ED;
+  --border-subtle:#F0F2F6;
+  --text-primary:   #111827;
+  --text-secondary: #4B5563;
+  --text-muted:     #9CA3AF;
+  --text-faint:     #D1D5DB;
+  --accent-blue:   #4F6EF7;
+  --accent-green:  #10B981;
+  --accent-yellow: #F59E0B;
+  --accent-red:    #EF4444;
+  --accent-purple: #8B5CF6;
+  --accent-orange: #F97316;
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.08);
 }
 
-/* ── Light theme ──────────────────────────────────── */
-[data-theme="light"] {
-  --bg-primary: #f8fafc;
-  --bg-surface: #f1f5f9;
-  --bg-card: #ffffff;
-  --bg-hover: #e2e8f0;
-  --border: #cbd5e1;
-  --border-subtle: #e2e8f0;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --text-faint: #cbd5e1;
+/* ── Dark theme ───────────────────────────────────── */
+[data-theme="dark"] {
+  --bg-primary:   #0f1117;
+  --bg-surface:   #1a1d27;
+  --bg-card:      #1e2132;
+  --bg-hover:     #252840;
+  --bg-selected:  rgba(79,110,247,0.15);
+  --border:       #2a2d3e;
+  --border-subtle:#1a1d27;
+  --text-primary:   #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted:     #64748b;
+  --text-faint:     #475569;
+  --accent-blue:   #3b82f6;
+  --shadow-card:  0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md:    0 4px 16px rgba(0,0,0,0.4);
 }
 
 * { box-sizing: border-box; }
@@ -39,12 +46,40 @@
 html, body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   transition: background-color 0.2s, color 0.2s;
 }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-surface); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+/* ── Scrollbar ────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ── Table row hover ──────────────────────────────── */
+tbody tr:hover td { background: var(--bg-hover) !important; transition: background 0.1s; }
+
+/* ── Input & select base ──────────────────────────── */
+input, select, textarea {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(79,110,247,0.12);
+}
+
+/* ── Button base ──────────────────────────────────── */
+button { font-family: inherit; cursor: pointer; }

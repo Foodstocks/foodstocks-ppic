@@ -66,13 +66,13 @@ const s = {
   subtitle: { fontSize: 14, color: 'var(--text-muted)' } as React.CSSProperties,
   grid4: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 } as React.CSSProperties,
   grid2: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 16, marginBottom: 24 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 12, padding: 20 } as React.CSSProperties,
-  kpiCard: (color: string) => ({ background: 'var(--bg-card)', border: `1px solid #2a2d3e`, borderRadius: 12, padding: 20, borderLeft: `3px solid ${color}` }) as React.CSSProperties,
+  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20 } as React.CSSProperties,
+  kpiCard: (color: string) => ({ background: 'var(--bg-card)', border: `1px solid var(--border)`, borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, borderLeft: `3px solid ${color}` }) as React.CSSProperties,
   kpiLabel: { fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1 },
   kpiValue: (color: string) => ({ fontSize: 28, fontWeight: 700, color, marginTop: 4, marginBottom: 4 }),
   kpiSub: { fontSize: 12, color: 'var(--text-secondary)' },
   sectionTitle: { fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 16 } as React.CSSProperties,
-  alertRow: { display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid #2a2d3e' } as React.CSSProperties,
+  alertRow: { display: 'flex', alignItems: 'center', gap: 12, padding: '10px 0', borderBottom: '1px solid var(--border)' } as React.CSSProperties,
   badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap' as const }),
 };
 
@@ -550,7 +550,7 @@ export default function Overview() {
                   try { localStorage.setItem(MONTHSTART_KEY, JSON.stringify(snap)); } catch { /* noop */ }
                   setMonthStartSnapshot(snap);
                 }}
-                style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid #2a2d3e', cursor: 'pointer', fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
+                style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid var(--border)', cursor: 'pointer', fontSize: 11, fontWeight: 600, background: 'var(--bg-hover)', color: 'var(--text-secondary)' }}
               >
                 📸 Catat Stok Awal
               </button>
@@ -575,7 +575,7 @@ export default function Overview() {
                       <YAxis hide />
                       <Tooltip
                         formatter={(v) => formatRupiah(Number(v))}
-                        contentStyle={{ background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 8, fontSize: 12 }}
+                        contentStyle={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }}
                       />
                       <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                         <Cell fill="#3b82f6" />
@@ -602,7 +602,7 @@ export default function Overview() {
                     { label: '= Expected Closing', value: formatRupiah(stockFlow.expectedClosing), color: 'var(--text-secondary)' },
                     { label: 'Aktual Closing', value: formatRupiah(stockFlow.actualClosing), color: stockFlow.actualClosing >= stockFlow.openingCapital ? '#10b981' : '#f59e0b', bold: true },
                   ].map(row => (
-                    <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #2a2d3e' }}>
+                    <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)' }}>
                       <span style={{ color: 'var(--text-muted)' }}>{row.label}</span>
                       <span style={{ color: row.color, fontWeight: row.bold ? 700 : 500 }}>{row.value}</span>
                     </div>
@@ -630,7 +630,7 @@ export default function Overview() {
           {/* ── Widget B + existing Alerts row ──────────────────── */}
           <div style={s.grid2}>
             {/* Kesehatan Modal */}
-            <div style={{ ...s.card, borderLeft: capitalHealth ? `3px solid ${capitalHealth.status === 'SEHAT' ? '#10b981' : capitalHealth.status === 'WASPADA' ? '#f59e0b' : '#ef4444'}` : '3px solid #2a2d3e' }}>
+            <div style={{ ...s.card, borderLeft: capitalHealth ? `3px solid ${capitalHealth.status === 'SEHAT' ? '#10b981' : capitalHealth.status === 'WASPADA' ? '#f59e0b' : '#ef4444'}` : '3px solid var(--border)' }}>
               <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 14 }}>
                 💰 Kesehatan Modal
               </div>
@@ -665,7 +665,7 @@ export default function Overview() {
                     { label: 'Gross Profit', value: formatRupiah(capitalHealth.grossProfit), color: capitalHealth.grossProfit >= 0 ? '#10b981' : '#ef4444' },
                     { label: 'Perubahan Modal Stok', value: `${capitalHealth.capitalDelta >= 0 ? '+' : ''}${formatRupiah(capitalHealth.capitalDelta)}`, color: capitalHealth.capitalDelta >= 0 ? '#10b981' : '#ef4444' },
                   ].map(row => (
-                    <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid #2a2d3e', fontSize: 12 }}>
+                    <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid var(--border)', fontSize: 12 }}>
                       <span style={{ color: 'var(--text-muted)' }}>{row.label}</span>
                       <span style={{ color: row.color, fontWeight: 600 }}>{row.value}</span>
                     </div>
@@ -759,7 +759,7 @@ export default function Overview() {
                           <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 20, background: `${borderClr}20`, color: borderClr }}>{urgencyLabel}</span>
                           <button
                             onClick={() => setExpandedEvent(expanded ? null : alert.event.id)}
-                            style={{ fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid #2a2d3e', cursor: 'pointer', background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
+                            style={{ fontSize: 11, padding: '3px 10px', borderRadius: 6, border: '1px solid var(--border)', cursor: 'pointer', background: 'var(--bg-hover)', color: 'var(--text-muted)' }}
                           >
                             {expanded ? 'Tutup' : `${alert.affectedSkus.length} SKU →`}
                           </button>
@@ -767,12 +767,12 @@ export default function Overview() {
                       </div>
 
                       {expanded && (
-                        <div style={{ marginTop: 12, borderTop: '1px solid #2a2d3e', paddingTop: 12 }}>
+                        <div style={{ marginTop: 12, borderTop: '1px solid var(--border)', paddingTop: 12 }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
                             <thead>
                               <tr>
                                 {['SKU', 'Stok Saat Ini', 'Extra Unit', 'Est. Biaya', 'Deadline'].map(h => (
-                                  <th key={h} style={{ textAlign: 'left', padding: '4px 8px', color: 'var(--text-muted)', fontWeight: 600, borderBottom: '1px solid #2a2d3e' }}>{h}</th>
+                                  <th key={h} style={{ textAlign: 'left', padding: '4px 8px', color: 'var(--text-muted)', fontWeight: 600, borderBottom: '1px solid var(--border)' }}>{h}</th>
                                 ))}
                               </tr>
                             </thead>
@@ -857,7 +857,7 @@ export default function Overview() {
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '10px 14px', borderRadius: 8,
                     background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid #2a2d3e',
+                    border: '1px solid var(--border)',
                     textDecoration: 'none',
                   }}>
                     <span style={{ fontSize: 20 }}>{action.icon}</span>

@@ -3,13 +3,13 @@
 const s = {
   page: { padding: '24px', maxWidth: 900 } as React.CSSProperties,
   title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 12, padding: 24, marginBottom: 20 } as React.CSSProperties,
+  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 24, marginBottom: 20 } as React.CSSProperties,
   sectionTitle: { fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 } as React.CSSProperties,
   term: { fontWeight: 700, color: 'var(--text-primary)', fontSize: 14 } as React.CSSProperties,
   def: { color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.6, marginBottom: 4 } as React.CSSProperties,
   formula: { background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 12px', fontFamily: 'monospace', fontSize: 13, color: '#3b82f6', display: 'inline-block', marginTop: 4, marginBottom: 4 } as React.CSSProperties,
   badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 10px', fontSize: 12, fontWeight: 700, display: 'inline-block', marginRight: 8 } as React.CSSProperties),
-  row: { paddingBottom: 16, marginBottom: 16, borderBottom: '1px solid #1a1d27' } as React.CSSProperties,
+  row: { paddingBottom: 16, marginBottom: 16, borderBottom: '1px solid var(--border-subtle)' } as React.CSSProperties,
 };
 
 const sections = [

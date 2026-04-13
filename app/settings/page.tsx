@@ -13,13 +13,13 @@ const DEFAULT_LEAD_TIME = 7;
 // ── Styles ────────────────────────────────────────────────────
 const s = {
   page:   { padding: '24px', maxWidth: 900 } as React.CSSProperties,
-  card:   { background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 12, padding: 24, marginBottom: 20 } as React.CSSProperties,
+  card:   { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 24, marginBottom: 20 } as React.CSSProperties,
   title:  { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
   label:  { fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6, display: 'block' } as React.CSSProperties,
-  input:  { background: 'var(--bg-hover)', border: '1px solid #2a2d3e', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: '100%', marginBottom: 16 } as React.CSSProperties,
+  input:  { background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: '100%', marginBottom: 16 } as React.CSSProperties,
   btn:    { padding: '10px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
-  thead:  { padding: '9px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid #2a2d3e', whiteSpace: 'nowrap' as const },
-  td:     { padding: '9px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid #1a1d27' },
+  thead:  { padding: '9px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
+  td:     { padding: '9px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
 };
 
 type SyncState = 'idle' | 'pushing' | 'pulling' | 'ok' | 'error';
@@ -405,7 +405,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid #2a2d3e', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             ...s.btn, padding: '10px 16px', background: 'transparent',
@@ -429,14 +429,14 @@ export default function SettingsPage() {
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button onClick={() => exportCsv('SKU,HPP (Rp)', Object.entries(hppSaved), 'foodstocks_hpp.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid #2a2d3e', padding: '7px 14px', fontSize: 12 }}>📥 Export CSV</button>
-              <button onClick={() => setShowHppImport(!showHppImport)} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid #2a2d3e', padding: '7px 14px', fontSize: 12 }}>📤 Import CSV</button>
+              <button onClick={() => exportCsv('SKU,HPP (Rp)', Object.entries(hppSaved), 'foodstocks_hpp.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 14px', fontSize: 12 }}>📥 Export CSV</button>
+              <button onClick={() => setShowHppImport(!showHppImport)} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 14px', fontSize: 12 }}>📤 Import CSV</button>
               <button onClick={() => { if (confirm('Reset semua HPP manual?')) { setHppSaved({}); setHppEdits({}); saveLocal(HPP_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 14px', fontSize: 12 }}>🗑️ Reset Semua</button>
             </div>
           </div>
 
           {showHppImport && (
-            <div style={{ marginBottom: 16, padding: 16, background: 'var(--bg-hover)', borderRadius: 10, border: '1px solid #2a2d3e' }}>
+            <div style={{ marginBottom: 16, padding: 16, background: 'var(--bg-hover)', borderRadius: 10, border: '1px solid var(--border)' }}>
               <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Format CSV: <code style={{ color: '#f59e0b' }}>SKU,HPP</code> (satu baris per SKU)</div>
               <textarea value={hppImportText} onChange={e => setHppImportText(e.target.value)}
                 placeholder={'SKU,HPP\nGH-MR-MK-PJ-0648,13500\nBP-MR-BA-SM-0018,18500'}
@@ -556,7 +556,7 @@ export default function SettingsPage() {
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code>&nbsp;&nbsp;Contoh: <code style={{ color: 'var(--text-secondary)', fontSize: 11 }}>GH-MR-MK-PJ-0648,4.5</code></div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={() => exportCsv('SKU,avg_jual_harian', Object.entries(velMap), 'velocity.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid #2a2d3e', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
+                <button onClick={() => exportCsv('SKU,avg_jual_harian', Object.entries(velMap), 'velocity.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
                 <button onClick={() => { if (confirm('Reset data velocity?')) { setVelMap({}); saveLocal(VEL_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 12px', fontSize: 12 }}>🗑️ Reset</button>
               </div>
             </div>
@@ -621,7 +621,7 @@ export default function SettingsPage() {
                 <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,stok</code>&nbsp; Jika kosong, planner pakai data Jubelio live.</div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={() => exportCsv('SKU,stok', Object.entries(invSnap), 'inventory_snapshot.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid #2a2d3e', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
+                <button onClick={() => exportCsv('SKU,stok', Object.entries(invSnap), 'inventory_snapshot.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
                 <button onClick={() => { if (confirm('Reset snapshot stok?')) { setInvSnap({}); saveLocal(INV_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 12px', fontSize: 12 }}>🗑️ Reset</button>
               </div>
             </div>
@@ -665,7 +665,7 @@ export default function SettingsPage() {
           <div style={s.card}>
             <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 8 }}>⏱️ Lead Time per Supplier</div>
             <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 20 }}>Lead time = hari dari pesan ke tiba. Dipakai untuk menghitung Reorder Point. Assign supplier ke SKU di tab HPP agar lookup akurat.</div>
-            <div style={{ padding: '16px 20px', background: 'var(--bg-hover)', borderRadius: 10, marginBottom: 20, border: '1px solid #2a2d3e' }}>
+            <div style={{ padding: '16px 20px', background: 'var(--bg-hover)', borderRadius: 10, marginBottom: 20, border: '1px solid var(--border)' }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>🌐 Default Lead Time (berlaku jika supplier tidak dikonfigurasi)</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <input type="number" min="1" max="90" value={ltDefault} onChange={e => setLtDefault(e.target.value)}
@@ -925,7 +925,7 @@ export default function SettingsPage() {
             { fase: 'Fase 3',   label: 'Smart Purchase Planner',    done: true,  desc: 'ABC Analysis, EOQ otomatis, Reorder Point, proyeksi 30/60/90 hari' },
             { fase: 'Fase 4',   label: 'COGS & Laporan Live',       done: false, desc: 'True COGS otomatis dari data Jubelio, laporan profit lengkap' },
           ].map(item => (
-            <div key={item.fase} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '12px 0', borderBottom: '1px solid #2a2d3e' }}>
+            <div key={item.fase} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: item.done ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
                 {item.done ? '✅' : '⏳'}
               </div>

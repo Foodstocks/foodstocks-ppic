@@ -21,10 +21,10 @@ interface DisplayPO extends JubelioPO {
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 12, padding: 20, marginBottom: 20 } as React.CSSProperties,
+  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
   title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid #2a2d3e', whiteSpace: 'nowrap' as const },
-  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid #1a1d27' },
+  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
   badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' }),
 };
 
@@ -142,9 +142,9 @@ export default function POBudgetPage() {
 
       {/* Month Selector */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-        <button onClick={prevMonth} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #2a2d3e', background: 'var(--bg-hover)', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>← Sebelumnya</button>
+        <button onClick={prevMonth} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-hover)', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>← Sebelumnya</button>
         <div style={{ fontWeight: 700, fontSize: 16, color: 'var(--text-primary)', minWidth: 180, textAlign: 'center' }}>{formatMonth(selectedMonth)}</div>
-        <button onClick={nextMonth} disabled={selectedMonth >= new Date().toISOString().slice(0, 7)} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid #2a2d3e', background: 'var(--bg-hover)', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13, fontWeight: 600, opacity: selectedMonth >= new Date().toISOString().slice(0, 7) ? 0.4 : 1 }}>Berikutnya →</button>
+        <button onClick={nextMonth} disabled={selectedMonth >= new Date().toISOString().slice(0, 7)} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid var(--border)', background: 'var(--bg-hover)', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 13, fontWeight: 600, opacity: selectedMonth >= new Date().toISOString().slice(0, 7) ? 0.4 : 1 }}>Berikutnya →</button>
         {selectedMonth !== new Date().toISOString().slice(0, 7) && (
           <button onClick={() => setSelectedMonth(new Date().toISOString().slice(0, 7))} style={{ padding: '7px 14px', borderRadius: 8, border: '1px solid rgba(59,130,246,0.4)', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', cursor: 'pointer', fontSize: 12, fontWeight: 600 }}>Bulan Ini</button>
         )}

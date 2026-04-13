@@ -1,76 +1,98 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from './ThemeProvider';
 
 const navItems = [
-  { href: '/', icon: '📊', label: 'Overview' },
-  { href: '/planner', icon: '🧠', label: 'Purchase Planner' },
-  { href: '/inventory', icon: '📦', label: 'Inventory Live' },
-  { href: '/forecast', icon: '📈', label: 'Forecast Stok' },
-  { href: '/cogs', icon: '💹', label: 'COGS & Margin' },
-  { href: '/suppliers', icon: '🏭', label: 'Supplier Hub' },
-  { href: '/po-budget', icon: '📋', label: 'PO & Budget' },
-  { href: '/settings', icon: '⚙️', label: 'Settings' },
-  { href: '/bantuan', icon: '❓', label: 'Bantuan' },
+  { href: '/', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+      <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+    </svg>), label: 'Overview' },
+  { href: '/planner', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+    </svg>), label: 'Purchase Planner' },
+  { href: '/inventory', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+    </svg>), label: 'Inventory Live' },
+  { href: '/forecast', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </svg>), label: 'Forecast Stok' },
+  { href: '/cogs', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>), label: 'COGS & Margin' },
+  { href: '/suppliers', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>), label: 'Supplier Hub' },
+  { href: '/po-budget', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+    </svg>), label: 'PO & Budget' },
+  { href: '/settings', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>), label: 'Settings' },
+  { href: '/bantuan', icon: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+    </svg>), label: 'Bantuan' },
 ];
+
+// Mobile bottom nav — 5 primary items
+const mobileItems = navItems.slice(0, 5);
 
 export default function Navigation() {
   const pathname = usePathname();
+  const router = useRouter();
   const { theme, toggle } = useTheme();
+
+  const handleLogout = () => {
+    localStorage.removeItem('foodstocks_auth');
+    router.push('/login');
+  };
 
   return (
     <>
-      {/* Sidebar — desktop */}
+      {/* ── Sidebar — desktop ─────────────────────────── */}
       <aside style={{
-        width: 220,
+        width: 228,
         minHeight: '100vh',
         background: 'var(--bg-surface)',
         borderRight: '1px solid var(--border)',
-        padding: '0',
         display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
-        top: 0,
-        left: 0,
-        bottom: 0,
+        top: 0, left: 0, bottom: 0,
         zIndex: 100,
       }} className="hidden md:flex">
-        {/* Logo + Theme Toggle */}
-        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+
+        {/* Logo */}
+        <div style={{ padding: '20px 16px 16px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
               width: 36, height: 36, borderRadius: 10,
-              background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+              background: 'linear-gradient(135deg, #4F6EF7, #8B5CF6)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 18, flexShrink: 0,
-            }}>🛒</div>
+              flexShrink: 0, boxShadow: '0 2px 8px rgba(79,110,247,0.3)',
+            }}>
+              <span style={{ color: 'white', fontWeight: 800, fontSize: 14, letterSpacing: -0.5 }}>FS</span>
+            </div>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)' }}>Foodstocks</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>WMS Dashboard</div>
+              <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-primary)', lineHeight: 1.2 }}>Foodstocks</div>
+              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>PPIC Dashboard</div>
             </div>
           </div>
-          {/* Theme toggle — full width button */}
-          <button onClick={toggle} style={{
-            width: '100%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-            padding: '7px 12px',
-            borderRadius: 8,
-            border: '1px solid var(--border)',
-            background: 'var(--bg-hover)',
-            color: 'var(--text-secondary)',
-            cursor: 'pointer',
-            fontSize: 12,
-            fontWeight: 600,
-          }}>
-            <span style={{ fontSize: 15 }}>{theme === 'dark' ? '☀️' : '🌙'}</span>
-            <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-          </button>
         </div>
 
         {/* Nav items */}
-        <nav style={{ padding: '12px 0', flex: 1 }}>
+        <nav style={{ padding: '10px 8px', flex: 1, overflowY: 'auto' }}>
           {navItems.map(item => {
             const isActive = pathname === item.href;
             return (
@@ -78,39 +100,107 @@ export default function Navigation() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
-                padding: '10px 20px',
-                margin: '2px 8px',
+                padding: '9px 12px',
+                marginBottom: 2,
                 borderRadius: 8,
                 textDecoration: 'none',
-                background: isActive ? 'rgba(59,130,246,0.15)' : 'transparent',
-                border: isActive ? '1px solid rgba(59,130,246,0.25)' : '1px solid transparent',
-                color: isActive ? '#3b82f6' : 'var(--text-secondary)',
-                fontSize: 14,
+                background: isActive ? 'var(--bg-selected)' : 'transparent',
+                borderLeft: isActive ? '3px solid var(--accent-blue)' : '3px solid transparent',
+                color: isActive ? 'var(--accent-blue)' : 'var(--text-secondary)',
+                fontSize: 13.5,
                 fontWeight: isActive ? 600 : 400,
-                transition: 'all 0.15s',
-              }}>
-                <span style={{ fontSize: 16 }}>{item.icon}</span>
+                transition: 'all 0.12s',
+              }}
+              onMouseEnter={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'var(--bg-hover)'; }}
+              onMouseLeave={e => { if (!isActive) (e.currentTarget as HTMLAnchorElement).style.background = 'transparent'; }}
+              >
+                <span style={{ flexShrink: 0, opacity: isActive ? 1 : 0.65 }}>{item.icon}</span>
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
 
-        {/* Status indicator */}
-        <div style={{ padding: '12px 20px', borderTop: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--text-secondary)', marginBottom: 4 }}>
+        {/* Bottom: user + theme toggle + logout */}
+        <div style={{ padding: '12px 16px', borderTop: '1px solid var(--border)' }}>
+          {/* Jubelio status */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+            <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#10B981', boxShadow: '0 0 5px #10B981' }} />
+            <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Jubelio terhubung</span>
+          </div>
+
+          {/* User row */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <div style={{
-              width: 8, height: 8, borderRadius: '50%', background: '#10b981',
-              boxShadow: '0 0 6px #10b981',
-            }}></div>
-            <span>Fase 2 — Live Data</span>
+              width: 30, height: 30, borderRadius: 8,
+              background: 'linear-gradient(135deg, #4F6EF7, #8B5CF6)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0,
+            }}>
+              <span style={{ color: 'white', fontWeight: 700, fontSize: 11 }}>FS</span>
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Foodstocks</div>
+              <div style={{ fontSize: 10, color: 'var(--text-muted)' }}>Admin</div>
+            </div>
+            {/* Theme toggle icon */}
+            <button onClick={toggle} title={theme === 'light' ? 'Dark mode' : 'Light mode'} style={{
+              background: 'none', border: 'none', padding: 4, borderRadius: 6,
+              color: 'var(--text-muted)', cursor: 'pointer', fontSize: 14, lineHeight: 1,
+              display: 'flex', alignItems: 'center',
+            }}>
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
           </div>
-          <div style={{ fontSize: 11, color: '#10b981' }}>
-            Jubelio WMS terhubung
-          </div>
+
+          {/* Logout */}
+          <button onClick={handleLogout} style={{
+            width: '100%', display: 'flex', alignItems: 'center', gap: 6,
+            padding: '7px 10px', borderRadius: 7,
+            border: '1px solid var(--border)',
+            background: 'transparent',
+            color: 'var(--text-muted)',
+            fontSize: 12, fontWeight: 500, cursor: 'pointer',
+            transition: 'all 0.12s',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-hover)'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--accent-red)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)'; }}
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Keluar
+          </button>
         </div>
       </aside>
 
+      {/* ── Bottom nav — mobile ────────────────────────── */}
+      <nav style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0,
+        background: 'var(--bg-surface)',
+        borderTop: '1px solid var(--border)',
+        display: 'flex',
+        zIndex: 100,
+        paddingBottom: 'env(safe-area-inset-bottom)',
+      }} className="flex md:hidden">
+        {mobileItems.map(item => {
+          const isActive = pathname === item.href;
+          return (
+            <Link key={item.href} href={item.href} style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
+              gap: 3, padding: '10px 4px 8px',
+              textDecoration: 'none',
+              color: isActive ? 'var(--accent-blue)' : 'var(--text-muted)',
+              fontSize: 10, fontWeight: isActive ? 600 : 400,
+              borderTop: isActive ? '2px solid var(--accent-blue)' : '2px solid transparent',
+              transition: 'color 0.12s',
+            }}>
+              <span style={{ flexShrink: 0 }}>{item.icon}</span>
+              <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', maxWidth: 60, textOverflow: 'ellipsis' }}>{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
     </>
   );
 }

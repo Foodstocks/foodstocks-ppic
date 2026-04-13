@@ -46,10 +46,10 @@ const statusConfig: Record<PlannerStatus, { label: string; bg: string; color: st
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 12, padding: 20, marginBottom: 20 } as React.CSSProperties,
+  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
   title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid #2a2d3e', whiteSpace: 'nowrap' as const },
-  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid #1a1d27' },
+  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
   badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' }),
   btn: { padding: '10px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
 };
@@ -245,7 +245,7 @@ export default function PurchasePlanner() {
       {/* Filter + Search */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
         <input type="text" placeholder="🔍 Cari SKU atau produk..." value={search} onChange={e => setSearch(e.target.value)}
-          style={{ background: 'var(--bg-hover)', border: '1px solid #2a2d3e', borderRadius: 8, padding: '7px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 220 }} />
+          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 220 }} />
         {([
           ['ALL', `Semua (${items.length})`],
           ['REORDER_NOW', `🔴 Beli Sekarang (${counts.REORDER_NOW})`],
@@ -328,7 +328,7 @@ export default function PurchasePlanner() {
       {/* Draft PO Modal */}
       {showDraftModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 16, padding: 28, maxWidth: 700, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
+          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, boxShadow: 'var(--shadow-card)', padding: 28, maxWidth: 700, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>📄 Draft Purchase Orders</div>
               <button onClick={() => setShowDraftModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 20 }}>✕</button>
@@ -343,7 +343,7 @@ export default function PurchasePlanner() {
                   <div style={{ color: '#3b82f6', fontWeight: 600 }}>{formatRupiah(recs.reduce((s, r) => s + r.estimatedCost, 0))}</div>
                 </div>
                 {recs.map(item => (
-                  <div key={item.sku} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #2a2d3e', fontSize: 13 }}>
+                  <div key={item.sku} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)', fontSize: 13 }}>
                     <span style={{ color: 'var(--text-secondary)', flex: 1, paddingRight: 8 }}>{item.name}</span>
                     <span style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{item.recommendedQty} pcs · {formatRupiah(item.estimatedCost)}</span>
                   </div>

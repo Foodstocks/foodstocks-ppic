@@ -47,10 +47,10 @@ function mapStatus(raw: string): 'Lunas' | 'Batal' | 'Pending' {
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid #2a2d3e', borderRadius: 12, padding: 20, marginBottom: 20 } as React.CSSProperties,
+  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
   title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid #2a2d3e', whiteSpace: 'nowrap' as const },
-  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid #1a1d27' },
+  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
   badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' } as React.CSSProperties),
   btn: { padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600 } as React.CSSProperties,
 };
@@ -164,7 +164,7 @@ export default function SuppliersPage() {
           placeholder="🔍 Cari nama supplier..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ background: 'var(--bg-hover)', border: '1px solid #2a2d3e', borderRadius: 8, padding: '7px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 220 }}
+          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 220 }}
         />
         {/* View toggle */}
         <div style={{ display: 'flex', gap: 4 }}>
@@ -233,7 +233,7 @@ export default function SuppliersPage() {
                       <td style={s.td}>
                         {sup.score.totalPOs > 0 ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <div style={{ height: 6, width: 60, background: '#2a2d3e', borderRadius: 3, overflow: 'hidden' }}>
+                            <div style={{ height: 6, width: 60, background: 'var(--border)', borderRadius: 3, overflow: 'hidden' }}>
                               <div style={{ height: '100%', width: `${sup.score.lunasRate}%`, background: sup.score.lunasRate >= 80 ? '#10b981' : sup.score.lunasRate >= 60 ? '#3b82f6' : '#f59e0b', borderRadius: 3 }} />
                             </div>
                             <span style={{ fontSize: 12, color: sup.score.lunasRate >= 80 ? '#10b981' : sup.score.lunasRate >= 60 ? '#3b82f6' : '#f59e0b', fontWeight: 600 }}>
