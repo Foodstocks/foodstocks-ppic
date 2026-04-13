@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+"crons": [
+    {
+      "path": "/api/sync",
+      "schedule": "0 8 * * *"
+    }
+  ]
+}
