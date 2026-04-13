@@ -58,6 +58,8 @@ export default function Navigation() {
     router.push('/login');
   };
 
+  if (pathname === '/login') return null;
+
   return (
     <>
       {/* ── Sidebar — desktop ─────────────────────────── */}
@@ -66,8 +68,7 @@ export default function Navigation() {
         minHeight: '100vh',
         background: 'var(--bg-surface)',
         borderRight: '1px solid var(--border)',
-        display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'column',  /* display handled by Tailwind hidden/md:flex */
         position: 'fixed',
         top: 0, left: 0, bottom: 0,
         zIndex: 100,
@@ -179,7 +180,7 @@ export default function Navigation() {
         position: 'fixed', bottom: 0, left: 0, right: 0,
         background: 'var(--bg-surface)',
         borderTop: '1px solid var(--border)',
-        display: 'flex',
+        /* display handled by Tailwind flex/md:hidden */
         zIndex: 100,
         paddingBottom: 'env(safe-area-inset-bottom)',
       }} className="flex md:hidden">
