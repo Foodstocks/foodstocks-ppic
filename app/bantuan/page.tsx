@@ -2,14 +2,14 @@
 
 const s = {
   page: { padding: '24px', maxWidth: 900 } as React.CSSProperties,
-  title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 24, marginBottom: 20 } as React.CSSProperties,
-  sectionTitle: { fontSize: 17, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 } as React.CSSProperties,
-  term: { fontWeight: 700, color: 'var(--text-primary)', fontSize: 14 } as React.CSSProperties,
-  def: { color: 'var(--text-secondary)', fontSize: 13, lineHeight: 1.6, marginBottom: 4 } as React.CSSProperties,
-  formula: { background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 12px', fontFamily: 'monospace', fontSize: 13, color: '#3b82f6', display: 'inline-block', marginTop: 4, marginBottom: 4 } as React.CSSProperties,
-  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 10px', fontSize: 12, fontWeight: 700, display: 'inline-block', marginRight: 8 } as React.CSSProperties),
-  row: { paddingBottom: 16, marginBottom: 16, borderBottom: '1px solid var(--border-subtle)' } as React.CSSProperties,
+  title: { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  card: { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 24, marginBottom: 16 } as React.CSSProperties,
+  sectionTitle: { fontSize: 15, fontWeight: 700, color: '#111827', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 } as React.CSSProperties,
+  term: { fontWeight: 700, color: '#111827', fontSize: 14 } as React.CSSProperties,
+  def: { color: '#374151', fontSize: 13, lineHeight: 1.6, marginBottom: 4 } as React.CSSProperties,
+  formula: { background: '#F3F4F6', border: '1px solid #E5E7EB', borderRadius: 6, padding: '6px 12px', fontFamily: 'monospace', fontSize: 13, color: '#3B82F6', display: 'inline-block', marginTop: 4, marginBottom: 4 } as React.CSSProperties,
+  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'inline-block', marginRight: 8 } as React.CSSProperties),
+  row: { paddingBottom: 16, marginBottom: 16, borderBottom: '1px solid #F3F4F6' } as React.CSSProperties,
 };
 
 const sections = [
@@ -229,7 +229,7 @@ export default function BantuanPage() {
     <div style={s.page}>
       <div style={{ marginBottom: 28 }}>
         <div style={s.title}>❓ Bantuan & Kamus Istilah</div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+        <div style={{ fontSize: 14, color: '#6B7280' }}>
           Penjelasan semua istilah dan metrik yang digunakan di dashboard Foodstocks WMS
         </div>
       </div>
@@ -257,12 +257,12 @@ export default function BantuanPage() {
 
       <div style={{ ...s.card, background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.2)' }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: '#3b82f6', marginBottom: 8 }}>💡 Tips Memulai</div>
-        <ol style={{ margin: 0, paddingLeft: 20, color: 'var(--text-secondary)', fontSize: 13, lineHeight: 2 }}>
-          <li>Isi <strong style={{ color: 'var(--text-primary)' }}>Velocity</strong> di Settings → Tarik dari Jubelio untuk aktivasi semua kalkulasi</li>
-          <li>Isi <strong style={{ color: 'var(--text-primary)' }}>HPP</strong> di Settings → Tab HPP agar margin dan COGS akurat</li>
-          <li>Set <strong style={{ color: 'var(--text-primary)' }}>Lead Time</strong> per supplier atau kategori di Settings → Tab Lead Time</li>
-          <li>Set <strong style={{ color: 'var(--text-primary)' }}>Budget PO Bulanan</strong> di Settings → Tab Parameter Bisnis</li>
-          <li>Tambah <strong style={{ color: 'var(--text-primary)' }}>Event</strong> musiman di Settings → Tab Event Calendar untuk forecast lebih akurat</li>
+        <ol style={{ margin: 0, paddingLeft: 20, color: '#374151', fontSize: 13, lineHeight: 2 }}>
+          <li>Isi <strong style={{ color: '#111827' }}>Velocity</strong> di Settings → Tarik dari Jubelio untuk aktivasi semua kalkulasi</li>
+          <li>Isi <strong style={{ color: '#111827' }}>HPP</strong> di Settings → Tab HPP agar margin dan COGS akurat</li>
+          <li>Set <strong style={{ color: '#111827' }}>Lead Time</strong> per supplier atau kategori di Settings → Tab Lead Time</li>
+          <li>Set <strong style={{ color: '#111827' }}>Budget PO Bulanan</strong> di Settings → Tab Parameter Bisnis</li>
+          <li>Tambah <strong style={{ color: '#111827' }}>Event</strong> musiman di Settings → Tab Event Calendar untuk forecast lebih akurat</li>
         </ol>
       </div>
     </div>

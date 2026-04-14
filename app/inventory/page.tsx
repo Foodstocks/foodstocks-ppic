@@ -40,20 +40,20 @@ interface InventoryRow {
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
-  title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
-  td: { padding: '11px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
-  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' }),
-  input: { background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 240 } as React.CSSProperties,
-  btn: { padding: '8px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
+  card: { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 20, marginBottom: 16 } as React.CSSProperties,
+  title: { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  th: { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: 0.5, textAlign: 'left' as const, background: '#F9FAFB', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #F3F4F6' },
+  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'inline-block' }),
+  input: { background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '9px 14px', color: '#111827', fontSize: 13, outline: 'none', width: 240 } as React.CSSProperties,
+  btn: { padding: '7px 14px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontSize: 12, fontWeight: 600 } as React.CSSProperties,
 };
 
 const statusCfg: Record<string, { label: string; bg: string; color: string }> = {
-  KRITIS: { label: '🔴 Kritis', bg: 'rgba(239,68,68,0.15)', color: '#ef4444' },
-  RENDAH: { label: '🟡 Rendah', bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-  AMAN: { label: '🟢 Aman', bg: 'rgba(16,185,129,0.15)', color: '#10b981' },
-  OVERSTOCK: { label: '📦 Overstock', bg: 'rgba(139,92,246,0.15)', color: '#8b5cf6' },
+  KRITIS: { label: 'Kritis', bg: '#FEF2F2', color: '#D60001' },
+  RENDAH: { label: 'Rendah', bg: '#FFFBEB', color: '#F59E0B' },
+  AMAN: { label: 'Aman', bg: '#F0FDF4', color: '#10B981' },
+  OVERSTOCK: { label: 'Overstock', bg: '#EFF6FF', color: '#3B82F6' },
 };
 
 function loadStorage<T>(key: string, fallback: T): T {
@@ -175,26 +175,32 @@ export default function InventoryPage() {
 
   return (
     <div style={s.page}>
-      <div style={{ marginBottom: 24 }}>
-        <div style={s.title}>📦 Inventory Live</div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Stok real-time dari Jubelio WMS · {rows.length} SKU aktif</div>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
+        <div>
+          <div style={s.title}>Inventory Live</div>
+          <div style={{ fontSize: 14, color: '#6B7280' }}>Stok real-time dari Jubelio WMS · {rows.length} SKU aktif</div>
+        </div>
       </div>
 
       {/* KPI Row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginBottom: 20 }}>
         {[
-          { label: 'Total Nilai Stok', value: formatRupiah(kpis.totalValue), color: '#3b82f6' },
-          { label: 'SKU Kritis', value: `${kpis.kritis} SKU`, color: '#ef4444' },
-          { label: 'SKU Rendah', value: `${kpis.rendah} SKU`, color: '#f59e0b' },
-          { label: 'SKU Aman', value: `${kpis.aman} SKU`, color: '#10b981' },
-          { label: 'SKU Overstock', value: `${kpis.overstock} SKU`, color: '#8b5cf6' },
-          { label: 'Avg Margin', value: `${kpis.avgMargin.toFixed(1)}%`, color: '#06b6d4' },
-          { label: 'Cost of Fund / Bln', value: formatRupiah(kpis.totalCostOfFund), color: '#f97316' },
-          { label: 'Dead Stock', value: `${kpis.deadStock} SKU`, color: '#94a3b8' },
+          { label: 'Total Nilai Stok', value: formatRupiah(kpis.totalValue), bg: '#EFF6FF', color: '#3B82F6' },
+          { label: 'SKU Kritis', value: `${kpis.kritis} SKU`, bg: '#FEF2F2', color: '#D60001' },
+          { label: 'SKU Rendah', value: `${kpis.rendah} SKU`, bg: '#FFFBEB', color: '#F59E0B' },
+          { label: 'SKU Aman', value: `${kpis.aman} SKU`, bg: '#F0FDF4', color: '#10B981' },
+          { label: 'SKU Overstock', value: `${kpis.overstock} SKU`, bg: '#F5F3FF', color: '#8B5CF6' },
+          { label: 'Avg Margin', value: `${kpis.avgMargin.toFixed(1)}%`, bg: '#F0FDFA', color: '#0D9488' },
+          { label: 'Cost of Fund/Bln', value: formatRupiah(kpis.totalCostOfFund), bg: '#FFF7ED', color: '#F97316' },
+          { label: 'Dead Stock', value: `${kpis.deadStock} SKU`, bg: '#F9FAFB', color: '#6B7280' },
         ].map(k => (
-          <div key={k.label} style={{ ...s.card, marginBottom: 0, borderLeft: `3px solid ${k.color}` }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
-            <div style={{ fontSize: 22, fontWeight: 700, color: k.color, margin: '6px 0' }}>{k.value}</div>
+          <div key={k.label} style={{ ...s.card, marginBottom: 0, padding: '16px 18px' }}>
+            <div style={{ width: 36, height: 36, borderRadius: 8, background: k.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 2, background: k.color }} />
+            </div>
+            <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 4 }}>{k.label}</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: '#111827' }}>{k.value}</div>
           </div>
         ))}
       </div>
@@ -205,118 +211,108 @@ export default function InventoryPage() {
         const allOverstock = kpis.rendah === 0 && kpis.aman === 0 && kpis.overstock > 0;
         if (!allOverstock || noVelocity === 0) return null;
         return (
-          <div style={{ padding: '12px 16px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 10, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
-            <div style={{ fontSize: 13, color: '#f59e0b' }}>
-              ⚠️ <strong>{noVelocity} SKU</strong> belum memiliki data velocity (penjualan harian). Status RENDAH & AMAN akan muncul setelah velocity diisi. Saat ini semua tampil sebagai OVERSTOCK.
+          <div style={{ padding: '12px 16px', background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ fontSize: 13, color: '#92400E' }}>
+              <strong>{noVelocity} SKU</strong> belum memiliki data velocity. Status RENDAH & AMAN akan muncul setelah velocity diisi.
             </div>
-            <a href="/settings#velocity" style={{ fontSize: 12, color: '#3b82f6', textDecoration: 'none', fontWeight: 600 }}>
-              → Import atau Tarik Velocity di Settings
+            <a href="/settings#velocity" style={{ fontSize: 12, color: '#D60001', textDecoration: 'none', fontWeight: 600 }}>
+              Import Velocity di Settings →
             </a>
           </div>
         );
       })()}
 
       {/* Status Legend */}
-      <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: '14px 20px', marginBottom: 16 }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
-          📋 Parameter Status Stok
-        </div>
+      <div style={{ ...s.card, padding: '16px 20px' }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 12 }}>Parameter Status Stok</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 10 }}>
           {[
-            { color: '#ef4444', bg: 'rgba(239,68,68,0.08)', border: 'rgba(239,68,68,0.25)', label: '🔴 Kritis', rule: 'Sisa hari ≤ Lead Time supplier', desc: 'Stok akan habis SEBELUM barang tiba. Beli sekarang!' },
-            { color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', border: 'rgba(245,158,11,0.25)', label: '🟡 Rendah', rule: 'Lead Time < Sisa hari ≤ Lead Time × 1.5', desc: 'Stok hampir habis. Perlu segera persiapan order.' },
-            { color: '#10b981', bg: 'rgba(16,185,129,0.08)', border: 'rgba(16,185,129,0.25)', label: '🟢 Aman', rule: 'Sisa hari > Lead Time × 1.5', desc: 'Stok dalam batas normal. Tidak perlu tindakan.' },
-            { color: '#8b5cf6', bg: 'rgba(139,92,246,0.08)', border: 'rgba(139,92,246,0.25)', label: '📦 Overstock', rule: 'Sisa hari > 30 hari (jauh di atas normal)', desc: 'Stok berlebih. Tahan order, evaluasi penjualan.' },
+            { color: '#D60001', bg: '#FEF2F2', border: '#FECACA', label: 'Kritis', rule: 'Sisa hari ≤ Lead Time supplier', desc: 'Stok habis sebelum barang tiba. Beli sekarang!' },
+            { color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A', label: 'Rendah', rule: 'Lead Time < Sisa hari ≤ Lead Time × 1.5', desc: 'Stok hampir habis. Perlu segera persiapan order.' },
+            { color: '#10B981', bg: '#F0FDF4', border: '#A7F3D0', label: 'Aman', rule: 'Sisa hari > Lead Time × 1.5', desc: 'Stok dalam batas normal. Tidak perlu tindakan.' },
+            { color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', label: 'Overstock', rule: 'Sisa hari > 30 hari', desc: 'Stok berlebih. Tahan order, evaluasi penjualan.' },
           ].map(item => (
             <div key={item.label} style={{ background: item.bg, border: `1px solid ${item.border}`, borderRadius: 8, padding: '10px 14px' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: item.color, marginBottom: 3 }}>{item.label}</div>
-              <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 2 }}>📐 {item.rule}</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.desc}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                <div style={{ width: 8, height: 8, borderRadius: '50%', background: item.color }} />
+                <span style={{ fontSize: 13, fontWeight: 700, color: item.color }}>{item.label}</span>
+              </div>
+              <div style={{ fontSize: 11, fontWeight: 600, color: '#374151', marginBottom: 2 }}>{item.rule}</div>
+              <div style={{ fontSize: 11, color: '#6B7280' }}>{item.desc}</div>
             </div>
           ))}
         </div>
-        <div style={{ marginTop: 10, fontSize: 11, color: 'var(--text-faint)' }}>
-          💡 <strong style={{ color: 'var(--text-muted)' }}>Sisa Hari</strong> = Stok ÷ Rata-rata Penjualan Harian &nbsp;|&nbsp;
-          <strong style={{ color: 'var(--text-muted)' }}>Lead Time</strong> = Hari pengiriman dari supplier ke gudang
+        <div style={{ marginTop: 10, fontSize: 11, color: '#9CA3AF' }}>
+          Sisa Hari = Stok ÷ Rata-rata Penjualan Harian &nbsp;|&nbsp; Lead Time = Hari pengiriman dari supplier
         </div>
       </div>
 
       {/* Filters */}
-      <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-        <input
-          type="text"
-          placeholder="🔍 Cari SKU atau nama produk..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          style={s.input}
-        />
-        <div style={{ display: 'flex', gap: 6 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ position: 'relative' }}>
+          <input
+            type="text"
+            placeholder="Cari SKU atau nama produk..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            style={{ ...s.input, paddingLeft: 32 }}
+          />
+          <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {[
             { key: 'ALL', label: `Semua (${rows.length})` },
-            { key: 'KRITIS', label: `🔴 Kritis (${kpis.kritis})` },
-            { key: 'RENDAH', label: `🟡 Rendah (${kpis.rendah})` },
-            { key: 'AMAN', label: `🟢 Aman (${kpis.aman})` },
-            { key: 'OVERSTOCK', label: `📦 Overstock (${kpis.overstock})` },
+            { key: 'KRITIS', label: `Kritis (${kpis.kritis})` },
+            { key: 'RENDAH', label: `Rendah (${kpis.rendah})` },
+            { key: 'AMAN', label: `Aman (${kpis.aman})` },
+            { key: 'OVERSTOCK', label: `Overstock (${kpis.overstock})` },
           ].map(f => (
             <button key={f.key} onClick={() => setFilterStatus(f.key)} style={{
-              ...s.btn,
-              padding: '6px 12px',
-              background: filterStatus === f.key ? '#3b82f6' : 'var(--bg-card)',
-              color: filterStatus === f.key ? 'white' : 'var(--text-secondary)',
-              border: `1px solid ${filterStatus === f.key ? '#3b82f6' : 'var(--border)'}`,
-            }}>
-              {f.label}
-            </button>
+              ...s.btn, padding: '6px 12px', fontSize: 12,
+              background: filterStatus === f.key ? '#D60001' : '#fff',
+              color: filterStatus === f.key ? '#fff' : '#374151',
+              border: `1px solid ${filterStatus === f.key ? '#D60001' : '#E5E7EB'}`,
+            }}>{f.label}</button>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {['ALL', 'A', 'B', 'C'].map(f => (
             <button key={f} onClick={() => setFilterABC(f)} style={{
-              ...s.btn,
-              padding: '6px 12px',
-              background: filterABC === f ? '#8b5cf6' : 'var(--bg-card)',
-              color: filterABC === f ? 'white' : 'var(--text-secondary)',
-              border: `1px solid ${filterABC === f ? '#8b5cf6' : 'var(--border)'}`,
-            }}>
-              {f === 'ALL' ? 'ABC' : `Kat. ${f}`}
-            </button>
+              ...s.btn, padding: '6px 12px', fontSize: 12,
+              background: filterABC === f ? '#8B5CF6' : '#fff',
+              color: filterABC === f ? '#fff' : '#374151',
+              border: `1px solid ${filterABC === f ? '#8B5CF6' : '#E5E7EB'}`,
+            }}>{f === 'ALL' ? 'ABC' : `Kat. ${f}`}</button>
           ))}
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {([
             ['ALL', 'Semua Gerak'],
-            ['SUPER_FAST', 'A — Super Fast'],
-            ['FAST', 'B — Fast'],
-            ['MEDIUM', 'C — Medium'],
+            ['SUPER_FAST', 'Super Fast'],
+            ['FAST', 'Fast'],
+            ['MEDIUM', 'Medium'],
             ['SLOW', 'Slow'],
           ] as [string, string][]).map(([key, label]) => {
             const mc = key !== 'ALL' ? MOVEMENT_CONFIGS[key as MovementCategory] : null;
-            const activeColor = mc?.color ?? '#3b82f6';
+            const activeColor = mc?.color ?? '#3B82F6';
             return (
               <button key={key} onClick={() => setFilterMovement(key)} style={{
-                ...s.btn,
-                padding: '6px 12px',
-                background: filterMovement === key ? activeColor : 'var(--bg-card)',
-                color: filterMovement === key ? 'white' : 'var(--text-secondary)',
-                border: `1px solid ${filterMovement === key ? activeColor : 'var(--border)'}`,
-              }}>
-                {label}
-              </button>
+                ...s.btn, padding: '6px 12px', fontSize: 12,
+                background: filterMovement === key ? activeColor : '#fff',
+                color: filterMovement === key ? '#fff' : '#374151',
+                border: `1px solid ${filterMovement === key ? activeColor : '#E5E7EB'}`,
+              }}>{label}</button>
             );
           })}
         </div>
       </div>
 
       {/* Table */}
-      <div style={s.card}>
+      <div style={{ background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', overflow: 'hidden' }}>
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', fontSize: 16 }}>
-            ⏳ Memuat data Jubelio...
-          </div>
+          <div style={{ textAlign: 'center', padding: 56, color: '#6B7280', fontSize: 14 }}>Memuat data Jubelio...</div>
         ) : error ? (
-          <div style={{ textAlign: 'center', padding: 40, color: '#ef4444', fontSize: 14 }}>
-            ⚠️ Gagal memuat data: {error}
-          </div>
+          <div style={{ textAlign: 'center', padding: 56, color: '#D60001', fontSize: 14 }}>Gagal memuat data: {error}</div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -332,9 +328,11 @@ export default function InventoryPage() {
                   const margin = item.sellPrice > 0 ? ((item.sellPrice - item.hpp) / item.sellPrice * 100).toFixed(1) : '0.0';
                   const cfg = statusCfg[item.status];
                   return (
-                    <tr key={item.sku}>
-                      <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)' }}>{item.sku}</span></td>
-                      <td style={{ ...s.td, fontWeight: 600 }}>{item.name}</td>
+                    <tr key={item.sku} style={{ transition: 'background 0.1s' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = '#F9FAFB')}
+                      onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}>
+                      <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: '#9CA3AF' }}>{item.sku}</span></td>
+                      <td style={{ ...s.td, fontWeight: 600, color: '#111827' }}>{item.name}</td>
                       <td style={s.td}>
                         {(() => {
                           const mc = MOVEMENT_CONFIGS[item.movement];
@@ -344,14 +342,14 @@ export default function InventoryPage() {
                       </td>
                       <td style={s.td}>
                         <span style={s.badge(
-                          item.abc === 'A' ? 'rgba(59,130,246,0.15)' : item.abc === 'B' ? 'rgba(245,158,11,0.15)' : 'rgba(100,116,139,0.15)',
-                          item.abc === 'A' ? '#3b82f6' : item.abc === 'B' ? '#f59e0b' : 'var(--text-secondary)'
+                          item.abc === 'A' ? '#EFF6FF' : item.abc === 'B' ? '#FFFBEB' : '#F9FAFB',
+                          item.abc === 'A' ? '#3B82F6' : item.abc === 'B' ? '#F59E0B' : '#6B7280'
                         )}>{item.abc}</span>
                       </td>
-                      <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{item.category}</td>
+                      <td style={{ ...s.td, color: '#6B7280' }}>{item.category}</td>
                       <td style={{ ...s.td, fontWeight: 700 }}>{item.stock}</td>
-                      <td style={{ ...s.td, fontWeight: 600, color: item.daysRemaining <= 3 ? '#ef4444' : item.daysRemaining <= 5 ? '#f59e0b' : '#10b981' }}>
-                        {item.daysRemaining === 999 ? '?' : `${item.daysRemaining} hari`}
+                      <td style={{ ...s.td, fontWeight: 600, color: item.daysRemaining <= 3 ? '#D60001' : item.daysRemaining <= 5 ? '#F59E0B' : '#10B981' }}>
+                        {item.daysRemaining === 999 ? '—' : `${item.daysRemaining}h`}
                       </td>
                       <td style={s.td}>
                         {(() => {
@@ -359,21 +357,21 @@ export default function InventoryPage() {
                           return <span style={s.badge(ac.bg, ac.color)}>{ac.label} ({item.daysInWarehouse}h)</span>;
                         })()}
                       </td>
-                      <td style={{ ...s.td, color: item.agingCategory === 'OLD' || item.agingCategory === 'DEAD' ? '#ef4444' : '#f97316', fontWeight: 600 }}>
+                      <td style={{ ...s.td, color: item.agingCategory === 'OLD' || item.agingCategory === 'DEAD' ? '#D60001' : '#F97316', fontWeight: 600 }}>
                         {formatRupiah(item.costOfFund)}/bln
                       </td>
-                      <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{item.reorderPoint > 0 ? item.reorderPoint : '—'}</td>
+                      <td style={{ ...s.td, color: '#6B7280' }}>{item.reorderPoint > 0 ? item.reorderPoint : '—'}</td>
                       <td style={s.td}><span style={s.badge(cfg.bg, cfg.color)}>{cfg.label}</span></td>
                       <td style={s.td}>{formatRupiah(item.hpp)}</td>
                       <td style={s.td}>{formatRupiah(item.sellPrice)}</td>
-                      <td style={{ ...s.td, fontWeight: 600, color: Number(margin) >= 30 ? '#10b981' : '#f59e0b' }}>{margin}%</td>
+                      <td style={{ ...s.td, fontWeight: 600, color: Number(margin) >= 30 ? '#10B981' : '#F59E0B' }}>{margin}%</td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
             {filtered.length === 0 && !loading && (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>Tidak ada SKU yang cocok dengan filter</div>
+              <div style={{ textAlign: 'center', padding: 40, color: '#9CA3AF' }}>Tidak ada SKU yang cocok dengan filter</div>
             )}
           </div>
         )}

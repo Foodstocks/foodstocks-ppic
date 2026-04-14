@@ -47,19 +47,19 @@ function mapStatus(raw: string): 'Lunas' | 'Batal' | 'Pending' {
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
-  title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
-  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
-  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' } as React.CSSProperties),
-  btn: { padding: '7px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 12, fontWeight: 600 } as React.CSSProperties,
+  card: { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 20, marginBottom: 16 } as React.CSSProperties,
+  title: { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  th: { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: 0.5, textAlign: 'left' as const, background: '#F9FAFB', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #F3F4F6' },
+  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'inline-block' } as React.CSSProperties),
+  btn: { padding: '7px 14px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontSize: 12, fontWeight: 600, background: '#fff', color: '#374151' } as React.CSSProperties,
 };
 
 const gradeConfig: Record<string, { bg: string; color: string; label: string }> = {
-  A: { bg: 'rgba(16,185,129,0.15)',  color: '#10b981', label: 'A — Terpercaya' },
-  B: { bg: 'rgba(59,130,246,0.15)',  color: '#3b82f6', label: 'B — Baik' },
-  C: { bg: 'rgba(245,158,11,0.15)', color: '#f59e0b', label: 'C — Perlu Evaluasi' },
-  D: { bg: 'rgba(100,116,139,0.15)', color: '#64748b', label: 'D — Belum Ada Data' },
+  A: { bg: '#F0FDF4', color: '#10B981', label: 'A — Terpercaya' },
+  B: { bg: '#EFF6FF', color: '#3B82F6', label: 'B — Baik' },
+  C: { bg: '#FFFBEB', color: '#F59E0B', label: 'C — Perlu Evaluasi' },
+  D: { bg: '#F9FAFB', color: '#6B7280', label: 'D — Belum Ada Data' },
 };
 
 export default function SuppliersPage() {
@@ -139,7 +139,7 @@ export default function SuppliersPage() {
     <div style={s.page}>
       <div style={{ marginBottom: 24 }}>
         <div style={s.title}>🏭 Supplier Hub</div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Data supplier dari Jubelio WMS · Scorecard dari histori PO</div>
+        <div style={{ fontSize: 14, color: '#6B7280' }}>Data supplier dari Jubelio WMS · Scorecard dari histori PO</div>
       </div>
 
       {/* KPI Row */}
@@ -151,7 +151,7 @@ export default function SuppliersPage() {
           { label: 'Total Pembelian', value: formatRupiah(kpis.totalSpend), color: '#f97316' },
         ].map(k => (
           <div key={k.label} style={{ ...s.card, marginBottom: 0, borderLeft: `3px solid ${k.color}` }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
+            <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: k.color, margin: '6px 0' }}>{k.value}</div>
           </div>
         ))}
@@ -164,16 +164,16 @@ export default function SuppliersPage() {
           placeholder="🔍 Cari nama supplier..."
           value={search}
           onChange={e => setSearch(e.target.value)}
-          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 220 }}
+          style={{ background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 8, padding: '7px 14px', color: '#111827', fontSize: 13, outline: 'none', width: 220 }}
         />
         {/* View toggle */}
         <div style={{ display: 'flex', gap: 4 }}>
           {(['scorecard', 'list'] as const).map(v => (
             <button key={v} onClick={() => setViewMode(v)} style={{
               ...s.btn,
-              background: viewMode === v ? '#3b82f6' : 'var(--bg-card)',
-              color: viewMode === v ? 'white' : 'var(--text-secondary)',
-              border: `1px solid ${viewMode === v ? '#3b82f6' : 'var(--border)'}`,
+              background: viewMode === v ? '#3b82f6' : '#fff',
+              color: viewMode === v ? 'white' : '#374151',
+              border: `1px solid ${viewMode === v ? '#3b82f6' : '#E4E7ED'}`,
             }}>
               {v === 'scorecard' ? '📊 Scorecard' : '📋 List'}
             </button>
@@ -184,9 +184,9 @@ export default function SuppliersPage() {
           {(['ALL', 'A', 'B', 'C', 'D'] as const).map(g => (
             <button key={g} onClick={() => setFilterGrade(g)} style={{
               ...s.btn,
-              background: filterGrade === g ? (g === 'ALL' ? '#3b82f6' : gradeConfig[g]?.color ?? '#3b82f6') : 'var(--bg-card)',
-              color: filterGrade === g ? 'white' : 'var(--text-secondary)',
-              border: `1px solid ${filterGrade === g ? (gradeConfig[g]?.color ?? '#3b82f6') : 'var(--border)'}`,
+              background: filterGrade === g ? (g === 'ALL' ? '#3b82f6' : gradeConfig[g]?.color ?? '#3b82f6') : '#fff',
+              color: filterGrade === g ? 'white' : '#374151',
+              border: `1px solid ${filterGrade === g ? (gradeConfig[g]?.color ?? '#3b82f6') : '#E4E7ED'}`,
             }}>
               {g === 'ALL' ? 'Semua' : `Grade ${g}`}
             </button>
@@ -195,14 +195,14 @@ export default function SuppliersPage() {
       </div>
 
       {loading ? (
-        <div style={{ ...s.card, textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>⏳ Memuat data Jubelio...</div>
+        <div style={{ ...s.card, textAlign: 'center', padding: 40, color: '#6B7280' }}>⏳ Memuat data Jubelio...</div>
       ) : error ? (
         <div style={{ ...s.card, textAlign: 'center', padding: 40, color: '#ef4444' }}>⚠️ {error}</div>
       ) : viewMode === 'scorecard' ? (
         /* ── Scorecard View ── */
         <div style={s.card}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>Supplier Scorecard</div>
-          <div style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: '#111827', marginBottom: 4 }}>Supplier Scorecard</div>
+          <div style={{ fontSize: 12, color: '#6B7280', marginBottom: 16 }}>
             Grade dihitung dari histori PO: frekuensi order dan % pembayaran lunas. Supplier tanpa histori PO otomatis Grade D.
           </div>
           <div style={{ overflowX: 'auto' }}>
@@ -223,34 +223,34 @@ export default function SuppliersPage() {
                       <td style={s.td}>
                         <span style={s.badge(gc.bg, gc.color)}>{gc.label}</span>
                       </td>
-                      <td style={s.td}>{sup.score.totalPOs > 0 ? sup.score.totalPOs : <span style={{ color: 'var(--text-faint)' }}>—</span>}</td>
+                      <td style={s.td}>{sup.score.totalPOs > 0 ? sup.score.totalPOs : <span style={{ color: '#D1D5DB' }}>—</span>}</td>
                       <td style={{ ...s.td, fontWeight: 600 }}>
-                        {sup.score.totalSpend > 0 ? formatRupiah(sup.score.totalSpend) : <span style={{ color: 'var(--text-faint)' }}>—</span>}
+                        {sup.score.totalSpend > 0 ? formatRupiah(sup.score.totalSpend) : <span style={{ color: '#D1D5DB' }}>—</span>}
                       </td>
                       <td style={s.td}>
-                        {sup.score.avgPOValue > 0 ? formatRupiah(sup.score.avgPOValue) : <span style={{ color: 'var(--text-faint)' }}>—</span>}
+                        {sup.score.avgPOValue > 0 ? formatRupiah(sup.score.avgPOValue) : <span style={{ color: '#D1D5DB' }}>—</span>}
                       </td>
                       <td style={s.td}>
                         {sup.score.totalPOs > 0 ? (
                           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <div style={{ height: 6, width: 60, background: 'var(--border)', borderRadius: 3, overflow: 'hidden' }}>
+                            <div style={{ height: 6, width: 60, background: '#E4E7ED', borderRadius: 3, overflow: 'hidden' }}>
                               <div style={{ height: '100%', width: `${sup.score.lunasRate}%`, background: sup.score.lunasRate >= 80 ? '#10b981' : sup.score.lunasRate >= 60 ? '#3b82f6' : '#f59e0b', borderRadius: 3 }} />
                             </div>
                             <span style={{ fontSize: 12, color: sup.score.lunasRate >= 80 ? '#10b981' : sup.score.lunasRate >= 60 ? '#3b82f6' : '#f59e0b', fontWeight: 600 }}>
                               {sup.score.lunasRate}%
                             </span>
                           </div>
-                        ) : <span style={{ color: 'var(--text-faint)' }}>—</span>}
+                        ) : <span style={{ color: '#D1D5DB' }}>—</span>}
                       </td>
-                      <td style={{ ...s.td, color: sup.score.pendingValue > 0 ? '#f59e0b' : 'var(--text-faint)' }}>
+                      <td style={{ ...s.td, color: sup.score.pendingValue > 0 ? '#f59e0b' : '#D1D5DB' }}>
                         {sup.score.pendingValue > 0 ? formatRupiah(sup.score.pendingValue) : '—'}
                       </td>
-                      <td style={{ ...s.td, color: 'var(--text-muted)', fontSize: 12 }}>
+                      <td style={{ ...s.td, color: '#6B7280', fontSize: 12 }}>
                         {sup.score.lastOrderDate
                           ? new Date(sup.score.lastOrderDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
                           : '—'}
                       </td>
-                      <td style={{ ...s.td, color: 'var(--text-secondary)' }}>
+                      <td style={{ ...s.td, color: '#374151' }}>
                         {sup.email ? <a href={`mailto:${sup.email}`} style={{ color: '#3b82f6', textDecoration: 'none', fontSize: 12 }}>{sup.email}</a> : sup.phone || '—'}
                       </td>
                     </tr>
@@ -259,7 +259,7 @@ export default function SuppliersPage() {
               </tbody>
             </table>
             {sortedBySpend.length === 0 && (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>Tidak ada supplier yang cocok</div>
+              <div style={{ textAlign: 'center', padding: 40, color: '#6B7280' }}>Tidak ada supplier yang cocok</div>
             )}
           </div>
         </div>
@@ -278,11 +278,11 @@ export default function SuppliersPage() {
               <tbody>
                 {filtered.map(sup => (
                   <tr key={sup.id}>
-                    <td style={{ ...s.td, fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)' }}>{sup.id}</td>
+                    <td style={{ ...s.td, fontFamily: 'monospace', fontSize: 11, color: '#6B7280' }}>{sup.id}</td>
                     <td style={{ ...s.td, fontWeight: 600 }}>{sup.name}</td>
-                    <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{sup.email || '—'}</td>
-                    <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{sup.phone || '—'}</td>
-                    <td style={{ ...s.td, color: 'var(--text-secondary)', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sup.address || '—'}</td>
+                    <td style={{ ...s.td, color: '#374151' }}>{sup.email || '—'}</td>
+                    <td style={{ ...s.td, color: '#374151' }}>{sup.phone || '—'}</td>
+                    <td style={{ ...s.td, color: '#374151', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sup.address || '—'}</td>
                     <td style={s.td}>
                       <span style={s.badge('rgba(16,185,129,0.15)', '#10b981')}>Aktif</span>
                     </td>
@@ -291,7 +291,7 @@ export default function SuppliersPage() {
               </tbody>
             </table>
             {filtered.length === 0 && (
-              <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>
+              <div style={{ textAlign: 'center', padding: 40, color: '#6B7280' }}>
                 {suppliers.length === 0 ? 'Tidak ada data supplier dari Jubelio' : 'Tidak ada supplier yang cocok'}
               </div>
             )}
@@ -304,7 +304,7 @@ export default function SuppliersPage() {
         <div style={{ fontSize: 12, fontWeight: 600, color: '#8b5cf6', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
           Kriteria Grade Supplier
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, fontSize: 12, color: 'var(--text-muted)' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 10, fontSize: 12, color: '#6B7280' }}>
           <div><strong style={{ color: '#10b981' }}>Grade A</strong> — ≥80% PO lunas, ≥3 PO</div>
           <div><strong style={{ color: '#3b82f6' }}>Grade B</strong> — ≥60% PO lunas, ≥2 PO</div>
           <div><strong style={{ color: '#f59e0b' }}>Grade C</strong> — ≥40% PO lunas</div>

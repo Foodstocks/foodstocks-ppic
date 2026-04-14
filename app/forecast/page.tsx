@@ -85,13 +85,13 @@ function buildForecast(item: ForecastItem, days: number, events: DemandEvent[]):
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
-  title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
-  td: { padding: '11px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
-  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' } as React.CSSProperties),
-  btn: { padding: '8px 14px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
-  select: { background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '8px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none' } as React.CSSProperties,
+  card: { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 20, marginBottom: 16 } as React.CSSProperties,
+  title: { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  th: { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: 0.5, textAlign: 'left' as const, background: '#F9FAFB', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #F3F4F6' },
+  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'inline-block' } as React.CSSProperties),
+  btn: { padding: '8px 14px', borderRadius: 8, border: '1px solid #E5E7EB', cursor: 'pointer', fontSize: 13, fontWeight: 600, background: '#fff', color: '#374151' } as React.CSSProperties,
+  select: { background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '9px 14px', color: '#111827', fontSize: 13, outline: 'none' } as React.CSSProperties,
 };
 
 const HORIZON_OPTIONS = [
@@ -217,14 +217,14 @@ export default function ForecastPage() {
       <div style={s.page}>
         <div style={{ marginBottom: 24 }}>
           <div style={s.title}>📈 Forecast Stok</div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Proyeksi stok 30/60/90 hari</div>
+          <div style={{ fontSize: 14, color: '#6B7280' }}>Proyeksi stok 30/60/90 hari</div>
         </div>
         <div style={{ ...s.card, textAlign: 'center', padding: 48 }}>
           <div style={{ fontSize: 40, marginBottom: 16 }}>📊</div>
-          <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 8 }}>
+          <div style={{ fontSize: 18, fontWeight: 700, color: '#111827', marginBottom: 8 }}>
             {hasVelData ? 'SKU Velocity Tidak Cocok dengan Inventory' : 'Data Velocity Belum Tersedia'}
           </div>
-          <div style={{ fontSize: 14, color: 'var(--text-muted)', maxWidth: 500, margin: '0 auto 16px' }}>
+          <div style={{ fontSize: 14, color: '#6B7280', maxWidth: 500, margin: '0 auto 16px' }}>
             {hasVelData
               ? `Velocity tersimpan untuk ${velInfo!.velTotal} SKU, tapi tidak ada yang cocok dengan ${velInfo!.invTotal} SKU di Jubelio inventory. Kemungkinan format SKU berbeda (contoh: "SKU-001" vs "SKU001").`
               : 'Halaman Forecast membutuhkan data penjualan harian (velocity). Coba tarik otomatis dari Jubelio di bawah.'
@@ -232,16 +232,16 @@ export default function ForecastPage() {
           </div>
           {velInfo && (
             <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginBottom: 24, flexWrap: 'wrap' }}>
-              <div style={{ padding: '8px 16px', background: 'var(--bg-hover)', borderRadius: 8, fontSize: 13 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Velocity tersimpan: </span>
+              <div style={{ padding: '8px 16px', background: '#F9FAFB', borderRadius: 8, fontSize: 13 }}>
+                <span style={{ color: '#6B7280' }}>Velocity tersimpan: </span>
                 <strong style={{ color: velInfo.velTotal > 0 ? '#10b981' : '#ef4444' }}>{velInfo.velTotal} SKU</strong>
               </div>
-              <div style={{ padding: '8px 16px', background: 'var(--bg-hover)', borderRadius: 8, fontSize: 13 }}>
-                <span style={{ color: 'var(--text-muted)' }}>SKU di Inventory: </span>
-                <strong style={{ color: 'var(--text-primary)' }}>{velInfo.invTotal} SKU</strong>
+              <div style={{ padding: '8px 16px', background: '#F9FAFB', borderRadius: 8, fontSize: 13 }}>
+                <span style={{ color: '#6B7280' }}>SKU di Inventory: </span>
+                <strong style={{ color: '#111827' }}>{velInfo.invTotal} SKU</strong>
               </div>
-              <div style={{ padding: '8px 16px', background: 'var(--bg-hover)', borderRadius: 8, fontSize: 13 }}>
-                <span style={{ color: 'var(--text-muted)' }}>Cocok: </span>
+              <div style={{ padding: '8px 16px', background: '#F9FAFB', borderRadius: 8, fontSize: 13 }}>
+                <span style={{ color: '#6B7280' }}>Cocok: </span>
                 <strong style={{ color: velInfo.matched > 0 ? '#10b981' : '#ef4444' }}>{velInfo.matched} SKU</strong>
               </div>
             </div>
@@ -250,7 +250,7 @@ export default function ForecastPage() {
             <a href="/settings" style={{ display: 'inline-block', padding: '10px 20px', background: '#3b82f6', color: 'white', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14 }}>
               ⬇️ Tarik Velocity dari Jubelio di Settings
             </a>
-            <a href="/settings" style={{ display: 'inline-block', padding: '10px 20px', background: 'var(--bg-hover)', color: 'var(--text-secondary)', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14, border: '1px solid var(--border)' }}>
+            <a href="/settings" style={{ display: 'inline-block', padding: '10px 20px', background: '#F9FAFB', color: '#374151', borderRadius: 8, textDecoration: 'none', fontWeight: 600, fontSize: 14, border: '1px solid #E4E7ED' }}>
               📤 Upload CSV Velocity
             </a>
           </div>
@@ -263,7 +263,7 @@ export default function ForecastPage() {
     <div style={s.page}>
       <div style={{ marginBottom: 24 }}>
         <div style={s.title}>📈 Forecast Stok</div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+        <div style={{ fontSize: 14, color: '#6B7280' }}>
           Proyeksi stok 30/60/90 hari · {items.length} SKU dengan data velocity
           {velInfo && velInfo.source !== 'localStorage' && (
             <span style={{ marginLeft: 8, fontSize: 12, color: '#10b981', fontWeight: 600 }}>· {velInfo.source}</span>
@@ -280,7 +280,7 @@ export default function ForecastPage() {
           { label: 'Total Dipantau', value: `${items.length} SKU`, color: '#3b82f6' },
         ].map(k => (
           <div key={k.label} style={{ ...s.card, marginBottom: 0, borderLeft: `3px solid ${k.color}` }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
+            <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: k.color, margin: '6px 0' }}>{k.value}</div>
           </div>
         ))}
@@ -289,11 +289,11 @@ export default function ForecastPage() {
       {/* Pre-Event Reorder Calendar */}
       {(preEventAlerts.length > 0 || events.some(e => e.startDate)) && (
         <div style={{ ...s.card, borderLeft: '3px solid #8b5cf6', marginBottom: 24 }}>
-          <div style={{ fontSize: 15, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 14 }}>
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#111827', marginBottom: 14 }}>
             📅 Agenda Reorder Pre-Event
           </div>
           {preEventAlerts.length === 0 ? (
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', padding: '12px 16px', background: 'rgba(139,92,246,0.06)', borderRadius: 8, textAlign: 'center' }}>
+            <div style={{ fontSize: 13, color: '#6B7280', padding: '12px 16px', background: 'rgba(139,92,246,0.06)', borderRadius: 8, textAlign: 'center' }}>
               ✅ Tidak ada event yang memerlukan reorder dalam 60 hari ke depan.
             </div>
           ) : (
@@ -310,8 +310,8 @@ export default function ForecastPage() {
                   <div key={alert.event.id ?? alert.event.name} style={{ background: isOverdue ? 'rgba(239,68,68,0.06)' : isUrgent ? 'rgba(249,115,22,0.06)' : isWarn ? 'rgba(245,158,11,0.06)' : 'rgba(59,130,246,0.04)', border: `1px solid ${borderClr}25`, borderLeft: `3px solid ${borderClr}`, borderRadius: 10, padding: '14px 16px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 8, marginBottom: 10 }}>
                       <div>
-                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>{alert.event.name}</div>
-                        <div style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 4 }}>{alert.event.name}</div>
+                        <div style={{ fontSize: 12, color: '#6B7280', display: 'flex', gap: 10, flexWrap: 'wrap' }}>
                           <span>Mulai: {new Date(alert.event.startDate!).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
                           <span>·</span>
                           <span>Deadline Order: {alert.orderDeadline.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
@@ -325,19 +325,19 @@ export default function ForecastPage() {
                     {/* Top 3 affected SKUs */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8 }}>
                       {alert.affectedSkus.slice(0, 3).map(sku => (
-                        <div key={sku.sku} style={{ padding: '8px 12px', background: 'var(--bg-hover)', borderRadius: 8, fontSize: 12 }}>
-                          <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: 2 }}>{sku.sku}</div>
-                          <div style={{ color: 'var(--text-muted)', fontSize: 11, marginBottom: 4 }}>{sku.name}</div>
+                        <div key={sku.sku} style={{ padding: '8px 12px', background: '#F9FAFB', borderRadius: 8, fontSize: 12 }}>
+                          <div style={{ fontWeight: 600, color: '#111827', marginBottom: 2 }}>{sku.sku}</div>
+                          <div style={{ color: '#6B7280', fontSize: 11, marginBottom: 4 }}>{sku.name}</div>
                           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                             <span style={{ color: '#f59e0b', fontWeight: 700 }}>+{sku.extraUnitsNeeded} unit</span>
-                            <span style={{ color: sku.urgencyDays <= 0 ? '#ef4444' : sku.urgencyDays <= 7 ? '#f97316' : 'var(--text-muted)' }}>
+                            <span style={{ color: sku.urgencyDays <= 0 ? '#ef4444' : sku.urgencyDays <= 7 ? '#f97316' : '#6B7280' }}>
                               {sku.urgencyDays <= 0 ? 'TERLEWAT' : `${sku.urgencyDays}h lagi`}
                             </span>
                           </div>
                         </div>
                       ))}
                       {alert.affectedSkus.length > 3 && (
-                        <div style={{ padding: '8px 12px', background: 'var(--bg-hover)', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                        <div style={{ padding: '8px 12px', background: '#F9FAFB', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
                           +{alert.affectedSkus.length - 3} SKU lainnya
                         </div>
                       )}
@@ -353,7 +353,7 @@ export default function ForecastPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 20, alignItems: 'start' }}>
         {/* SKU List */}
         <div style={s.card}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 12 }}>Pilih SKU</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 12 }}>Pilih SKU</div>
           <input
             type="text"
             placeholder="Cari SKU..."
@@ -365,9 +365,9 @@ export default function ForecastPage() {
             {(['ALL', 'SUPER_FAST', 'FAST', 'MEDIUM', 'SLOW'] as const).map(m => (
               <button key={m} onClick={() => setFilterMovement(m)} style={{
                 ...s.btn, padding: '4px 10px', fontSize: 11,
-                background: filterMovement === m ? (movementColors[m] ?? '#3b82f6') : 'var(--bg-hover)',
-                color: filterMovement === m ? 'white' : 'var(--text-secondary)',
-                border: `1px solid ${filterMovement === m ? (movementColors[m] ?? '#3b82f6') : 'var(--border)'}`,
+                background: filterMovement === m ? (movementColors[m] ?? '#3b82f6') : '#F9FAFB',
+                color: filterMovement === m ? 'white' : '#374151',
+                border: `1px solid ${filterMovement === m ? (movementColors[m] ?? '#3b82f6') : '#E4E7ED'}`,
               }}>
                 {m === 'ALL' ? 'Semua' : m === 'SUPER_FAST' ? 'SFM' : m}
               </button>
@@ -375,9 +375,9 @@ export default function ForecastPage() {
           </div>
           <div style={{ maxHeight: 480, overflowY: 'auto' }}>
             {loading ? (
-              <div style={{ textAlign: 'center', padding: 24, color: 'var(--text-muted)' }}>Memuat...</div>
+              <div style={{ textAlign: 'center', padding: 24, color: '#6B7280' }}>Memuat...</div>
             ) : filtered.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: 24, color: 'var(--text-muted)', fontSize: 13 }}>
+              <div style={{ textAlign: 'center', padding: 24, color: '#6B7280', fontSize: 13 }}>
                 Tidak ada SKU dengan data velocity.{' '}
                 <a href="/settings" style={{ color: '#3b82f6' }}>Import di Settings</a>
               </div>
@@ -395,14 +395,14 @@ export default function ForecastPage() {
                     border: `1px solid ${isSelected ? 'rgba(59,130,246,0.4)' : 'transparent'}`,
                   }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div style={{ fontSize: 13, fontWeight: isSelected ? 600 : 400, color: isSelected ? '#3b82f6' : 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, paddingRight: 8 }}>
+                      <div style={{ fontSize: 13, fontWeight: isSelected ? 600 : 400, color: isSelected ? '#3b82f6' : '#111827', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, paddingRight: 8 }}>
                         {item.name}
                       </div>
                       <span style={{ fontSize: 12, fontWeight: 700, color: urgentColor, whiteSpace: 'nowrap' }}>
                         {item.daysRemaining <= 0 ? 'HABIS' : `${item.daysRemaining}h`}
                       </span>
                     </div>
-                    <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                    <div style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>
                       {item.sku} · {item.avgDailySales}/hari
                     </div>
                   </div>
@@ -418,8 +418,8 @@ export default function ForecastPage() {
             <div style={s.card}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16, flexWrap: 'wrap', gap: 10 }}>
                 <div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>{selectedItem.name}</div>
-                  <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>{selectedItem.name}</div>
+                  <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
                     {selectedItem.sku} · Stok: {selectedItem.stock} · {selectedItem.avgDailySales}/hari · Lead Time: {selectedItem.leadTime} hari
                   </div>
                 </div>
@@ -427,9 +427,9 @@ export default function ForecastPage() {
                   {HORIZON_OPTIONS.map(opt => (
                     <button key={opt.value} onClick={() => setHorizon(opt.value)} style={{
                       ...s.btn, padding: '6px 12px', fontSize: 12,
-                      background: horizon === opt.value ? '#3b82f6' : 'var(--bg-hover)',
-                      color: horizon === opt.value ? 'white' : 'var(--text-secondary)',
-                      border: `1px solid ${horizon === opt.value ? '#3b82f6' : 'var(--border)'}`,
+                      background: horizon === opt.value ? '#3b82f6' : '#F9FAFB',
+                      color: horizon === opt.value ? 'white' : '#374151',
+                      border: `1px solid ${horizon === opt.value ? '#3b82f6' : '#E4E7ED'}`,
                     }}>{opt.label}</button>
                   ))}
                 </div>
@@ -454,18 +454,18 @@ export default function ForecastPage() {
 
               <ResponsiveContainer width="100%" height={320}>
                 <LineChart data={forecastData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E4E7ED" />
                   <XAxis
                     dataKey="label"
-                    tick={{ fill: 'var(--text-muted)', fontSize: 10 }}
+                    tick={{ fill: '#6B7280', fontSize: 10 }}
                     interval={Math.floor(forecastData.length / 6)}
                   />
-                  <YAxis tick={{ fill: 'var(--text-muted)', fontSize: 10 }} />
+                  <YAxis tick={{ fill: '#6B7280', fontSize: 10 }} />
                   <Tooltip
-                    contentStyle={{ background: 'var(--border-subtle)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }}
-                    labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
+                    contentStyle={{ background: '#F3F4F6', border: '1px solid #E4E7ED', borderRadius: 8, fontSize: 12 }}
+                    labelStyle={{ color: '#111827', fontWeight: 600 }}
                   />
-                  <Legend wrapperStyle={{ fontSize: 12, color: 'var(--text-secondary)' }} />
+                  <Legend wrapperStyle={{ fontSize: 12, color: '#374151' }} />
                   <ReferenceLine y={selectedItem.reorderPoint} stroke="#f59e0b" strokeDasharray="6 3" label={{ value: 'ROP', fill: '#f59e0b', fontSize: 10 }} />
                   <Line type="monotone" dataKey="stock" name="Proyeksi Stok" stroke="#3b82f6" strokeWidth={2} dot={false} />
                 </LineChart>
@@ -473,7 +473,7 @@ export default function ForecastPage() {
 
               {/* Detail table — first 10 days */}
               <div style={{ marginTop: 20 }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>
                   Detail 10 Hari Pertama
                 </div>
                 <div style={{ overflowX: 'auto' }}>
@@ -489,7 +489,7 @@ export default function ForecastPage() {
                           <tr key={p.day}>
                             <td style={s.td}>{p.label}</td>
                             <td style={{ ...s.td, fontWeight: 600, color: empty ? '#ef4444' : atRisk ? '#f59e0b' : '#10b981' }}>{p.stock}</td>
-                            <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{p.reorderPoint}</td>
+                            <td style={{ ...s.td, color: '#374151' }}>{p.reorderPoint}</td>
                             <td style={s.td}>
                               {empty ? <span style={s.badge('rgba(239,68,68,0.15)', '#ef4444')}>Habis</span>
                                 : atRisk ? <span style={s.badge('rgba(245,158,11,0.15)', '#f59e0b')}>Di bawah ROP</span>
@@ -504,7 +504,7 @@ export default function ForecastPage() {
               </div>
             </div>
           ) : (
-            <div style={{ ...s.card, textAlign: 'center', padding: 60, color: 'var(--text-muted)' }}>
+            <div style={{ ...s.card, textAlign: 'center', padding: 60, color: '#6B7280' }}>
               Pilih SKU di kiri untuk melihat proyeksi stok
             </div>
           )}
@@ -513,7 +513,7 @@ export default function ForecastPage() {
 
       {/* All items table */}
       <div style={s.card}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Ringkasan Semua SKU</div>
+        <div style={{ fontSize: 14, fontWeight: 600, color: '#111827', marginBottom: 12 }}>Ringkasan Semua SKU</div>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
@@ -527,14 +527,14 @@ export default function ForecastPage() {
                 const urgentColor = item.daysRemaining <= 7 ? '#ef4444' : item.daysRemaining <= 14 ? '#f59e0b' : '#10b981';
                 return (
                   <tr key={item.sku} style={{ cursor: 'pointer' }} onClick={() => setSelectedSku(item.sku)}>
-                    <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)' }}>{item.sku}</span></td>
+                    <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: '#6B7280' }}>{item.sku}</span></td>
                     <td style={{ ...s.td, fontWeight: 600 }}>{item.name}</td>
                     <td style={s.td}>{item.stock}</td>
                     <td style={s.td}>{item.avgDailySales}</td>
                     <td style={{ ...s.td, fontWeight: 700, color: urgentColor }}>{item.daysRemaining <= 0 ? 'HABIS' : `${item.daysRemaining}h`}</td>
-                    <td style={s.td}>{d30 ? <span style={s.badge('rgba(239,68,68,0.15)', '#ef4444')}>Ya</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}</td>
-                    <td style={s.td}>{d60 ? <span style={s.badge('rgba(245,158,11,0.15)', '#f59e0b')}>Ya</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}</td>
-                    <td style={s.td}>{d90 ? <span style={s.badge('rgba(100,116,139,0.15)', '#64748b')}>Ya</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}</td>
+                    <td style={s.td}>{d30 ? <span style={s.badge('rgba(239,68,68,0.15)', '#ef4444')}>Ya</span> : <span style={{ color: '#6B7280' }}>—</span>}</td>
+                    <td style={s.td}>{d60 ? <span style={s.badge('rgba(245,158,11,0.15)', '#f59e0b')}>Ya</span> : <span style={{ color: '#6B7280' }}>—</span>}</td>
+                    <td style={s.td}>{d90 ? <span style={s.badge('rgba(100,116,139,0.15)', '#64748b')}>Ya</span> : <span style={{ color: '#6B7280' }}>—</span>}</td>
                   </tr>
                 );
               })}

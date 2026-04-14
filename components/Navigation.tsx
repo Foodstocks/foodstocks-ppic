@@ -79,9 +79,9 @@ export default function Navigation() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{
               width: 36, height: 36, borderRadius: 10,
-              background: 'linear-gradient(135deg, #4F6EF7, #8B5CF6)',
+              background: '#D60001',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0, boxShadow: '0 2px 8px rgba(79,110,247,0.3)',
+              flexShrink: 0, boxShadow: '0 2px 8px rgba(214,0,1,0.3)',
             }}>
               <span style={{ color: 'white', fontWeight: 800, fontSize: 14, letterSpacing: -0.5 }}>FS</span>
             </div>
@@ -105,9 +105,9 @@ export default function Navigation() {
                 marginBottom: 2,
                 borderRadius: 8,
                 textDecoration: 'none',
-                background: isActive ? 'var(--bg-selected)' : 'transparent',
-                borderLeft: isActive ? '3px solid var(--accent-blue)' : '3px solid transparent',
-                color: isActive ? 'var(--accent-blue)' : 'var(--text-secondary)',
+                background: isActive ? '#FEF2F2' : 'transparent',
+                borderLeft: isActive ? '3px solid #D60001' : '3px solid transparent',
+                color: isActive ? '#D60001' : 'var(--text-secondary)',
                 fontSize: 13.5,
                 fontWeight: isActive ? 600 : 400,
                 transition: 'all 0.12s',
@@ -134,7 +134,7 @@ export default function Navigation() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
             <div style={{
               width: 30, height: 30, borderRadius: 8,
-              background: 'linear-gradient(135deg, #4F6EF7, #8B5CF6)',
+              background: '#D60001',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
             }}>
@@ -191,9 +191,9 @@ export default function Navigation() {
               flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',
               gap: 3, padding: '10px 4px 8px',
               textDecoration: 'none',
-              color: isActive ? 'var(--accent-blue)' : 'var(--text-muted)',
+              color: isActive ? '#D60001' : 'var(--text-muted)',
               fontSize: 10, fontWeight: isActive ? 600 : 400,
-              borderTop: isActive ? '2px solid var(--accent-blue)' : '2px solid transparent',
+              borderTop: isActive ? '2px solid #D60001' : '2px solid transparent',
               transition: 'color 0.12s',
             }}>
               <span style={{ flexShrink: 0 }}>{item.icon}</span>

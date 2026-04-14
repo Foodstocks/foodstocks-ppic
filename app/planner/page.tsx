@@ -38,20 +38,20 @@ interface PlannerItem {
 }
 
 const statusConfig: Record<PlannerStatus, { label: string; bg: string; color: string }> = {
-  REORDER_NOW: { label: '🔴 Beli Sekarang', bg: 'rgba(239,68,68,0.15)', color: '#ef4444' },
-  PREPARE:     { label: '🟡 Persiapan',     bg: 'rgba(245,158,11,0.15)', color: '#f59e0b' },
-  SAFE:        { label: '🟢 Aman',          bg: 'rgba(16,185,129,0.15)', color: '#10b981' },
-  NO_DATA:     { label: '⚪ Kurang Data',    bg: 'rgba(100,116,139,0.15)', color: 'var(--text-secondary)' },
+  REORDER_NOW: { label: 'Beli Sekarang', bg: '#FEF2F2', color: '#D60001' },
+  PREPARE:     { label: 'Persiapan',     bg: '#FFFBEB', color: '#F59E0B' },
+  SAFE:        { label: 'Aman',          bg: '#F0FDF4', color: '#10B981' },
+  NO_DATA:     { label: 'Kurang Data',   bg: '#F9FAFB', color: '#6B7280' },
 };
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
-  title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
-  td: { padding: '12px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
-  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700, display: 'inline-block' }),
-  btn: { padding: '10px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
+  card: { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 20, marginBottom: 16 } as React.CSSProperties,
+  title: { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  th: { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: 0.5, textAlign: 'left' as const, background: '#F9FAFB', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #F3F4F6' },
+  badge: (bg: string, color: string) => ({ background: bg, color, borderRadius: 20, padding: '3px 10px', fontSize: 11, fontWeight: 600, display: 'inline-block' }),
+  btn: { padding: '9px 18px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
 };
 
 function loadStorage<T>(key: string, fallback: T): T {
@@ -194,7 +194,7 @@ export default function PurchasePlanner() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
           <div>
             <div style={s.title}>🧠 Purchase Planner</div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: 14, color: '#6B7280' }}>
               Rekomendasi berbasis ABC Analysis + Reorder Point + EOQ · {items.length} SKU aktif
             </div>
           </div>
@@ -231,13 +231,13 @@ export default function PurchasePlanner() {
           { label: 'Beli Sekarang', value: `${counts.REORDER_NOW} SKU`, sub: 'Sisa hari ≤ Lead Time', color: '#ef4444' },
           { label: 'Persiapan Order', value: `${counts.PREPARE} SKU`, sub: 'Stok 1.0–1.5× Lead Time', color: '#f59e0b' },
           { label: 'Aman', value: `${counts.SAFE} SKU`, sub: 'Stok cukup', color: '#10b981' },
-          { label: 'Kurang Data', value: `${counts.NO_DATA} SKU`, sub: 'Belum ada velocity', color: 'var(--text-muted)' },
+          { label: 'Kurang Data', value: `${counts.NO_DATA} SKU`, sub: 'Belum ada velocity', color: '#6B7280' },
           { label: 'Supplier Terlibat', value: `${Object.keys(bySupplier).length}`, sub: 'Perlu dihubungi', color: '#8b5cf6' },
         ].map(kpi => (
           <div key={kpi.label} style={{ ...s.card, marginBottom: 0, borderLeft: `3px solid ${kpi.color}` }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{kpi.label}</div>
+            <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{kpi.label}</div>
             <div style={{ fontSize: 22, fontWeight: 700, color: kpi.color, margin: '6px 0 4px' }}>{kpi.value}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{kpi.sub}</div>
+            <div style={{ fontSize: 12, color: '#374151' }}>{kpi.sub}</div>
           </div>
         ))}
       </div>
@@ -245,7 +245,7 @@ export default function PurchasePlanner() {
       {/* Filter + Search */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
         <input type="text" placeholder="🔍 Cari SKU atau produk..." value={search} onChange={e => setSearch(e.target.value)}
-          style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '7px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 220 }} />
+          style={{ background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 8, padding: '7px 14px', color: '#111827', fontSize: 13, outline: 'none', width: 220 }} />
         {([
           ['ALL', `Semua (${items.length})`],
           ['REORDER_NOW', `🔴 Beli Sekarang (${counts.REORDER_NOW})`],
@@ -255,9 +255,9 @@ export default function PurchasePlanner() {
         ] as [string, string][]).map(([key, label]) => (
           <button key={key} onClick={() => setFilter(key as typeof filter)} style={{
             ...s.btn, padding: '6px 12px', fontSize: 12,
-            background: filter === key ? '#3b82f6' : 'var(--bg-card)',
-            color: filter === key ? 'white' : 'var(--text-secondary)',
-            border: `1px solid ${filter === key ? '#3b82f6' : 'var(--border)'}`,
+            background: filter === key ? '#3b82f6' : '#fff',
+            color: filter === key ? 'white' : '#374151',
+            border: `1px solid ${filter === key ? '#3b82f6' : '#E4E7ED'}`,
           }}>{label}</button>
         ))}
       </div>
@@ -279,7 +279,7 @@ export default function PurchasePlanner() {
                 const margin = ((r.sellingPrice - r.hpp) / r.sellingPrice * 100);
                 return (
                   <tr key={r.sku} style={{ background: r.status === 'REORDER_NOW' ? 'rgba(239,68,68,0.04)' : 'transparent' }}>
-                    <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)' }}>{r.sku}</span></td>
+                    <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: '#6B7280' }}>{r.sku}</span></td>
                     <td style={{ ...s.td, fontWeight: 600, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {r.name}
                       {r.activeEvent && (
@@ -293,25 +293,25 @@ export default function PurchasePlanner() {
                         return <span style={s.badge(mc.bg, mc.color)}>{shortLabel}</span>;
                       })()}
                     </td>
-                    <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{r.category}</td>
+                    <td style={{ ...s.td, color: '#374151' }}>{r.category}</td>
                     <td style={{ ...s.td, fontWeight: 700 }}>{r.stock} pcs</td>
-                    <td style={{ ...s.td, color: r.hasVelocity ? 'var(--text-primary)' : 'var(--text-faint)' }}>
+                    <td style={{ ...s.td, color: r.hasVelocity ? '#111827' : '#D1D5DB' }}>
                       {r.hasVelocity ? `${r.avgDailySales}/hr` : '—'}
                     </td>
-                    <td style={{ ...s.td, color: r.activeEvent ? '#8b5cf6' : 'var(--text-faint)', fontWeight: r.activeEvent ? 600 : 400 }}>
+                    <td style={{ ...s.td, color: r.activeEvent ? '#8b5cf6' : '#D1D5DB', fontWeight: r.activeEvent ? 600 : 400 }}>
                       {r.hasVelocity ? `${r.effectiveDailySales.toFixed(1)}/hr` : '—'}
                       {r.activeEvent && r.effectiveDailySales !== r.avgDailySales && (
                         <span style={{ fontSize: 10, marginLeft: 4 }}>↑</span>
                       )}
                     </td>
-                    <td style={{ ...s.td, fontWeight: 600, color: r.daysRemaining === 0 ? '#ef4444' : r.daysRemaining === -1 ? 'var(--text-faint)' : r.daysRemaining <= 3 ? '#ef4444' : r.daysRemaining <= 7 ? '#f59e0b' : '#10b981' }}>
+                    <td style={{ ...s.td, fontWeight: 600, color: r.daysRemaining === 0 ? '#ef4444' : r.daysRemaining === -1 ? '#D1D5DB' : r.daysRemaining <= 3 ? '#ef4444' : r.daysRemaining <= 7 ? '#f59e0b' : '#10b981' }}>
                       {r.daysRemaining === -1 ? '?' : `${r.daysRemaining}h`}
                     </td>
-                    <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{r.reorderPoint > 0 ? `${r.reorderPoint} pcs` : '—'}</td>
+                    <td style={{ ...s.td, color: '#374151' }}>{r.reorderPoint > 0 ? `${r.reorderPoint} pcs` : '—'}</td>
                     <td style={{ ...s.td, fontWeight: 700, color: '#3b82f6' }}>{r.recommendedQty} pcs</td>
                     <td style={s.td}>{r.eoq ? `${r.eoq} pcs` : '—'}</td>
                     <td style={s.td}>{formatRupiah(r.hpp)}</td>
-                    <td style={{ ...s.td, color: 'var(--text-primary)', fontWeight: 600 }}>{formatRupiah(r.estimatedCost)}</td>
+                    <td style={{ ...s.td, color: '#111827', fontWeight: 600 }}>{formatRupiah(r.estimatedCost)}</td>
                     <td style={{ ...s.td, fontWeight: 600, color: margin >= 30 ? '#10b981' : '#f59e0b' }}>{margin.toFixed(0)}%</td>
                     <td style={s.td}><span style={s.badge(cfg.bg, cfg.color)}>{cfg.label}</span></td>
                   </tr>
@@ -320,7 +320,7 @@ export default function PurchasePlanner() {
             </tbody>
           </table>
           {filtered.length === 0 && (
-            <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>Tidak ada data yang cocok</div>
+            <div style={{ textAlign: 'center', padding: 40, color: '#6B7280' }}>Tidak ada data yang cocok</div>
           )}
         </div>
       </div>
@@ -328,30 +328,30 @@ export default function PurchasePlanner() {
       {/* Draft PO Modal */}
       {showDraftModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 20 }}>
-          <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, boxShadow: 'var(--shadow-card)', padding: 28, maxWidth: 700, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
+          <div style={{ background: '#fff', border: '1px solid #E4E7ED', borderRadius: 16, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 28, maxWidth: 700, width: '100%', maxHeight: '80vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>📄 Draft Purchase Orders</div>
-              <button onClick={() => setShowDraftModal(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 20 }}>✕</button>
+              <div style={{ fontSize: 18, fontWeight: 700, color: '#111827' }}>📄 Draft Purchase Orders</div>
+              <button onClick={() => setShowDraftModal(false)} style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 20 }}>✕</button>
             </div>
-            <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20 }}>
+            <div style={{ fontSize: 13, color: '#374151', marginBottom: 20 }}>
               Digroup per supplier. Total estimasi: <strong style={{ color: '#3b82f6' }}>{formatRupiah(totalCost)}</strong>
             </div>
             {Object.entries(bySupplier).map(([supplier, recs]) => (
-              <div key={supplier} style={{ background: 'var(--bg-hover)', borderRadius: 10, padding: 16, marginBottom: 12 }}>
+              <div key={supplier} style={{ background: '#F9FAFB', borderRadius: 10, padding: 16, marginBottom: 12 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                  <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>🏭 {supplier}</div>
+                  <div style={{ fontWeight: 700, color: '#111827' }}>🏭 {supplier}</div>
                   <div style={{ color: '#3b82f6', fontWeight: 600 }}>{formatRupiah(recs.reduce((s, r) => s + r.estimatedCost, 0))}</div>
                 </div>
                 {recs.map(item => (
-                  <div key={item.sku} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--border)', fontSize: 13 }}>
-                    <span style={{ color: 'var(--text-secondary)', flex: 1, paddingRight: 8 }}>{item.name}</span>
-                    <span style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap' }}>{item.recommendedQty} pcs · {formatRupiah(item.estimatedCost)}</span>
+                  <div key={item.sku} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #E4E7ED', fontSize: 13 }}>
+                    <span style={{ color: '#374151', flex: 1, paddingRight: 8 }}>{item.name}</span>
+                    <span style={{ color: '#111827', whiteSpace: 'nowrap' }}>{item.recommendedQty} pcs · {formatRupiah(item.estimatedCost)}</span>
                   </div>
                 ))}
               </div>
             ))}
             {actionItems.length === 0 && (
-              <div style={{ textAlign: 'center', padding: 20, color: 'var(--text-muted)' }}>Tidak ada item yang perlu dibeli saat ini.</div>
+              <div style={{ textAlign: 'center', padding: 20, color: '#6B7280' }}>Tidak ada item yang perlu dibeli saat ini.</div>
             )}
           </div>
         </div>
@@ -359,7 +359,7 @@ export default function PurchasePlanner() {
 
       {/* Info box */}
       <div style={{ padding: 16, background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 10 }}>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
+        <div style={{ fontSize: 13, color: '#374151' }}>
           <strong style={{ color: '#8b5cf6' }}>📐 Formula:</strong>
           {' '}Reorder Point = Avg Daily Sales × Lead Time × 1.2
           {' '}· EOQ = √(2 × D × S / H)

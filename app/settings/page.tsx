@@ -13,13 +13,13 @@ const DEFAULT_LEAD_TIME = 7;
 // ── Styles ────────────────────────────────────────────────────
 const s = {
   page:   { padding: '24px', maxWidth: 900 } as React.CSSProperties,
-  card:   { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 24, marginBottom: 20 } as React.CSSProperties,
-  title:  { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  label:  { fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 6, display: 'block' } as React.CSSProperties,
-  input:  { background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 8, padding: '10px 14px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: '100%', marginBottom: 16 } as React.CSSProperties,
-  btn:    { padding: '10px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
-  thead:  { padding: '9px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
-  td:     { padding: '9px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
+  card:   { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 24, marginBottom: 16 } as React.CSSProperties,
+  title:  { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  label:  { fontSize: 12, fontWeight: 600, color: '#374151', marginBottom: 6, display: 'block' } as React.CSSProperties,
+  input:  { background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 8, padding: '10px 14px', color: '#111827', fontSize: 13, outline: 'none', width: '100%', marginBottom: 16 } as React.CSSProperties,
+  btn:    { padding: '9px 20px', borderRadius: 8, border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600 } as React.CSSProperties,
+  thead:  { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: 0.5, textAlign: 'left' as const, background: '#F9FAFB', whiteSpace: 'nowrap' as const },
+  td:     { padding: '10px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #F3F4F6' },
 };
 
 type SyncState = 'idle' | 'pushing' | 'pulling' | 'ok' | 'error';
@@ -401,15 +401,15 @@ export default function SettingsPage() {
     <div style={s.page}>
       <div style={{ marginBottom: 24 }}>
         <div style={s.title}>⚙️ Settings</div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>Konfigurasi HPP, koneksi Jubelio, dan parameter bisnis</div>
+        <div style={{ fontSize: 14, color: '#6B7280' }}>Konfigurasi HPP, koneksi Jubelio, dan parameter bisnis</div>
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid var(--border)', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid #E4E7ED', flexWrap: 'wrap' }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             ...s.btn, padding: '10px 16px', background: 'transparent',
-            color: tab === t.id ? '#3b82f6' : 'var(--text-muted)',
+            color: tab === t.id ? '#3b82f6' : '#6B7280',
             borderRadius: '8px 8px 0 0',
             borderBottom: tab === t.id ? '2px solid #3b82f6' : '2px solid transparent',
             fontSize: 13,
@@ -422,22 +422,22 @@ export default function SettingsPage() {
         <div style={s.card}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 8 }}>💰 Input HPP per SKU</div>
-              <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 8 }}>💰 Input HPP per SKU</div>
+              <div style={{ fontSize: 13, color: '#6B7280' }}>
                 Masukkan harga beli aktual per SKU. Jika kosong, sistem pakai estimasi 65% dari harga jual.
                 {hppManualCount > 0 && <span style={{ color: '#10b981', marginLeft: 8 }}>{hppManualCount} SKU sudah diinput manual.</span>}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button onClick={() => exportCsv('SKU,HPP (Rp)', Object.entries(hppSaved), 'foodstocks_hpp.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 14px', fontSize: 12 }}>📥 Export CSV</button>
-              <button onClick={() => setShowHppImport(!showHppImport)} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 14px', fontSize: 12 }}>📤 Import CSV</button>
+              <button onClick={() => exportCsv('SKU,HPP (Rp)', Object.entries(hppSaved), 'foodstocks_hpp.csv')} style={{ ...s.btn, background: '#F9FAFB', color: '#374151', border: '1px solid #E4E7ED', padding: '7px 14px', fontSize: 12 }}>📥 Export CSV</button>
+              <button onClick={() => setShowHppImport(!showHppImport)} style={{ ...s.btn, background: '#F9FAFB', color: '#374151', border: '1px solid #E4E7ED', padding: '7px 14px', fontSize: 12 }}>📤 Import CSV</button>
               <button onClick={() => { if (confirm('Reset semua HPP manual?')) { setHppSaved({}); setHppEdits({}); saveLocal(HPP_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 14px', fontSize: 12 }}>🗑️ Reset Semua</button>
             </div>
           </div>
 
           {showHppImport && (
-            <div style={{ marginBottom: 16, padding: 16, background: 'var(--bg-hover)', borderRadius: 10, border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 8 }}>Format CSV: <code style={{ color: '#f59e0b' }}>SKU,HPP</code> (satu baris per SKU)</div>
+            <div style={{ marginBottom: 16, padding: 16, background: '#F9FAFB', borderRadius: 10, border: '1px solid #E4E7ED' }}>
+              <div style={{ fontSize: 13, color: '#374151', marginBottom: 8 }}>Format CSV: <code style={{ color: '#f59e0b' }}>SKU,HPP</code> (satu baris per SKU)</div>
               <textarea value={hppImportText} onChange={e => setHppImportText(e.target.value)}
                 placeholder={'SKU,HPP\nGH-MR-MK-PJ-0648,13500\nBP-MR-BA-SM-0018,18500'}
                 style={{ ...s.input, height: 100, resize: 'vertical', fontFamily: 'monospace', fontSize: 12, marginBottom: 8 }} />
@@ -459,8 +459,8 @@ export default function SettingsPage() {
               { label: 'HPP Manual', value: hppManualCount, color: '#10b981' },
               { label: 'Pakai Estimasi', value: Math.max(0, effectiveInventory.length - hppManualCount), color: '#f59e0b' },
             ].map(k => (
-              <div key={k.label} style={{ padding: '10px 14px', background: 'var(--bg-hover)', borderRadius: 8, borderLeft: `3px solid ${k.color}` }}>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
+              <div key={k.label} style={{ padding: '10px 14px', background: '#F9FAFB', borderRadius: 8, borderLeft: `3px solid ${k.color}` }}>
+                <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
                 <div style={{ fontSize: 20, fontWeight: 700, color: k.color, margin: '4px 0' }}>{loadingInv ? '…' : k.value}</div>
               </div>
             ))}
@@ -470,14 +470,14 @@ export default function SettingsPage() {
             style={{ ...s.input, width: 320, marginBottom: 12 }} />
 
           {loadingInv ? (
-            <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)' }}>⏳ Memuat daftar SKU dari Jubelio…</div>
+            <div style={{ textAlign: 'center', padding: 40, color: '#6B7280' }}>⏳ Memuat daftar SKU dari Jubelio…</div>
           ) : (
             <div style={{ overflowX: 'auto', maxHeight: 480, overflowY: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-card)', zIndex: 1 }}>
+                <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
                   <tr>
                     {['SKU', 'Nama Produk', 'Harga Jual', 'Estimasi HPP (65%)', 'HPP Manual (Rp) ✏️', 'Supplier ✏️', 'Margin'].map(h => (
-                      <th key={h} style={{ ...s.thead, color: h.includes('HPP Manual') || h.includes('Supplier') ? '#10b981' : 'var(--text-muted)' }}>{h}</th>
+                      <th key={h} style={{ ...s.thead, color: h.includes('HPP Manual') || h.includes('Supplier') ? '#10b981' : '#6B7280' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -489,22 +489,22 @@ export default function SettingsPage() {
                     const margin = item.sellPrice > 0 ? ((item.sellPrice - effectiveHpp) / item.sellPrice * 100) : 0;
                     return (
                       <tr key={item.sku} style={{ background: hasManual ? 'rgba(16,185,129,0.03)' : 'transparent' }}>
-                        <td style={{ ...s.td, fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)' }}>{item.sku}</td>
+                        <td style={{ ...s.td, fontFamily: 'monospace', fontSize: 11, color: '#6B7280' }}>{item.sku}</td>
                         <td style={{ ...s.td, maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</td>
                         <td style={s.td}>{item.sellPrice > 0 ? `Rp ${(item.sellPrice/1000).toFixed(0)}rb` : '-'}</td>
-                        <td style={{ ...s.td, color: 'var(--text-muted)', fontStyle: 'italic' }}>{item.estimatedHPP > 0 ? `Rp ${(item.estimatedHPP/1000).toFixed(0)}rb` : '-'}</td>
+                        <td style={{ ...s.td, color: '#6B7280', fontStyle: 'italic' }}>{item.estimatedHPP > 0 ? `Rp ${(item.estimatedHPP/1000).toFixed(0)}rb` : '-'}</td>
                         <td style={s.td}>
                           <input type="text" inputMode="numeric"
                             value={hasManual ? String(manual) : ''}
                             onChange={e => { const v = parseInt(e.target.value.replace(/\D/g, ''), 10); setHppEdits(prev => ({ ...prev, [item.sku]: isNaN(v) ? 0 : v })); }}
                             placeholder={String(item.estimatedHPP.toLocaleString('id-ID'))}
-                            style={{ background: hasManual ? 'rgba(16,185,129,0.1)' : 'var(--bg-hover)', border: `1px solid ${hasManual ? 'rgba(16,185,129,0.4)' : 'var(--border)'}`, borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 110 }} />
+                            style={{ background: hasManual ? 'rgba(16,185,129,0.1)' : '#F9FAFB', border: `1px solid ${hasManual ? 'rgba(16,185,129,0.4)' : '#E4E7ED'}`, borderRadius: 6, padding: '6px 10px', color: '#111827', fontSize: 13, outline: 'none', width: 110 }} />
                         </td>
                         <td style={s.td}>
                           <select
                             value={skupplierMap[item.sku] ?? ''}
                             onChange={e => setSkupplierMap(prev => ({ ...prev, [item.sku]: e.target.value }))}
-                            style={{ background: skupplierMap[item.sku] ? 'rgba(16,185,129,0.1)' : 'var(--bg-hover)', border: `1px solid ${skupplierMap[item.sku] ? 'rgba(16,185,129,0.4)' : 'var(--border)'}`, borderRadius: 6, padding: '5px 8px', color: skupplierMap[item.sku] ? 'var(--text-primary)' : 'var(--text-muted)', fontSize: 12, outline: 'none', maxWidth: 140 }}>
+                            style={{ background: skupplierMap[item.sku] ? 'rgba(16,185,129,0.1)' : '#F9FAFB', border: `1px solid ${skupplierMap[item.sku] ? 'rgba(16,185,129,0.4)' : '#E4E7ED'}`, borderRadius: 6, padding: '5px 8px', color: skupplierMap[item.sku] ? '#111827' : '#6B7280', fontSize: 12, outline: 'none', maxWidth: 140 }}>
                             <option value="">— pilih —</option>
                             {supplierList.map(sup => <option key={sup} value={sup}>{sup}</option>)}
                           </select>
@@ -518,7 +518,7 @@ export default function SettingsPage() {
                   })}
                 </tbody>
               </table>
-              {filteredInv.length === 0 && <div style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>Tidak ada SKU yang cocok</div>}
+              {filteredInv.length === 0 && <div style={{ textAlign: 'center', padding: 30, color: '#6B7280' }}>Tidak ada SKU yang cocok</div>}
             </div>
           )}
 
@@ -526,12 +526,12 @@ export default function SettingsPage() {
             <button onClick={saveHpp} disabled={hppSync === 'pushing'} style={{ ...s.btn, background: '#10b981', color: 'white', padding: '11px 28px', opacity: hppSync === 'pushing' ? 0.7 : 1 }}>
               {hppSync === 'pushing' ? '⏳ Menyimpan…' : '💾 Simpan & Sync HPP'}
             </button>
-            <button onClick={pullHpp} disabled={hppSync === 'pulling'} style={{ ...s.btn, background: 'var(--bg-hover)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)', padding: '11px 18px', opacity: hppSync === 'pulling' ? 0.7 : 1 }}>
+            <button onClick={pullHpp} disabled={hppSync === 'pulling'} style={{ ...s.btn, background: '#F9FAFB', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)', padding: '11px 18px', opacity: hppSync === 'pulling' ? 0.7 : 1 }}>
               {hppSync === 'pulling' ? '⏳ Menarik…' : '☁️ Pull dari Cloud'}
             </button>
             {hppSavedOk && <span style={{ color: '#10b981', fontSize: 13 }}>✅ Tersimpan di browser!</span>}
             {hppSyncMsg && <span style={{ fontSize: 12, color: hppSync === 'error' ? '#ef4444' : '#10b981' }}>{hppSyncMsg}</span>}
-            <span style={{ fontSize: 12, color: 'var(--text-faint)', marginLeft: 'auto' }}>☁️ Data di-sync ke Supabase cloud</span>
+            <span style={{ fontSize: 12, color: '#D1D5DB', marginLeft: 'auto' }}>☁️ Data di-sync ke Supabase cloud</span>
           </div>
         </div>
       )}
@@ -541,10 +541,10 @@ export default function SettingsPage() {
         <div>
           <div style={{ ...s.card, background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.2)', marginBottom: 16 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#60a5fa', marginBottom: 6 }}>📖 Panduan Import Stok & Velocity</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.8 }}>
-              <strong style={{ color: 'var(--text-secondary)' }}>Langkah 1:</strong> Jubelio → <strong>Laporan</strong> → <strong>Laporan Penjualan</strong> → filter 30 hari → <strong>Export CSV</strong><br />
-              <strong style={{ color: 'var(--text-secondary)' }}>Langkah 2:</strong> Di Excel: hitung <code style={{ color: '#f59e0b', fontSize: 12 }}>total_qty ÷ 30</code> per SKU → simpan 2 kolom: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code><br />
-              <strong style={{ color: 'var(--text-secondary)' }}>Langkah 3:</strong> Paste CSV di kotak Import → klik Import Velocity → selesai
+            <div style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.8 }}>
+              <strong style={{ color: '#374151' }}>Langkah 1:</strong> Jubelio → <strong>Laporan</strong> → <strong>Laporan Penjualan</strong> → filter 30 hari → <strong>Export CSV</strong><br />
+              <strong style={{ color: '#374151' }}>Langkah 2:</strong> Di Excel: hitung <code style={{ color: '#f59e0b', fontSize: 12 }}>total_qty ÷ 30</code> per SKU → simpan 2 kolom: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code><br />
+              <strong style={{ color: '#374151' }}>Langkah 3:</strong> Paste CSV di kotak Import → klik Import Velocity → selesai
             </div>
           </div>
 
@@ -552,24 +552,24 @@ export default function SettingsPage() {
           <div style={s.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>📈 Velocity (Rata-rata Penjualan Harian)</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code>&nbsp;&nbsp;Contoh: <code style={{ color: 'var(--text-secondary)', fontSize: 11 }}>GH-MR-MK-PJ-0648,4.5</code></div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>📈 Velocity (Rata-rata Penjualan Harian)</div>
+                <div style={{ fontSize: 13, color: '#6B7280' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code>&nbsp;&nbsp;Contoh: <code style={{ color: '#374151', fontSize: 11 }}>GH-MR-MK-PJ-0648,4.5</code></div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={() => exportCsv('SKU,avg_jual_harian', Object.entries(velMap), 'velocity.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
+                <button onClick={() => exportCsv('SKU,avg_jual_harian', Object.entries(velMap), 'velocity.csv')} style={{ ...s.btn, background: '#F9FAFB', color: '#374151', border: '1px solid #E4E7ED', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
                 <button onClick={() => { if (confirm('Reset data velocity?')) { setVelMap({}); saveLocal(VEL_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 12px', fontSize: 12 }}>🗑️ Reset</button>
               </div>
             </div>
             {/* Panduan export manual dari Jubelio */}
             <div style={{ padding: '14px 16px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 8, marginBottom: 16 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#f59e0b', marginBottom: 8 }}>📋 Cara Export Velocity dari Jubelio</div>
-              <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.9 }}>
-                <strong style={{ color: 'var(--text-primary)' }}>1.</strong> Buka <strong>Jubelio</strong> → menu <strong>Laporan</strong> → <strong>Laporan Penjualan</strong><br />
-                <strong style={{ color: 'var(--text-primary)' }}>2.</strong> Filter periode <strong>30 hari terakhir</strong> → klik <strong>Export Excel/CSV</strong><br />
-                <strong style={{ color: 'var(--text-primary)' }}>3.</strong> Di Excel: tambah kolom baru = <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>total_qty ÷ 30</code> per SKU<br />
-                <strong style={{ color: 'var(--text-primary)' }}>4.</strong> Buat CSV 2 kolom: <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>SKU,avg_harian</code> → paste di bawah
+              <div style={{ fontSize: 12, color: '#374151', lineHeight: 1.9 }}>
+                <strong style={{ color: '#111827' }}>1.</strong> Buka <strong>Jubelio</strong> → menu <strong>Laporan</strong> → <strong>Laporan Penjualan</strong><br />
+                <strong style={{ color: '#111827' }}>2.</strong> Filter periode <strong>30 hari terakhir</strong> → klik <strong>Export Excel/CSV</strong><br />
+                <strong style={{ color: '#111827' }}>3.</strong> Di Excel: tambah kolom baru = <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>total_qty ÷ 30</code> per SKU<br />
+                <strong style={{ color: '#111827' }}>4.</strong> Buat CSV 2 kolom: <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>SKU,avg_harian</code> → paste di bawah
               </div>
-              <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(100,116,139,0.1)', borderRadius: 6, fontSize: 11, color: 'var(--text-muted)' }}>
+              <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(100,116,139,0.1)', borderRadius: 6, fontSize: 11, color: '#6B7280' }}>
                 ℹ️ Jubelio API tidak menyediakan data penjualan per SKU — harus export manual. Data velocity dipakai untuk Forecast Stok, Reorder Point, dan Dashboard.
               </div>
             </div>
@@ -582,7 +582,7 @@ export default function SettingsPage() {
               return Object.keys(velMap).length > 0 && inventory.length > 0 ? (
                 <div style={{ padding: '10px 14px', background: matched > 0 ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.08)', border: `1px solid ${matched > 0 ? 'rgba(16,185,129,0.25)' : 'rgba(245,158,11,0.25)'}`, borderRadius: 8, marginBottom: 16, fontSize: 13 }}>
                   <span style={{ color: '#10b981', fontWeight: 600 }}>✅ {matched} SKU</span>
-                  <span style={{ color: 'var(--text-muted)' }}> berhasil dicocokkan dengan {inventory.length} SKU Jubelio</span>
+                  <span style={{ color: '#6B7280' }}> berhasil dicocokkan dengan {inventory.length} SKU Jubelio</span>
                   {unmatched > 0 && <span style={{ color: '#f59e0b' }}> · ⚠️ {unmatched} SKU tidak ditemukan (cek format SKU)</span>}
                 </div>
               ) : null;
@@ -593,8 +593,8 @@ export default function SettingsPage() {
                 { label: 'SKU dengan Velocity', value: Object.keys(velMap).length, color: '#3b82f6' },
                 { label: 'Avg Tertinggi/hr', value: Object.values(velMap).length ? `${Math.max(...Object.values(velMap)).toFixed(1)}` : '-', color: '#10b981' },
               ].map(k => (
-                <div key={k.label} style={{ padding: '10px 14px', background: 'var(--bg-hover)', borderRadius: 8, borderLeft: `3px solid ${k.color}` }}>
-                  <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
+                <div key={k.label} style={{ padding: '10px 14px', background: '#F9FAFB', borderRadius: 8, borderLeft: `3px solid ${k.color}` }}>
+                  <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
                   <div style={{ fontSize: 20, fontWeight: 700, color: k.color, margin: '4px 0' }}>{k.value}</div>
                 </div>
               ))}
@@ -617,16 +617,16 @@ export default function SettingsPage() {
           <div style={s.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>📦 Snapshot Stok (opsional)</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,stok</code>&nbsp; Jika kosong, planner pakai data Jubelio live.</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>📦 Snapshot Stok (opsional)</div>
+                <div style={{ fontSize: 13, color: '#6B7280' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,stok</code>&nbsp; Jika kosong, planner pakai data Jubelio live.</div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button onClick={() => exportCsv('SKU,stok', Object.entries(invSnap), 'inventory_snapshot.csv')} style={{ ...s.btn, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
+                <button onClick={() => exportCsv('SKU,stok', Object.entries(invSnap), 'inventory_snapshot.csv')} style={{ ...s.btn, background: '#F9FAFB', color: '#374151', border: '1px solid #E4E7ED', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
                 <button onClick={() => { if (confirm('Reset snapshot stok?')) { setInvSnap({}); saveLocal(INV_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 12px', fontSize: 12 }}>🗑️ Reset</button>
               </div>
             </div>
-            <div style={{ padding: '10px 14px', background: 'var(--bg-hover)', borderRadius: 8, borderLeft: '3px solid #8b5cf6', marginBottom: 16, display: 'inline-block' }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>SKU dengan Snapshot</div>
+            <div style={{ padding: '10px 14px', background: '#F9FAFB', borderRadius: 8, borderLeft: '3px solid #8b5cf6', marginBottom: 16, display: 'inline-block' }}>
+              <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>SKU dengan Snapshot</div>
               <div style={{ fontSize: 20, fontWeight: 700, color: '#8b5cf6', margin: '4px 0' }}>{Object.keys(invSnap).length}</div>
             </div>
             <textarea value={invImportText} onChange={e => setInvImportText(e.target.value)}
@@ -647,13 +647,13 @@ export default function SettingsPage() {
             <button onClick={saveVelocity} disabled={velSync === 'pushing'} style={{ ...s.btn, background: '#10b981', color: 'white', padding: '11px 28px', opacity: velSync === 'pushing' ? 0.7 : 1 }}>
               {velSync === 'pushing' ? '⏳ Menyimpan…' : '💾 Simpan & Sync ke Cloud'}
             </button>
-            <button onClick={pullVelocityFromCloud} disabled={velSync === 'pulling'} style={{ ...s.btn, background: 'var(--bg-hover)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)', padding: '11px 18px', opacity: velSync === 'pulling' ? 0.7 : 1 }}>
+            <button onClick={pullVelocityFromCloud} disabled={velSync === 'pulling'} style={{ ...s.btn, background: '#F9FAFB', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)', padding: '11px 18px', opacity: velSync === 'pulling' ? 0.7 : 1 }}>
               {velSync === 'pulling' ? '⏳ Menarik…' : '☁️ Pull dari Cloud'}
             </button>
             {velSavedOk && <span style={{ fontSize: 13, color: '#10b981' }}>✅ Tersimpan di browser!</span>}
             {velSyncMsg && <span style={{ fontSize: 12, color: velSync === 'error' ? '#ef4444' : '#10b981' }}>{velSyncMsg}</span>}
           </div>
-          <div style={{ marginTop: 10, fontSize: 12, color: 'var(--text-faint)' }}>
+          <div style={{ marginTop: 10, fontSize: 12, color: '#D1D5DB' }}>
             ☁️ Data di-sync ke Supabase cloud — tim lain bisa pull di device masing-masing.
           </div>
         </div>
@@ -663,21 +663,21 @@ export default function SettingsPage() {
       {tab === 'leadtime' && (
         <div>
           <div style={s.card}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 8 }}>⏱️ Lead Time per Supplier</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 20 }}>Lead time = hari dari pesan ke tiba. Dipakai untuk menghitung Reorder Point. Assign supplier ke SKU di tab HPP agar lookup akurat.</div>
-            <div style={{ padding: '16px 20px', background: 'var(--bg-hover)', borderRadius: 10, marginBottom: 20, border: '1px solid var(--border)' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 10 }}>🌐 Default Lead Time (berlaku jika supplier tidak dikonfigurasi)</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 8 }}>⏱️ Lead Time per Supplier</div>
+            <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>Lead time = hari dari pesan ke tiba. Dipakai untuk menghitung Reorder Point. Assign supplier ke SKU di tab HPP agar lookup akurat.</div>
+            <div style={{ padding: '16px 20px', background: '#F9FAFB', borderRadius: 10, marginBottom: 20, border: '1px solid #E4E7ED' }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: 10 }}>🌐 Default Lead Time (berlaku jika supplier tidak dikonfigurasi)</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <input type="number" min="1" max="90" value={ltDefault} onChange={e => setLtDefault(e.target.value)}
                   style={{ ...s.input, width: 80, marginBottom: 0, textAlign: 'center' }} />
-                <span style={{ fontSize: 13, color: 'var(--text-secondary)' }}>hari</span>
-                <span style={{ fontSize: 12, color: 'var(--text-faint)', marginLeft: 8 }}>Saat ini: {ltMap.__default__ ?? DEFAULT_LEAD_TIME} hari</span>
+                <span style={{ fontSize: 13, color: '#374151' }}>hari</span>
+                <span style={{ fontSize: 12, color: '#D1D5DB', marginLeft: 8 }}>Saat ini: {ltMap.__default__ ?? DEFAULT_LEAD_TIME} hari</span>
               </div>
             </div>
 
-            <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Lead Time per Supplier</div>
+            <div style={{ fontSize: 14, fontWeight: 600, color: '#111827', marginBottom: 12 }}>Lead Time per Supplier</div>
             {loadingSuppliers ? (
-              <div style={{ textAlign: 'center', padding: 30, color: 'var(--text-muted)' }}>⏳ Memuat daftar supplier…</div>
+              <div style={{ textAlign: 'center', padding: 30, color: '#6B7280' }}>⏳ Memuat daftar supplier…</div>
             ) : supplierList.length === 0 ? (
               <div style={{ padding: '14px 16px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: 8, fontSize: 13, color: '#f59e0b', marginBottom: 16 }}>
                 ⚠️ Tidak ada supplier dari Jubelio. Pastikan ada transaksi pembelian di Jubelio.
@@ -688,14 +688,14 @@ export default function SettingsPage() {
                   const val = ltEdits[sup]; const hasVal = val !== undefined && val > 0;
                   const def = ltMap.__default__ ?? DEFAULT_LEAD_TIME;
                   return (
-                    <div key={sup} style={{ padding: '12px 16px', background: hasVal ? 'rgba(59,130,246,0.06)' : 'var(--bg-hover)', border: `1px solid ${hasVal ? 'rgba(59,130,246,0.3)' : 'var(--border)'}`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                      <div style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: hasVal ? 600 : 400, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sup}</div>
+                    <div key={sup} style={{ padding: '12px 16px', background: hasVal ? 'rgba(59,130,246,0.06)' : '#F9FAFB', border: `1px solid ${hasVal ? 'rgba(59,130,246,0.3)' : '#E4E7ED'}`, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                      <div style={{ fontSize: 13, color: '#111827', fontWeight: hasVal ? 600 : 400, flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sup}</div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                         <input type="number" min="1" max="90" value={hasVal ? val : ''} placeholder={String(def)}
                           onChange={e => { const v = parseInt(e.target.value) || 0; setLtEdits(prev => ({ ...prev, [sup]: v })); }}
-                          style={{ background: hasVal ? 'rgba(59,130,246,0.12)' : 'var(--bg-surface)', border: `1px solid ${hasVal ? 'rgba(59,130,246,0.4)' : 'var(--border)'}`, borderRadius: 6, padding: '5px 8px', color: 'var(--text-primary)', fontSize: 13, outline: 'none', width: 55, textAlign: 'center' }} />
-                        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>hari</span>
-                        {hasVal && <button onClick={() => setLtEdits(prev => { const n = { ...prev }; delete n[sup]; return n; })} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', fontSize: 13, padding: '2px 4px' }}>✕</button>}
+                          style={{ background: hasVal ? 'rgba(59,130,246,0.12)' : '#fff', border: `1px solid ${hasVal ? 'rgba(59,130,246,0.4)' : '#E4E7ED'}`, borderRadius: 6, padding: '5px 8px', color: '#111827', fontSize: 13, outline: 'none', width: 55, textAlign: 'center' }} />
+                        <span style={{ fontSize: 12, color: '#6B7280' }}>hari</span>
+                        {hasVal && <button onClick={() => setLtEdits(prev => { const n = { ...prev }; delete n[sup]; return n; })} style={{ background: 'none', border: 'none', color: '#6B7280', cursor: 'pointer', fontSize: 13, padding: '2px 4px' }}>✕</button>}
                       </div>
                     </div>
                   );
@@ -707,20 +707,20 @@ export default function SettingsPage() {
               <button onClick={saveLt} disabled={ltSync === 'pushing'} style={{ ...s.btn, background: '#3b82f6', color: 'white', padding: '11px 28px', opacity: ltSync === 'pushing' ? 0.7 : 1 }}>
                 {ltSync === 'pushing' ? '⏳ Menyimpan…' : '💾 Simpan & Sync Lead Time'}
               </button>
-              <button onClick={pullLt} disabled={ltSync === 'pulling'} style={{ ...s.btn, background: 'var(--bg-hover)', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)', padding: '11px 18px', opacity: ltSync === 'pulling' ? 0.7 : 1 }}>
+              <button onClick={pullLt} disabled={ltSync === 'pulling'} style={{ ...s.btn, background: '#F9FAFB', color: '#60a5fa', border: '1px solid rgba(96,165,250,0.3)', padding: '11px 18px', opacity: ltSync === 'pulling' ? 0.7 : 1 }}>
                 {ltSync === 'pulling' ? '⏳ Menarik…' : '☁️ Pull dari Cloud'}
               </button>
               {ltSavedOk && <span style={{ color: '#10b981', fontSize: 13 }}>✅ Tersimpan!</span>}
               {ltSyncMsg && <span style={{ fontSize: 12, color: ltSync === 'error' ? '#ef4444' : '#10b981' }}>{ltSyncMsg}</span>}
-              <span style={{ fontSize: 12, color: 'var(--text-muted)', marginLeft: 'auto' }}>{Object.keys(ltMap).filter(k => k !== '__default__').length} supplier dikonfigurasi</span>
+              <span style={{ fontSize: 12, color: '#6B7280', marginLeft: 'auto' }}>{Object.keys(ltMap).filter(k => k !== '__default__').length} supplier dikonfigurasi</span>
             </div>
           </div>
 
           <div style={{ ...s.card, background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.15)' }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#60a5fa', marginBottom: 8 }}>📖 Cara kerja Lead Time</div>
-            <div style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.7 }}>
-              <strong style={{ color: 'var(--text-secondary)' }}>Reorder Point</strong> = (Avg Jual/Hari × Lead Time) + Safety Stock<br />
-              <strong style={{ color: 'var(--text-secondary)' }}>Safety Stock</strong> = Avg Jual/Hari × Multiplier (A: 3×, B: 2×, C: 1×)<br /><br />
+            <div style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.7 }}>
+              <strong style={{ color: '#374151' }}>Reorder Point</strong> = (Avg Jual/Hari × Lead Time) + Safety Stock<br />
+              <strong style={{ color: '#374151' }}>Safety Stock</strong> = Avg Jual/Hari × Multiplier (A: 3×, B: 2×, C: 1×)<br /><br />
               Contoh: SKU Kelas A jual 10/hari, lead time <strong style={{ color: '#60a5fa' }}>7 hari</strong><br />
               → Reorder Point = (10 × 7) + (10 × 3) = <strong style={{ color: '#60a5fa' }}>100 unit</strong>
             </div>
@@ -731,8 +731,8 @@ export default function SettingsPage() {
       {/* ─── JUBELIO TAB ────────────────────────────────────── */}
       {tab === 'jubelio' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 16 }}>🔗 Jubelio WMS Integration</div>
-          <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, marginBottom: 20, fontSize: 13, color: 'var(--text-secondary)' }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>🔗 Jubelio WMS Integration</div>
+          <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, marginBottom: 20, fontSize: 13, color: '#374151' }}>
             ✅ <strong style={{ color: '#10b981' }}>Fase 2 Aktif:</strong> Koneksi Jubelio sudah terhubung via environment variable di Vercel. Credentials dikonfigurasi langsung di Vercel project settings.
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
@@ -741,9 +741,9 @@ export default function SettingsPage() {
               { icon: '🔑', label: 'Token Expiry', value: '12 jam (auto-refresh)' },
               { icon: '📦', label: 'SKU Dimuat', value: loadingInv ? '…' : String(inventory.length) },
             ].map(e => (
-              <div key={e.label} style={{ padding: '12px 16px', background: 'var(--bg-hover)', borderRadius: 8 }}>
-                <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 4 }}>{e.icon} {e.label}</div>
-                <div style={{ fontSize: 13, color: 'var(--text-primary)' }}>{e.value}</div>
+              <div key={e.label} style={{ padding: '12px 16px', background: '#F9FAFB', borderRadius: 8 }}>
+                <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 4 }}>{e.icon} {e.label}</div>
+                <div style={{ fontSize: 13, color: '#111827' }}>{e.value}</div>
               </div>
             ))}
           </div>
@@ -764,13 +764,13 @@ export default function SettingsPage() {
       {/* ─── PARAMETERS TAB ─────────────────────────────────── */}
       {tab === 'parameters' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 16 }}>📐 Parameter Bisnis</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>📐 Parameter Bisnis</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div><label style={s.label}>Budget PO Bulanan (Rp)</label><input type="number" value={budgetPO} onChange={e => setBudgetPO(e.target.value)} style={s.input} /></div>
             <div><label style={s.label}>Target COGS % dari Revenue</label><input type="number" value={targetCOGS} onChange={e => setTargetCOGS(e.target.value)} style={s.input} /></div>
             <div><label style={s.label}>Ordering Cost Default (Rp/order)</label><input type="number" defaultValue="50000" style={s.input} /></div>
           </div>
-          <div style={{ padding: '12px 16px', background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8, fontSize: 12, color: 'var(--text-muted)', marginBottom: 16 }}>
+          <div style={{ padding: '12px 16px', background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: 8, fontSize: 12, color: '#6B7280', marginBottom: 16 }}>
             Parameter ini digunakan untuk kalkulasi EOQ, True COGS, dan Reorder Point.
           </div>
           <button onClick={() => { saveLocal('foodstocks_budget_po', budgetPO); saveLocal('foodstocks_target_cogs', targetCOGS); setParamSavedOk(true); setTimeout(() => setParamSavedOk(false), 3000); }} style={{ ...s.btn, background: '#3b82f6', color: 'white', padding: '11px 28px' }}>
@@ -783,14 +783,14 @@ export default function SettingsPage() {
       {/* ─── EVENT CALENDAR TAB ─────────────────────────────── */}
       {tab === 'events' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 4 }}>📅 Event Calendar — Demand Multiplier</div>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)', marginBottom: 20 }}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>📅 Event Calendar — Demand Multiplier</div>
+          <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>
             Tambahkan event yang akan meningkatkan permintaan (Lebaran, Harbolnas, musim hujan, dll). Forecast Stok dan Purchase Planner akan menyesuaikan rekomendasi qty.
           </div>
 
           {/* Preset Events */}
           <div style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Preset Event Umum</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: '#374151', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 10 }}>Preset Event Umum</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
               {PRESET_EVENTS.map(preset => (
                 <button key={preset.name} onClick={() => {
@@ -798,7 +798,7 @@ export default function SettingsPage() {
                   setNewEventMult(String(preset.multiplier));
                   setNewEventCat(preset.category);
                   setNewEventDuration(String(preset.durationDays ?? 7));
-                }} style={{ ...s.btn, padding: '6px 12px', fontSize: 12, background: 'var(--bg-hover)', color: 'var(--text-secondary)', border: '1px solid var(--border)' }}>
+                }} style={{ ...s.btn, padding: '6px 12px', fontSize: 12, background: '#F9FAFB', color: '#374151', border: '1px solid #E4E7ED' }}>
                   {preset.name}
                 </button>
               ))}
@@ -806,8 +806,8 @@ export default function SettingsPage() {
           </div>
 
           {/* Add Event Form */}
-          <div style={{ background: 'var(--bg-hover)', borderRadius: 10, padding: 16, marginBottom: 20 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 12 }}>Tambah Event Baru</div>
+          <div style={{ background: '#F9FAFB', borderRadius: 10, padding: 16, marginBottom: 20 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: 12 }}>Tambah Event Baru</div>
             <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr', gap: 10 }}>
               <div>
                 <label style={s.label}>Nama Event</label>
@@ -823,7 +823,7 @@ export default function SettingsPage() {
                 <div style={{ display: 'flex', gap: 4, marginTop: 4, flexWrap: 'wrap' }}>
                   {[1,2,3,5,7,14,30,90].map(d => (
                     <button key={d} onClick={() => setNewEventDuration(String(d))}
-                      style={{ fontSize: 10, padding: '2px 6px', borderRadius: 4, border: '1px solid var(--border)', background: newEventDuration === String(d) ? '#3b82f6' : 'var(--bg-hover)', color: newEventDuration === String(d) ? 'white' : 'var(--text-muted)', cursor: 'pointer' }}>
+                      style={{ fontSize: 10, padding: '2px 6px', borderRadius: 4, border: '1px solid #E4E7ED', background: newEventDuration === String(d) ? '#3b82f6' : '#F9FAFB', color: newEventDuration === String(d) ? 'white' : '#6B7280', cursor: 'pointer' }}>
                       {d}h
                     </button>
                   ))}
@@ -873,7 +873,7 @@ export default function SettingsPage() {
 
           {/* Events List */}
           {events.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 32, color: 'var(--text-muted)', fontSize: 13 }}>
+            <div style={{ textAlign: 'center', padding: 32, color: '#6B7280', fontSize: 13 }}>
               Belum ada event. Tambahkan event di atas untuk menyesuaikan forecast demand.
             </div>
           ) : (
@@ -885,11 +885,11 @@ export default function SettingsPage() {
                 {events.map(ev => (
                   <tr key={ev.id}>
                     <td style={s.td}><strong>{ev.name}</strong></td>
-                    <td style={{ ...s.td, color: ev.startDate ? 'var(--text-primary)' : 'var(--text-muted)' }}>{ev.startDate ?? '—'}</td>
-                    <td style={{ ...s.td, color: 'var(--text-muted)' }}>{ev.durationDays ?? 14} hari</td>
+                    <td style={{ ...s.td, color: ev.startDate ? '#111827' : '#6B7280' }}>{ev.startDate ?? '—'}</td>
+                    <td style={{ ...s.td, color: '#6B7280' }}>{ev.durationDays ?? 14} hari</td>
                     <td style={s.td}>+{ev.startDay} hari</td>
                     <td style={{ ...s.td, fontWeight: 600, color: '#f59e0b' }}>{ev.multiplier}× demand</td>
-                    <td style={{ ...s.td, color: 'var(--text-muted)' }}>{ev.category || 'Semua'}</td>
+                    <td style={{ ...s.td, color: '#6B7280' }}>{ev.category || 'Semua'}</td>
                     <td style={s.td}>
                       <button onClick={() => {
                         const updated = events.filter(e => e.id !== ev.id);
@@ -906,7 +906,7 @@ export default function SettingsPage() {
             </table>
           )}
 
-          <div style={{ marginTop: 16, padding: '12px 16px', background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 8, fontSize: 12, color: 'var(--text-muted)' }}>
+          <div style={{ marginTop: 16, padding: '12px 16px', background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 8, fontSize: 12, color: '#6B7280' }}>
             💡 Event ini digunakan di halaman <strong style={{ color: '#8b5cf6' }}>Forecast Stok</strong> dan <strong style={{ color: '#8b5cf6' }}>Purchase Planner</strong> untuk menyesuaikan proyeksi demand. Isi <strong>Tanggal Event</strong> agar sistem dapat menghitung deadline order otomatis di Dashboard.
           </div>
         </div>
@@ -915,7 +915,7 @@ export default function SettingsPage() {
       {/* ─── ROADMAP TAB ────────────────────────────────────── */}
       {tab === 'roadmap' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 16 }}>🗺️ Roadmap Pengembangan</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>🗺️ Roadmap Pengembangan</div>
           {[
             { fase: 'Fase 1',   label: 'Web App Live',              done: true,  desc: 'Dashboard Next.js online di Vercel, dark theme, data demo' },
             { fase: 'Fase 2',   label: 'Jubelio Live Integration',  done: true,  desc: 'Data real-time stok 399 SKU, tagihan, sales per channel' },
@@ -925,13 +925,13 @@ export default function SettingsPage() {
             { fase: 'Fase 3',   label: 'Smart Purchase Planner',    done: true,  desc: 'ABC Analysis, EOQ otomatis, Reorder Point, proyeksi 30/60/90 hari' },
             { fase: 'Fase 4',   label: 'COGS & Laporan Live',       done: false, desc: 'True COGS otomatis dari data Jubelio, laporan profit lengkap' },
           ].map(item => (
-            <div key={item.fase} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '12px 0', borderBottom: '1px solid var(--border)' }}>
+            <div key={item.fase} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '12px 0', borderBottom: '1px solid #E4E7ED' }}>
               <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: item.done ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
                 {item.done ? '✅' : '⏳'}
               </div>
               <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{item.fase}: {item.label}</div>
-                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>{item.desc}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{item.fase}: {item.label}</div>
+                <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>{item.desc}</div>
               </div>
             </div>
           ))}

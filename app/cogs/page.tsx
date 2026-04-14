@@ -43,10 +43,10 @@ const CHANNELS = [
 
 const s = {
   page: { padding: '24px', maxWidth: 1200 } as React.CSSProperties,
-  card: { background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, boxShadow: 'var(--shadow-card)', padding: 20, marginBottom: 20 } as React.CSSProperties,
-  title: { fontSize: 24, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 } as React.CSSProperties,
-  th: { padding: '10px 12px', fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' as const, letterSpacing: 1, textAlign: 'left' as const, borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' as const },
-  td: { padding: '11px 12px', fontSize: 13, color: 'var(--text-primary)', borderBottom: '1px solid var(--border-subtle)' },
+  card: { background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, boxShadow: '0 1px 3px rgba(0,0,0,0.06)', padding: 20, marginBottom: 16 } as React.CSSProperties,
+  title: { fontSize: 22, fontWeight: 700, color: '#111827', marginBottom: 4 } as React.CSSProperties,
+  th: { padding: '10px 14px', fontSize: 11, fontWeight: 600, color: '#6B7280', textTransform: 'uppercase' as const, letterSpacing: 0.5, textAlign: 'left' as const, background: '#F9FAFB', whiteSpace: 'nowrap' as const },
+  td: { padding: '12px 14px', fontSize: 13, color: '#374151', borderBottom: '1px solid #F3F4F6' },
 };
 
 function loadStorage<T>(key: string, fallback: T): T {
@@ -143,16 +143,16 @@ export default function COGSPage() {
     <div style={s.page}>
       <div style={{ marginBottom: 24 }}>
         <div style={s.title}>💹 COGS & Margin Tracker</div>
-        <div style={{ fontSize: 14, color: 'var(--text-muted)' }}>True HPP per SKU, margin per channel, dan target COGS tracker</div>
+        <div style={{ fontSize: 14, color: '#6B7280' }}>True HPP per SKU, margin per channel, dan target COGS tracker</div>
       </div>
 
       {/* COGS Budget Tracker */}
-      <div style={{ ...s.card, background: 'var(--bg-card)' }}>
+      <div style={{ ...s.card, background: '#fff' }}>
         {/* Month Navigation */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-          <button onClick={prevMonth} style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 14 }}>←</button>
-          <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)' }}>📊 COGS Budget {MONTHS_ID[budgetMonth.month - 1]} {budgetMonth.year}</div>
-          <button onClick={nextMonth} style={{ background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '4px 10px', color: 'var(--text-secondary)', cursor: 'pointer', fontSize: 14 }}>→</button>
+          <button onClick={prevMonth} style={{ background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 6, padding: '4px 10px', color: '#374151', cursor: 'pointer', fontSize: 14 }}>←</button>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827' }}>📊 COGS Budget {MONTHS_ID[budgetMonth.month - 1]} {budgetMonth.year}</div>
+          <button onClick={nextMonth} style={{ background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 6, padding: '4px 10px', color: '#374151', cursor: 'pointer', fontSize: 14 }}>→</button>
         </div>
 
         {/* Metric Cards */}
@@ -163,8 +163,8 @@ export default function COGSPage() {
             { label: 'Realisasi COGS', value: formatRupiah(cogsRealisasi), color: '#10b981' },
             { label: 'Sisa Ruang COGS', value: formatRupiah(Math.max(0, cogsBudget - cogsRealisasi)), color: cogsBudget - cogsRealisasi < 0 ? '#ef4444' : '#06b6d4' },
           ].map(k => (
-            <div key={k.label} style={{ padding: 16, background: 'var(--bg-hover)', borderRadius: 10 }}>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
+            <div key={k.label} style={{ padding: 16, background: '#F9FAFB', borderRadius: 10 }}>
+              <div style={{ fontSize: 11, color: '#6B7280', textTransform: 'uppercase', letterSpacing: 1 }}>{k.label}</div>
               <div style={{ fontSize: 22, fontWeight: 700, color: k.color, margin: '6px 0' }}>{k.value}</div>
             </div>
           ))}
@@ -174,46 +174,46 @@ export default function COGSPage() {
         {cogsBudget > 0 && (
           <>
             <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-              <span style={{ color: 'var(--text-secondary)' }}>COGS Usage</span>
+              <span style={{ color: '#374151' }}>COGS Usage</span>
               <span style={{ color: cogsRealisasi > cogsBudget ? '#ef4444' : '#10b981', fontWeight: 600 }}>{((cogsRealisasi / cogsBudget) * 100).toFixed(1)}% dari budget</span>
             </div>
-            <div style={{ height: 10, background: 'var(--border)', borderRadius: 5, overflow: 'hidden', marginBottom: 16 }}>
+            <div style={{ height: 10, background: '#E4E7ED', borderRadius: 5, overflow: 'hidden', marginBottom: 16 }}>
               <div style={{ width: `${Math.min(100, (cogsRealisasi / cogsBudget) * 100)}%`, height: '100%', background: cogsRealisasi > cogsBudget ? 'linear-gradient(90deg, #ef4444, #f97316)' : 'linear-gradient(90deg, #10b981, #06b6d4)', borderRadius: 5 }} />
             </div>
           </>
         )}
 
         {/* Editable Inputs */}
-        <div style={{ borderTop: '1px solid var(--border)', paddingTop: 14, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
+        <div style={{ borderTop: '1px solid #E4E7ED', paddingTop: 14, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
           <div>
-            <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Target Revenue (Rp)</label>
+            <label style={{ fontSize: 11, color: '#6B7280', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Target Revenue (Rp)</label>
             <input type="number" value={targetRevenue || ''} placeholder="0" onChange={e => updateBudget('targetRevenue', Number(e.target.value))}
-              style={{ width: '100%', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' as const }} />
+              style={{ width: '100%', background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 6, padding: '6px 10px', color: '#111827', fontSize: 13, boxSizing: 'border-box' as const }} />
           </div>
           <div>
-            <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Budget COGS (%)</label>
+            <label style={{ fontSize: 11, color: '#6B7280', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Budget COGS (%)</label>
             <input type="number" step="1" min="1" max="100" value={Math.round(cogsBudgetPct * 100) || ''} placeholder="55"
               onChange={e => updateBudget('cogsBudgetPct', Number(e.target.value) / 100)}
-              style={{ width: '100%', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' as const }} />
+              style={{ width: '100%', background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 6, padding: '6px 10px', color: '#111827', fontSize: 13, boxSizing: 'border-box' as const }} />
           </div>
           <div>
-            <label style={{ fontSize: 11, color: 'var(--text-muted)', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Realisasi COGS (Rp)</label>
+            <label style={{ fontSize: 11, color: '#6B7280', display: 'block', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>Realisasi COGS (Rp)</label>
             <input type="number" value={cogsRealisasi || ''} placeholder="0" onChange={e => updateBudget('cogsRealisasi', Number(e.target.value))}
-              style={{ width: '100%', background: 'var(--bg-hover)', border: '1px solid var(--border)', borderRadius: 6, padding: '6px 10px', color: 'var(--text-primary)', fontSize: 13, boxSizing: 'border-box' as const }} />
+              style={{ width: '100%', background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 6, padding: '6px 10px', color: '#111827', fontSize: 13, boxSizing: 'border-box' as const }} />
           </div>
         </div>
       </div>
 
       {/* Channel Selector */}
       <div style={{ ...s.card }}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', marginBottom: 16 }}>📐 Margin per SKU per Channel</div>
+        <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>📐 Margin per SKU per Channel</div>
         <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap', alignItems: 'center' }}>
-          <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Channel:</span>
+          <span style={{ fontSize: 13, color: '#6B7280' }}>Channel:</span>
           {CHANNELS.map(ch => (
             <button key={ch.name} onClick={() => setSelectedChannel(ch.name)} style={{
-              padding: '6px 14px', borderRadius: 8, border: `1px solid ${selectedChannel === ch.name ? '#3b82f6' : 'var(--border)'}`,
-              background: selectedChannel === ch.name ? '#3b82f6' : 'var(--bg-hover)',
-              color: selectedChannel === ch.name ? 'white' : 'var(--text-secondary)',
+              padding: '6px 14px', borderRadius: 8, border: `1px solid ${selectedChannel === ch.name ? '#3b82f6' : '#E4E7ED'}`,
+              background: selectedChannel === ch.name ? '#3b82f6' : '#F9FAFB',
+              color: selectedChannel === ch.name ? 'white' : '#374151',
               cursor: 'pointer', fontSize: 12, fontWeight: 600,
             }}>
               {ch.name} {ch.fee > 0 ? `(fee ${(ch.fee * 100).toFixed(0)}%)` : ''}
@@ -227,15 +227,15 @@ export default function COGSPage() {
             { label: `SKU Margin ≥ 35%`, value: `${topItems.length} SKU`, color: '#3b82f6' },
             { label: 'SKU Margin < 25%', value: `${lowItems.length} SKU`, color: '#ef4444' },
           ].map(k => (
-            <div key={k.label} style={{ padding: 14, background: 'var(--bg-hover)', borderRadius: 10, textAlign: 'center' }}>
+            <div key={k.label} style={{ padding: 14, background: '#F9FAFB', borderRadius: 10, textAlign: 'center' }}>
               <div style={{ fontSize: 22, fontWeight: 700, color: k.color }}>{k.value}</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{k.label}</div>
+              <div style={{ fontSize: 11, color: '#6B7280', marginTop: 4 }}>{k.label}</div>
             </div>
           ))}
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: 40, color: 'var(--text-muted)', fontSize: 16 }}>
+          <div style={{ textAlign: 'center', padding: 40, color: '#6B7280', fontSize: 16 }}>
             ⏳ Memuat data Jubelio...
           </div>
         ) : error ? (
@@ -255,23 +255,23 @@ export default function COGSPage() {
               <tbody>
                 {cogsData.map(item => (
                   <tr key={item.sku}>
-                    <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: 'var(--text-muted)' }}>{item.sku}</span></td>
+                    <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: '#6B7280' }}>{item.sku}</span></td>
                     <td style={{ ...s.td, fontWeight: 600 }}>{item.name}</td>
                     <td style={s.td}>
                       <span style={{
                         background: item.abc === 'A' ? 'rgba(59,130,246,0.15)' : item.abc === 'B' ? 'rgba(245,158,11,0.15)' : 'rgba(100,116,139,0.15)',
-                        color: item.abc === 'A' ? '#3b82f6' : item.abc === 'B' ? '#f59e0b' : 'var(--text-secondary)',
+                        color: item.abc === 'A' ? '#3b82f6' : item.abc === 'B' ? '#f59e0b' : '#374151',
                         borderRadius: 6, padding: '2px 8px', fontSize: 11, fontWeight: 700,
                       }}>{item.abc}</span>
                     </td>
                     <td style={s.td}>{formatRupiah(item.hpp)}</td>
                     <td style={{ ...s.td, color: '#f59e0b' }}>{formatRupiah(Math.round(item.trueCogs))}</td>
-                    <td style={{ ...s.td, color: 'var(--text-muted)' }}>{formatRupiah(Math.round(item.channelFee))}</td>
+                    <td style={{ ...s.td, color: '#6B7280' }}>{formatRupiah(Math.round(item.channelFee))}</td>
                     <td style={s.td}>{formatRupiah(item.sellingPrice)}</td>
                     <td style={{ ...s.td, fontWeight: 700, color: item.grossMargin >= 35 ? '#10b981' : item.grossMargin >= 25 ? '#f59e0b' : '#ef4444' }}>
                       {item.grossMargin.toFixed(1)}%
                     </td>
-                    <td style={{ ...s.td, color: 'var(--text-secondary)' }}>{item.simpleMargin.toFixed(1)}%</td>
+                    <td style={{ ...s.td, color: '#374151' }}>{item.simpleMargin.toFixed(1)}%</td>
                     <td style={{ ...s.td, color: item.grossMargin < item.simpleMargin ? '#ef4444' : '#10b981' }}>
                       {(item.grossMargin - item.simpleMargin).toFixed(1)}%
                     </td>
@@ -286,7 +286,7 @@ export default function COGSPage() {
       {/* True COGS explanation */}
       <div style={{ padding: 16, background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 10 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: '#8b5cf6', marginBottom: 8 }}>📐 Komponen True COGS per Unit:</div>
-        <div style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.8 }}>
+        <div style={{ fontSize: 12, color: '#374151', lineHeight: 1.8 }}>
           Harga Beli + (Ongkir Masuk / Total Unit) + Biaya Handling + (Holding Cost × Avg Hari di Gudang × HPP × 2%/30)
           + Bad Debt Rate × HPP (untuk konsinyasi) + Payment Cost (0 jika Cash, benefit jika dapat TOP)
         </div>
