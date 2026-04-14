@@ -58,13 +58,13 @@ export default function LoginPage() {
         <div style={{
           flex: 1,
           background: '#fff',
-          padding: '56px 52px',
+          padding: '56px 24px',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-          <div style={{ width: '100%', maxWidth: 360 }}>
+          <div style={{ width: '100%', maxWidth: 360, margin: '0 auto' }}>
           <h1 style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 6px' }}>
             Selamat datang kembali
           </h1>
