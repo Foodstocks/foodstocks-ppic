@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
+import AppShell from "@/components/AppShell";
 import ThemeProvider from "@/components/ThemeProvider";
 import AuthGuard from "@/components/AuthGuard";
 
@@ -20,10 +20,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body style={{ minHeight: '100vh' }} suppressHydrationWarning>
         <ThemeProvider>
           <AuthGuard>
-            <Navigation />
-            <main className="md:ml-[228px] pb-16 md:pb-0">
-              {children}
-            </main>
+            <AppShell>{children}</AppShell>
           </AuthGuard>
         </ThemeProvider>
       </body>
