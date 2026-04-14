@@ -59,11 +59,10 @@ export default function LoginPage() {
           flex: 1,
           background: '#fff',
           display: 'flex',
-          alignItems: 'center',
+          flexDirection: 'column',
           justifyContent: 'center',
-          padding: '48px 32px',
+          padding: '48px 56px',
         }}>
-          <div style={{ width: '100%', maxWidth: 340 }}>
           <h1 style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 6px' }}>
             Selamat datang kembali
           </h1>
@@ -167,7 +166,6 @@ export default function LoginPage() {
           <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', marginTop: 40 }}>
             © 2025 Foodstocks. Akses terbatas.
           </p>
-          </div>
         </div>
 
         {/* ── RIGHT: Branding Panel ── */}
