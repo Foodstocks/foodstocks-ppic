@@ -18,46 +18,33 @@ async function probe(token: string, path: string) {
 export async function GET() {
   try {
     const token = await getJubelioToken();
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-    // Get full variant structure from first inventory item
-    const invRes = await probe(token, `/inventory/items/?page=1&pageSize=1`);
-    const invBody2 = invRes.body as Record<string, unknown>;
-    const groups = Array.isArray(invBody2) ? invBody2 : (Array.isArray(invBody2.data) ? invBody2.data : []) as Record<string, unknown>[];
-    const firstGroup = groups[0] as Record<string, unknown> | undefined;
-    const firstVariant = firstGroup && Array.isArray(firstGroup.variants) ? (firstGroup.variants[0] as Record<string, unknown>) : undefined;
-    const variantKeys = firstVariant ? Object.keys(firstVariant) : [];
-    const variantSample = firstVariant ? JSON.stringify(firstVariant) : null;
-
-    // Probe more endpoints using known IDs
-    const itemGroupId = firstGroup ? String(firstGroup.item_group_id ?? '') : '';
-    const itemId = firstVariant ? String(firstVariant.item_id ?? '') : '';
-    const [grpDetail, itemHistory, itemSales, doRes, repSales] = await Promise.all([
-      itemGroupId ? probe(token, `/inventory/items/${itemGroupId}/`) : Promise.resolve({ status: 0, body: 'no gid' }),
-      itemId ? probe(token, `/inventory/items/${itemId}/history/?page=1&pageSize=3`) : Promise.resolve({ status: 0, body: 'no id' }),
-      itemId ? probe(token, `/inventory/items/${itemId}/sales/?page=1&pageSize=3`) : Promise.resolve({ status: 0, body: 'no id' }),
-      probe(token, `/delivery-order/?page=1&pageSize=3`),
-      probe(token, `/reports/item-sales/?page=1&pageSize=3`),
+    // Try order list with different params to get embedded items
+    const [r1, r2, r3, r4, r5] = await Promise.all([
+      probe(token, `/sales/orders/completed/?page=1&pageSize=1&include_items=true`),
+      probe(token, `/sales/orders/completed/?page=1&pageSize=1&detail=true`),
+      probe(token, `/sales/orders/completed/?page=1&pageSize=1&expand=items`),
+      probe(token, `/sales/orders/completed/items/?page=1&pageSize=3`),
+      probe(token, `/sales/items/?createdSince=${thirtyDaysAgo}&page=1&pageSize=3`),
     ]);
 
-    function firstItem(r: { status: number; body: unknown }) {
-      if (r.status !== 200) return { status: r.status, err: JSON.stringify(r.body).slice(0, 200) };
+    function inspect(r: { status: number; body: unknown }, label: string) {
+      if (r.status !== 200) return { status: r.status, err: JSON.stringify(r.body).slice(0, 150) };
       const b = r.body as Record<string, unknown>;
       const arr = Array.isArray(b) ? b : (Array.isArray(b.data) ? b.data : null);
-      if (!arr || arr.length === 0) return { status: 200, keys: Object.keys(b), note: 'no array' };
-      const item = arr[0] as Record<string, unknown>;
-      return { status: 200, keys: Object.keys(item), sample: JSON.stringify(item).slice(0, 400) };
+      if (!arr || arr.length === 0) return { status: 200, topKeys: Object.keys(b) };
+      const first = arr[0] as Record<string, unknown>;
+      const hasItems = 'items' in first || 'line_items' in first || 'order_items' in first;
+      return { status: 200, label, count: arr.length, firstKeys: Object.keys(first), hasItems, sample: JSON.stringify(first).slice(0, 300) };
     }
 
     return NextResponse.json({
-      variantKeys,
-      variantSample,
-      probedGroupId: itemGroupId,
-      probedItemId: itemId,
-      '/inventory/items/{groupId}/': firstItem(grpDetail),
-      '/inventory/items/{itemId}/history/': firstItem(itemHistory),
-      '/inventory/items/{itemId}/sales/': firstItem(itemSales),
-      '/delivery-order/': firstItem(doRes),
-      '/reports/item-sales/': firstItem(repSales),
+      'completed/?include_items=true': inspect(r1, 'include_items'),
+      'completed/?detail=true': inspect(r2, 'detail'),
+      'completed/?expand=items': inspect(r3, 'expand'),
+      'completed/items/': inspect(r4, 'items subpath'),
+      '/sales/items/': inspect(r5, 'sales items'),
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
