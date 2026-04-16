@@ -55,6 +55,11 @@ const IconGear = () => (
     <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
   </svg>
 );
+const IconStar = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+  </svg>
+);
 const IconUser = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -172,16 +177,37 @@ const menus = [
     color: '#10B981',
     iconBg: '#F0FDF4',
     icon: <IconTrend />,
-    purpose: 'Prediksi kebutuhan stok 30–90 hari ke depan, termasuk lonjakan untuk event musiman.',
+    purpose: 'Proyeksi kehabisan stok 30–90 hari ke depan berdasarkan kecepatan jual (velocity) aktual, termasuk lonjakan demand untuk event musiman.',
     features: [
-      'Proyeksi stok: estimasi kapan setiap SKU akan habis berdasarkan velocity',
-      'Pre-event badges: dot merah/kuning/hijau untuk urgency order sebelum event (Lebaran, Natal, dll)',
-      'Filter period: 30 / 60 / 90 hari ke depan',
-      'Filter urgency: Semua / Urgent / Siapkan / Aman',
-      'Table pagination: tampilkan 25 SKU per halaman',
-      'Event timeline: visualisasi event mendatang dan deadline order masing-masing',
+      'Tabel proyeksi per SKU: sisa stok saat ini, velocity harian, estimasi hari habis, status urgency',
+      'Filter periode: 30 / 60 / 90 hari ke depan — lihat mana yang habis dalam window tersebut',
+      'Filter urgency: Semua / Urgent (< lead time) / Siapkan (< 7 hari) / Aman',
+      'Pre-event badges: dot merah/kuning/hijau per SKU menunjukkan urgency order sebelum event besar',
+      'Event timeline strip: daftar event mendatang + deadline order (kapan harus PO agar tiba sebelum event)',
+      'Notifikasi otomatis: setiap pagi jam 09:00 WIB, email dikirim jika ada SKU kritis atau PO jatuh tempo',
+      'Butuh data velocity: fitur ini hanya bekerja penuh setelah velocity diisi di Settings → Stok & Velocity',
     ],
-    usage: 'Gunakan H-45 sebelum event besar untuk hitung kebutuhan stok. Juga gunakan untuk rencanakan PO bulan depan.',
+    usage: 'Cek setiap Senin untuk rencanakan PO minggu ini. Gunakan juga H-45 sebelum event besar (Lebaran, Harbolnas) untuk hitung tambahan stok yang dibutuhkan.',
+    roles: ['PPIC', 'Owner', 'Purchasing'],
+  },
+  {
+    path: '/smart-events',
+    label: 'Smart Events',
+    color: '#F59E0B',
+    iconBg: '#FFFBEB',
+    icon: <IconStar />,
+    purpose: 'Analisa AI untuk event musiman mendatang — hitung otomatis berapa stok tambahan yang dibutuhkan per SKU untuk setiap event.',
+    features: [
+      'Deteksi event otomatis: sistem membaca Event Calendar di Settings dan menampilkan event yang akan datang',
+      'Rekomendasi per event: untuk setiap event (Lebaran, Harbolnas, dll), tampilkan daftar SKU yang perlu ditambah stoknya',
+      'Kolom rekomendasi: Stok Sekarang, Jual/Hari, Rec. Beli Tambahan, Est. Biaya, Alasan',
+      'Badge urgency: ⚡ URGENT jika event ≤ 7 hari lagi, beserta countdown hari',
+      'Demand multiplier: tiap event punya faktor pengali (misal Lebaran = 2× normal) — bisa diatur di Settings',
+      'Total budget estimate: tampilkan total biaya tambahan stok yang dibutuhkan per event',
+      'Riwayat analisa: simpan hasil analisa sebelumnya untuk perbandingan',
+      'Butuh Event Calendar: isi event di Settings → Tab Event Calendar terlebih dahulu',
+    ],
+    usage: 'Gunakan 4–6 minggu sebelum event besar. Klik "Analisa Sekarang" → lihat SKU yang direkomendasikan → gunakan hasilnya untuk buat PO tambahan.',
     roles: ['PPIC', 'Owner', 'Purchasing'],
   },
   {
@@ -243,7 +269,8 @@ const workflows = [
     steps: [
       { time: 'Pagi', action: 'Review Purchase Planner lengkap', detail: 'Filter "Persiapan" (kuning) — siapkan PO untuk minggu ini sebelum jadi kritis.' },
       { time: 'Siang', action: 'Update status PO', detail: 'Di PO & Budget, update PO yang sudah dibayar menjadi Lunas.' },
-      { time: 'Siang', action: 'Cek Forecast Stok', detail: 'Lihat SKU dengan badge pre-event urgent — ada event besar dalam 2 minggu?' },
+      { time: 'Siang', action: 'Cek Forecast Stok', detail: 'Lihat SKU dengan status Urgent — ada yang habis sebelum PO tiba? Segera siapkan order.' },
+      { time: 'Sore', action: 'Cek Smart Events', detail: 'Ada event ≤ 30 hari? Klik "Analisa Sekarang" → lihat rekomendasi stok tambahan per SKU.' },
       { time: 'Sore', action: 'Review Supplier Hub', detail: 'Ada supplier baru? Ada yang perlu di-update kontaknya?' },
     ],
   },
@@ -280,11 +307,12 @@ const roles = [
     name: 'Tim PPIC / Purchasing',
     color: '#3B82F6',
     bg: '#EFF6FF',
-    pages: ['Purchase Planner', 'PO & Budget', 'Forecast Stok', 'Supplier Hub'],
+    pages: ['Purchase Planner', 'Forecast Stok', 'Smart Events', 'PO & Budget', 'Supplier Hub'],
     focus: 'Operasional harian: pastikan stok tidak pernah habis, PO selalu tepat waktu, supplier terkelola.',
     tips: [
       'Mulai hari dengan Planner — filter "Beli Sekarang", buat PO untuk semua yang merah',
       'Gunakan fitur Draft PO di Planner untuk generate daftar pembelian per supplier sekaligus',
+      'Smart Events: cek 4–6 minggu sebelum event besar untuk siapkan stok tambahan',
       'Set lead time akurat di Settings → kalkulasi reorder point akan lebih presisi',
       'Badge ABC di Planner: prioritaskan SKU A dulu, baru B dan C',
     ],
