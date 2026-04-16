@@ -26,7 +26,6 @@ export async function GET() {
     const orders = Array.isArray(listBody) ? listBody : (Array.isArray(listBody.data) ? listBody.data : []) as Record<string, unknown>[];
 
     const firstOrder = orders[0] as Record<string, unknown> | undefined;
-    const orderKeys = firstOrder ? Object.keys(firstOrder) : [];
     const orderId = firstOrder
       ? (firstOrder.salesorder_id ?? firstOrder.id ?? firstOrder.order_id ?? firstOrder.no ?? 'unknown')
       : 'none';
@@ -46,33 +45,30 @@ export async function GET() {
       return { status: 200, keys: Object.keys(b), sample: JSON.stringify(b).slice(0, 400) };
     }
 
-    // Fetch invoice list to get doc_id
-    const invListRes = await probe(token, `/sales/invoices/?page=1&pageSize=3`);
-    const invBody = invListRes.body as Record<string, unknown>;
-    const invoices = Array.isArray(invBody) ? invBody : (Array.isArray(invBody.data) ? invBody.data : []) as Record<string, unknown>[];
-    const firstInv = invoices[0] as Record<string, unknown> | undefined;
-    const docId = firstInv ? (firstInv.doc_id ?? firstInv.id ?? 'none') : 'none';
-    const invSalesorderId = firstInv ? (firstInv.salesorder_id ?? 'none') : 'none';
+    const salesorderNo = firstOrder ? String(firstOrder.salesorder_no ?? '') : '';
+    const internalSoNo = firstOrder ? String(firstOrder.internal_so_number ?? '') : '';
 
-    const [det5, det6, det7, det8] = await Promise.all([
-      docId !== 'none' ? probe(token, `/sales/invoices/${docId}/`) : Promise.resolve({ status: 0, body: 'no id' }),
-      invSalesorderId !== 'none' ? probe(token, `/sales/orders/completed/${invSalesorderId}/`) : Promise.resolve({ status: 0, body: 'no id' }),
-      probe(token, `/sales/pos/?page=1&pageSize=3`),
-      probe(token, `/inventory/items/movements/?page=1&pageSize=3`),
+    const [det5, det6, det7, det8, det9] = await Promise.all([
+      salesorderNo ? probe(token, `/sales/orders/completed/${encodeURIComponent(salesorderNo)}/`) : Promise.resolve({ status: 0, body: 'no no' }),
+      internalSoNo ? probe(token, `/sales/orders/completed/${encodeURIComponent(internalSoNo)}/`) : Promise.resolve({ status: 0, body: 'no so' }),
+      probe(token, `/reporting/item-sales/?page=1&pageSize=3`),
+      probe(token, `/inventory/stock-mutations/?page=1&pageSize=3`),
+      probe(token, `/sales/reports/items/?page=1&pageSize=3`),
     ]);
 
     return NextResponse.json({
       probedId: orderId,
-      firstOrderKeys: orderKeys,
-      docId,
-      invSalesorderId,
+      salesorderNo,
+      internalSoNo,
+      firstOrderSample: firstOrder ? JSON.stringify(firstOrder).slice(0, 600) : null,
       'detail /completed/{id}': summarize(det1),
       'detail /orders/{id}': summarize(det2),
       'detail /salesorder/{id}': summarize(det3),
-      'invoice detail /invoices/{docId}': summarize(det5),
-      'order via invoice salesorder_id': summarize(det6),
-      '/sales/pos/': summarize(det7),
-      '/inventory/items/movements/': summarize(det8),
+      'detail via salesorder_no string': summarize(det5),
+      'detail via internal_so_number': summarize(det6),
+      '/reporting/item-sales/': summarize(det7),
+      '/inventory/stock-mutations/': summarize(det8),
+      '/sales/reports/items/': summarize(det9),
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
