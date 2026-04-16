@@ -10,6 +10,25 @@ async function kvSet(key: string, value: unknown, exSeconds = 7200) {
   memCache[key] = { value, expiresAt: Date.now() + exSeconds * 1000 };
 }
 
+/** Persist a key/value to Supabase KV so data survives across serverless instances */
+async function supabaseKvSet(key: string, data: unknown): Promise<void> {
+  const base = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL ?? '';
+  const apiKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_ANON_KEY ?? '';
+  if (!base || !apiKey) return; // skip if Supabase not configured
+  try {
+    await fetch(`${base}/rest/v1/foodstocks_kv`, {
+      method: 'POST',
+      headers: {
+        apikey: apiKey,
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify({ key, data, updated_at: new Date().toISOString() }),
+    });
+  } catch { /* non-fatal — memory cache still works */ }
+}
+
 async function jubelioFetchAll(path: string, token: string): Promise<unknown[]> {
   const results: unknown[] = [];
   let page = 1;
@@ -97,13 +116,19 @@ export async function GET() {
     const pos = purchaseOrders.status === 'fulfilled' ? purchaseOrders.value : [];
     const supList = suppliers.status === 'fulfilled' ? suppliers.value : [];
 
-    // Persist to KV cache (2 hour TTL)
+    // Persist to in-memory KV cache (2 hour TTL)
     await Promise.all([
       kvSet('foodstocks:inventory', inventory, 7200),
       kvSet('foodstocks:velocity', velocityMap, 7200),
       kvSet('foodstocks:pos', pos, 7200),
       kvSet('foodstocks:suppliers', supList, 7200),
       kvSet('foodstocks:sync_at', startedAt, 7200),
+    ]);
+
+    // Persist velocity + sync timestamp to Supabase so all serverless instances can read it
+    await Promise.all([
+      supabaseKvSet('velocity_map', velocityMap),
+      supabaseKvSet('sync_at', startedAt),
     ]);
 
     return NextResponse.json({

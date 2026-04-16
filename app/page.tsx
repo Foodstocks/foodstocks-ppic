@@ -672,6 +672,56 @@ export default function Overview() {
             );
           })()}
 
+          {/* ── Stock Level Ticker ──────────────────────────── */}
+          {hasVelocity && (() => {
+            const reorderItems = invItems.filter(item => {
+              const vel = velocityMap[item.sku] ?? 0;
+              const lt = leadTimeMap[item.sku] ?? leadTimeMap['__default__'] ?? 3;
+              if (vel <= 0) return false;
+              const days = item.stock / vel;
+              return days > lt && days <= lt * 1.5;
+            }).length;
+            const safeItems = invItems.filter(item => {
+              const vel = velocityMap[item.sku] ?? 0;
+              const lt = leadTimeMap[item.sku] ?? leadTimeMap['__default__'] ?? 3;
+              if (vel <= 0) return false;
+              return item.stock / vel > lt * 1.5;
+            }).length;
+
+            const tiers: { label: string; count: number; color: string; bg: string; border: string; filter: string }[] = [
+              { label: 'Kritis', count: kritisCount, color: '#D60001', bg: '#FEF2F2', border: '#FECACA', filter: 'REORDER_NOW' },
+              { label: 'Perlu Reorder', count: reorderItems, color: '#D97706', bg: '#FFFBEB', border: '#FDE68A', filter: 'PREPARE' },
+              { label: 'Aman', count: safeItems, color: '#059669', bg: '#F0FDF4', border: '#A7F3D0', filter: 'SAFE' },
+            ];
+
+            return (
+              <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
+                {tiers.map(tier => (
+                  <a
+                    key={tier.label}
+                    href={`/planner?filter=${tier.filter}`}
+                    style={{
+                      flex: 1, minWidth: 130,
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      padding: '10px 14px',
+                      background: tier.bg, border: `1px solid ${tier.border}`, borderRadius: 10,
+                      textDecoration: 'none', cursor: 'pointer',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: tier.color, flexShrink: 0 }} />
+                      <span style={{ fontSize: 13, fontWeight: 600, color: tier.color }}>{tier.count}</span>
+                      <span style={{ fontSize: 12, color: '#6B7280' }}>{tier.label}</span>
+                    </div>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={tier.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, opacity: 0.7 }}>
+                      <polyline points="9 18 15 12 9 6"/>
+                    </svg>
+                  </a>
+                ))}
+              </div>
+            );
+          })()}
+
           {/* ── Smart Alerts ────────────────────────────────── */}
           <div style={{ background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, padding: '20px 20px 16px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>

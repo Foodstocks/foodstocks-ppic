@@ -35,6 +35,7 @@ interface PlannerItem {
   hasVelocity: boolean;
   movement: MovementCategory;
   activeEvent: string | null;
+  abcClass: 'A' | 'B' | 'C';
 }
 
 const statusConfig: Record<PlannerStatus, { label: string; bg: string; color: string; dot: string }> = {
@@ -212,8 +213,29 @@ export default function PurchasePlanner() {
           estimatedCost: Math.max(1, recommendedQty) * hpp,
           status, hasVelocity, movement,
           activeEvent: activeEvent?.name ?? null,
+          abcClass: 'C' as 'A' | 'B' | 'C', // placeholder, calculated below
         };
       });
+
+      // ABC Classification — rank SKUs by monthly revenue contribution
+      // A = top items covering ~80% of total revenue, B = next ~15%, C = rest
+      const totalRevenue = computed.reduce((s, i) => s + i.avgDailySales * i.sellingPrice * 30, 0);
+      if (totalRevenue > 0) {
+        const sorted = [...computed].sort((a, b) =>
+          (b.avgDailySales * b.sellingPrice) - (a.avgDailySales * a.sellingPrice)
+        );
+        let cumulative = 0;
+        const abcMap: Record<string, 'A' | 'B' | 'C'> = {};
+        for (const item of sorted) {
+          const rev = item.avgDailySales * item.sellingPrice * 30;
+          cumulative += rev;
+          const pct = cumulative / totalRevenue;
+          abcMap[item.sku] = pct <= 0.80 ? 'A' : pct <= 0.95 ? 'B' : 'C';
+        }
+        for (const item of computed) {
+          item.abcClass = abcMap[item.sku] ?? 'C';
+        }
+      }
 
       setItems(computed.sort((a, b) => {
         const order: Record<PlannerStatus, number> = { REORDER_NOW: 0, PREPARE: 1, NO_DATA: 2, SAFE: 3 };
@@ -410,7 +432,19 @@ export default function PurchasePlanner() {
                   <tr key={r.sku} style={{ background: isUrgent ? 'rgba(239,68,68,0.035)' : 'transparent' }}>
                     {/* Produk */}
                     <td style={{ ...s.td, maxWidth: 200 }}>
-                      <div style={{ fontWeight: 600, color: '#111827', wordBreak: 'break-word' }}>{r.name}</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                        <div style={{ fontWeight: 600, color: '#111827', wordBreak: 'break-word' }}>{r.name}</div>
+                        {r.hasVelocity && (
+                          <span style={{
+                            fontSize: 10, fontWeight: 700, padding: '1px 6px', borderRadius: 4, flexShrink: 0,
+                            background: r.abcClass === 'A' ? '#FEF2F2' : r.abcClass === 'B' ? '#FFFBEB' : '#F9FAFB',
+                            color: r.abcClass === 'A' ? '#D60001' : r.abcClass === 'B' ? '#D97706' : '#9CA3AF',
+                            border: `1px solid ${r.abcClass === 'A' ? '#FECACA' : r.abcClass === 'B' ? '#FDE68A' : '#E5E7EB'}`,
+                          }}>
+                            {r.abcClass}
+                          </span>
+                        )}
+                      </div>
                       <div style={{ fontSize: 11, color: '#9CA3AF', fontFamily: 'monospace', marginTop: 1 }}>{r.sku}</div>
                       {r.activeEvent && (
                         <div style={{ fontSize: 10, color: '#8b5cf6', marginTop: 2, display: 'flex', alignItems: 'center', gap: 3 }}>
