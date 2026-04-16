@@ -426,7 +426,7 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div style={s.page}>
+    <div className="page-root" style={s.page}>
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
           <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(107,114,128,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
@@ -440,7 +440,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Tab bar */}
-      <div style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid #E4E7ED', flexWrap: 'wrap' }}>
+      <div className="tab-bar" style={{ display: 'flex', gap: 4, marginBottom: 20, borderBottom: '1px solid #E4E7ED', flexWrap: 'wrap' }}>
         {TABS.map(t => (
           <button key={t.id} onClick={() => setTab(t.id)} style={{
             ...s.btn, padding: '10px 16px', background: 'transparent',
@@ -502,6 +502,7 @@ export default function SettingsPage() {
           </div>
 
           <input type="text" placeholder="🔍 Cari SKU atau nama produk..." value={hppSearch} onChange={e => setHppSearch(e.target.value)}
+            className="search-input"
             style={{ ...s.input, width: 320, marginBottom: 12 }} />
 
           {loadingInv ? (

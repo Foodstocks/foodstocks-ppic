@@ -83,3 +83,36 @@ input:focus, select:focus, textarea:focus {
 
 /* ── Button base ──────────────────────────────────── */
 button { font-family: inherit; cursor: pointer; }
+
+/* ── Mobile responsive utilities ─────────────────────── */
+@media (max-width: 640px) {
+  /* Page container: reduce padding on small screens */
+  .page-root {
+    padding: 12px 12px 24px !important;
+  }
+
+  /* Search / filter inputs: stretch full-width on mobile */
+  .search-input {
+    width: 100% !important;
+    min-width: unset !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Forecast two-column layout collapses to one column */
+  .forecast-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Settings tab bar: scroll horizontally, no wrap */
+  .tab-bar {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    padding-bottom: 2px;
+  }
+  .tab-bar::-webkit-scrollbar { height: 0; }
+
+  /* Dashboard KPI grid: narrower min card width */
+  .kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)) !important;
+  }
+}

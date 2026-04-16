@@ -301,7 +301,7 @@ export default function PurchasePlanner() {
   ];
 
   return (
-    <div style={s.page}>
+    <div className="page-root" style={s.page}>
       {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12 }}>
@@ -364,6 +364,7 @@ export default function PurchasePlanner() {
           placeholder="Cari SKU atau produk..."
           value={search}
           onChange={e => { setSearch(e.target.value); resetPage(); }}
+          className="search-input"
           style={{ background: '#F9FAFB', border: '1px solid #E4E7ED', borderRadius: 8, padding: '7px 14px', color: '#111827', fontSize: 13, outline: 'none', width: 220 }}
         />
         <div style={{ width: 1, height: 28, background: '#E4E7ED', margin: '0 2px' }} />

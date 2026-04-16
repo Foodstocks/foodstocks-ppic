@@ -524,7 +524,7 @@ export default function Overview() {
   }).length;
 
   return (
-    <div style={{ background: '#F7F8FA', minHeight: '100vh', padding: '28px 28px 48px', maxWidth: 1240, fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="page-root" style={{ background: '#F7F8FA', minHeight: '100vh', padding: '28px 28px 48px', maxWidth: 1240, fontFamily: 'Inter, system-ui, sans-serif' }}>
 
       {/* ── Header ──────────────────────────────────────────── */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
@@ -567,7 +567,7 @@ export default function Overview() {
       ) : (
         <>
           {/* ── KPI Cards ───────────────────────────────────── */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
+          <div className="kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
 
             {/* KPI 1: Total SKU Aktif */}
             <div style={{ background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, padding: '20px 20px 18px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>

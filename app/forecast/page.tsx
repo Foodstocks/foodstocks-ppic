@@ -248,7 +248,7 @@ export default function ForecastPage() {
   if (!loading && items.length === 0) {
     const hasVelData = velInfo && velInfo.velTotal > 0;
     return (
-      <div style={s.page}>
+      <div className="page-root" style={s.page}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}><IconForecast /></div>
@@ -396,7 +396,7 @@ export default function ForecastPage() {
       )}
 
       {/* Chart + SKU List */}
-      <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 20, alignItems: 'start' }}>
+      <div className="forecast-layout" style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: 20, alignItems: 'start' }}>
         {/* SKU List Panel */}
         <div style={s.card}>
           <div style={{ fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 12 }}>Pilih SKU untuk Proyeksi</div>

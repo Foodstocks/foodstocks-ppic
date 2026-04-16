@@ -202,7 +202,7 @@ export default function COGSPage() {
   }
 
   return (
-    <div style={s.page}>
+    <div className="page-root" style={s.page}>
       {/* Header */}
       <div style={{ marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>

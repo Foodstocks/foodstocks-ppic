@@ -221,7 +221,7 @@ export default function InventoryPage() {
   ];
 
   return (
-    <div style={s.page}>
+    <div className="page-root" style={s.page}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
@@ -349,13 +349,13 @@ export default function InventoryPage() {
 
       {/* Filters */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ position: 'relative' }}>
+        <div className="search-input" style={{ position: 'relative' }}>
           <input
             type="text"
             placeholder="Cari SKU atau nama produk..."
             value={search}
             onChange={e => { setSearch(e.target.value); resetPage(); }}
-            style={{ ...s.input, paddingLeft: 32 }}
+            style={{ ...s.input, paddingLeft: 32, width: '100%' }}
           />
           <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         </div>
