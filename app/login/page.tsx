@@ -44,7 +44,7 @@ export default function LoginPage() {
       padding: '24px',
       fontFamily: 'Inter, system-ui, sans-serif',
     }}>
-      <div style={{
+      <div className="login-outer" style={{
         display: 'flex',
         width: '100%',
         maxWidth: 960,
@@ -55,7 +55,7 @@ export default function LoginPage() {
       }}>
 
         {/* ── LEFT: Form ── */}
-        <div style={{
+        <div className="login-left" style={{
           flex: 1,
           background: '#fff',
           display: 'flex',
@@ -63,6 +63,14 @@ export default function LoginPage() {
           justifyContent: 'center',
           padding: '48px 56px',
         }}>
+          {/* Logo — hanya tampil di mobile saat panel kanan disembunyikan */}
+          <img
+            src="/logo.png"
+            alt="Foodstocks"
+            style={{ height: 40, width: 'auto', objectFit: 'contain', marginBottom: 24, display: 'block' }}
+            className="login-logo-mobile"
+          />
+
           <h1 style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 6px' }}>
             Selamat datang kembali
           </h1>
@@ -169,7 +177,7 @@ export default function LoginPage() {
         </div>
 
         {/* ── RIGHT: Branding Panel ── */}
-        <div style={{
+        <div className="login-right" style={{
           flex: 1,
           background: 'linear-gradient(140deg, #FF0101 0%, #D60001 55%, #B40001 100%)',
           padding: '56px 48px',

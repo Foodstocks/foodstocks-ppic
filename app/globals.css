@@ -85,6 +85,10 @@ input:focus, select:focus, textarea:focus {
 button { font-family: inherit; cursor: pointer; }
 
 /* ── Mobile responsive utilities ─────────────────────── */
+
+/* Prevent any element from causing horizontal page scroll */
+body { overflow-x: hidden; }
+
 @media (max-width: 640px) {
   /* Page container: reduce padding on small screens */
   .page-root {
@@ -115,4 +119,28 @@ button { font-family: inherit; cursor: pointer; }
   .kpi-grid {
     grid-template-columns: repeat(auto-fit, minmax(155px, 1fr)) !important;
   }
+
+  /* Dashboard 2-column grid: collapse to single column */
+  .dash-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Login: hide right branding panel, show only form */
+  .login-right {
+    display: none !important;
+  }
+  .login-outer {
+    min-height: unset !important;
+    border-radius: 16px !important;
+  }
+  .login-left {
+    padding: 40px 28px !important;
+  }
+}
+
+/* Logo di form login: sembunyikan di desktop (panel kanan sudah ada logo),
+   tampilkan di mobile (panel kanan tersembunyi) */
+.login-logo-mobile { display: none; }
+@media (max-width: 640px) {
+  .login-logo-mobile { display: block !important; }
 }

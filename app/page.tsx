@@ -775,7 +775,7 @@ export default function Overview() {
           </div>
 
           {/* ── Two column: Stock Health Chart + Recent POs ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+          <div className="dash-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
 
             {/* Stock Health Bar Chart */}
             <div style={{ background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
