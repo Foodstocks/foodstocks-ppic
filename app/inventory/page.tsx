@@ -72,6 +72,8 @@ export default function InventoryPage() {
   const [error, setError] = useState<string | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(25);
 
   useEffect(() => {
     async function load() {
@@ -154,6 +156,13 @@ export default function InventoryPage() {
     const matchMovement = filterMovement === 'ALL' || item.movement === filterMovement;
     return matchSearch && matchStatus && matchABC && matchMovement;
   });
+
+  const totalPages = Math.ceil(filtered.length / perPage);
+  const safePage = Math.min(page, Math.max(1, totalPages));
+  const paginated = filtered.slice((safePage - 1) * perPage, safePage * perPage);
+
+  // Reset to page 1 when filter/search changes
+  const resetPage = () => setPage(1);
 
   const deadStockItems = rows.filter(r => r.agingCategory === 'DEAD');
   const kritisItems = rows.filter(r => r.status === 'KRITIS');
@@ -335,7 +344,7 @@ export default function InventoryPage() {
             type="text"
             placeholder="Cari SKU atau nama produk..."
             value={search}
-            onChange={e => setSearch(e.target.value)}
+            onChange={e => { setSearch(e.target.value); resetPage(); }}
             style={{ ...s.input, paddingLeft: 32 }}
           />
           <svg style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#9CA3AF' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -348,7 +357,7 @@ export default function InventoryPage() {
             { key: 'AMAN',      label: `Aman (${kpis.aman})` },
             { key: 'OVERSTOCK', label: `Overstock (${kpis.overstock})` },
           ].map(f => (
-            <button key={f.key} type="button" onClick={() => setFilterStatus(f.key)} style={{
+            <button key={f.key} type="button" onClick={() => { setFilterStatus(f.key); resetPage(); }} style={{
               ...s.btn, padding: '6px 12px', fontSize: 12,
               background: filterStatus === f.key ? '#D60001' : '#fff',
               color: filterStatus === f.key ? '#fff' : '#374151',
@@ -358,7 +367,7 @@ export default function InventoryPage() {
         </div>
         <div style={{ display: 'flex', gap: 6 }}>
           {['ALL', 'A', 'B', 'C'].map(f => (
-            <button key={f} type="button" onClick={() => setFilterABC(f)} style={{
+            <button key={f} type="button" onClick={() => { setFilterABC(f); resetPage(); }} style={{
               ...s.btn, padding: '6px 12px', fontSize: 12,
               background: filterABC === f ? '#8B5CF6' : '#fff',
               color: filterABC === f ? '#fff' : '#374151',
@@ -377,7 +386,7 @@ export default function InventoryPage() {
             const mc = key !== 'ALL' ? MOVEMENT_CONFIGS[key as MovementCategory] : null;
             const activeColor = mc?.color ?? '#3B82F6';
             return (
-              <button key={key} type="button" onClick={() => setFilterMovement(key)} style={{
+              <button key={key} type="button" onClick={() => { setFilterMovement(key); resetPage(); }} style={{
                 ...s.btn, padding: '6px 12px', fontSize: 12,
                 background: filterMovement === key ? activeColor : '#fff',
                 color: filterMovement === key ? '#fff' : '#374151',
@@ -424,7 +433,7 @@ export default function InventoryPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map(item => {
+                {paginated.map(item => {
                   const margin = item.sellPrice > 0 ? ((item.sellPrice - item.hpp) / item.sellPrice * 100).toFixed(1) : '0.0';
                   const cfg = statusCfg[item.status];
                   const isKritis = item.status === 'KRITIS';
@@ -509,10 +518,79 @@ export default function InventoryPage() {
         )}
       </div>
 
-      {/* Footer count */}
+      {/* Pagination */}
       {!loading && filtered.length > 0 && (
-        <div style={{ marginTop: 12, fontSize: 12, color: '#9CA3AF', textAlign: 'right' }}>
-          {filtered.length} SKU ditampilkan
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 16, flexWrap: 'wrap', gap: 10 }}>
+          {/* Info */}
+          <div style={{ fontSize: 12, color: '#6B7280' }}>
+            Menampilkan <strong>{(safePage - 1) * perPage + 1}–{Math.min(safePage * perPage, filtered.length)}</strong> dari <strong>{filtered.length}</strong> SKU
+          </div>
+
+          {/* Per page + nav */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {/* Per page selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: '#6B7280' }}>
+              Tampilkan
+              <select
+                title="Jumlah SKU per halaman"
+                value={perPage}
+                onChange={e => { setPerPage(Number(e.target.value)); setPage(1); }}
+                style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #E5E7EB', fontSize: 12, color: '#374151', background: '#fff', cursor: 'pointer' }}
+              >
+                {[25, 50, 100].map(n => <option key={n} value={n}>{n}</option>)}
+              </select>
+              per halaman
+            </div>
+
+            {/* Page buttons */}
+            <div style={{ display: 'flex', gap: 4 }}>
+              <button
+                type="button"
+                onClick={() => setPage(1)}
+                disabled={safePage === 1}
+                style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #E5E7EB', background: '#fff', cursor: safePage === 1 ? 'not-allowed' : 'pointer', fontSize: 12, color: safePage === 1 ? '#D1D5DB' : '#374151' }}
+              >«</button>
+              <button
+                type="button"
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={safePage === 1}
+                style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #E5E7EB', background: '#fff', cursor: safePage === 1 ? 'not-allowed' : 'pointer', fontSize: 12, color: safePage === 1 ? '#D1D5DB' : '#374151' }}
+              >‹</button>
+
+              {/* Page number buttons — show max 5 around current */}
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(p => p === 1 || p === totalPages || Math.abs(p - safePage) <= 2)
+                .reduce<(number | '...')[]>((acc, p, idx, arr) => {
+                  if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push('...');
+                  acc.push(p);
+                  return acc;
+                }, [])
+                .map((p, i) => p === '...' ? (
+                  <span key={`ellipsis-${i}`} style={{ padding: '5px 8px', fontSize: 12, color: '#9CA3AF' }}>…</span>
+                ) : (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPage(p as number)}
+                    style={{ padding: '5px 10px', borderRadius: 6, border: `1px solid ${safePage === p ? '#D60001' : '#E5E7EB'}`, background: safePage === p ? '#D60001' : '#fff', color: safePage === p ? '#fff' : '#374151', cursor: 'pointer', fontSize: 12, fontWeight: safePage === p ? 700 : 400, minWidth: 34 }}
+                  >{p}</button>
+                ))
+              }
+
+              <button
+                type="button"
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={safePage === totalPages}
+                style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #E5E7EB', background: '#fff', cursor: safePage === totalPages ? 'not-allowed' : 'pointer', fontSize: 12, color: safePage === totalPages ? '#D1D5DB' : '#374151' }}
+              >›</button>
+              <button
+                type="button"
+                onClick={() => setPage(totalPages)}
+                disabled={safePage === totalPages}
+                style={{ padding: '5px 10px', borderRadius: 6, border: '1px solid #E5E7EB', background: '#fff', cursor: safePage === totalPages ? 'not-allowed' : 'pointer', fontSize: 12, color: safePage === totalPages ? '#D1D5DB' : '#374151' }}
+              >»</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
