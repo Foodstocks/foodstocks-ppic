@@ -388,20 +388,27 @@ export default function SettingsPage() {
   );
 
   const TABS = [
-    { id: 'hpp',        label: '💰 HPP per SKU' },
-    { id: 'velocity',   label: '📊 Stok & Velocity' },
-    { id: 'leadtime',   label: '⏱️ Lead Time' },
-    { id: 'events',     label: '📅 Event Calendar' },
-    { id: 'jubelio',    label: '🔗 Jubelio API' },
-    { id: 'parameters', label: '📐 Parameter Bisnis' },
-    { id: 'roadmap',    label: '🗺️ Roadmap' },
+    { id: 'hpp',        label: 'HPP per SKU' },
+    { id: 'velocity',   label: 'Stok & Velocity' },
+    { id: 'leadtime',   label: 'Lead Time' },
+    { id: 'events',     label: 'Event Calendar' },
+    { id: 'jubelio',    label: 'Jubelio API' },
+    { id: 'parameters', label: 'Parameter Bisnis' },
+    { id: 'roadmap',    label: 'Roadmap' },
   ];
 
   return (
     <div style={s.page}>
       <div style={{ marginBottom: 24 }}>
-        <div style={s.title}>⚙️ Settings</div>
-        <div style={{ fontSize: 14, color: '#6B7280' }}>Konfigurasi HPP, koneksi Jubelio, dan parameter bisnis</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+          <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(107,114,128,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div style={s.title}>Settings</div>
+        </div>
+        <div style={{ fontSize: 14, color: '#6B7280', paddingLeft: 46 }}>Konfigurasi HPP, koneksi Jubelio, dan parameter bisnis</div>
       </div>
 
       {/* Tab bar */}
@@ -422,7 +429,7 @@ export default function SettingsPage() {
         <div style={s.card}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 8 }}>💰 Input HPP per SKU</div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 8 }}>Input HPP per SKU</div>
               <div style={{ fontSize: 13, color: '#6B7280' }}>
                 Masukkan harga beli aktual per SKU. Jika kosong, sistem pakai estimasi 65% dari harga jual.
                 {hppManualCount > 0 && <span style={{ color: '#10b981', marginLeft: 8 }}>{hppManualCount} SKU sudah diinput manual.</span>}
@@ -476,8 +483,8 @@ export default function SettingsPage() {
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                 <thead style={{ position: 'sticky', top: 0, background: '#fff', zIndex: 1 }}>
                   <tr>
-                    {['SKU', 'Nama Produk', 'Harga Jual', 'Estimasi HPP (65%)', 'HPP Manual (Rp) ✏️', 'Supplier ✏️', 'Margin'].map(h => (
-                      <th key={h} style={{ ...s.thead, color: h.includes('HPP Manual') || h.includes('Supplier') ? '#10b981' : '#6B7280' }}>{h}</th>
+                    {['SKU', 'Nama Produk', 'Harga Jual', 'Estimasi HPP (65%)', 'HPP Manual (Rp)', 'Supplier', 'Margin'].map(h => (
+                      <th key={h} style={{ ...s.thead, color: h === 'HPP Manual (Rp)' || h === 'Supplier' ? '#10b981' : '#6B7280' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -540,7 +547,7 @@ export default function SettingsPage() {
       {tab === 'velocity' && (
         <div>
           <div style={{ ...s.card, background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.2)', marginBottom: 16 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#60a5fa', marginBottom: 6 }}>📖 Panduan Import Stok & Velocity</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#60a5fa', marginBottom: 6 }}>Panduan Import Stok &amp; Velocity</div>
             <div style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.8 }}>
               <strong style={{ color: '#374151' }}>Langkah 1:</strong> Jubelio → <strong>Laporan</strong> → <strong>Laporan Penjualan</strong> → filter 30 hari → <strong>Export CSV</strong><br />
               <strong style={{ color: '#374151' }}>Langkah 2:</strong> Di Excel: hitung <code style={{ color: '#f59e0b', fontSize: 12 }}>total_qty ÷ 30</code> per SKU → simpan 2 kolom: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code><br />
@@ -552,7 +559,7 @@ export default function SettingsPage() {
           <div style={s.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>📈 Velocity (Rata-rata Penjualan Harian)</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>Velocity (Rata-rata Penjualan Harian)</div>
                 <div style={{ fontSize: 13, color: '#6B7280' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code>&nbsp;&nbsp;Contoh: <code style={{ color: '#374151', fontSize: 11 }}>GH-MR-MK-PJ-0648,4.5</code></div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -562,7 +569,7 @@ export default function SettingsPage() {
             </div>
             {/* Panduan export manual dari Jubelio */}
             <div style={{ padding: '14px 16px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 8, marginBottom: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#f59e0b', marginBottom: 8 }}>📋 Cara Export Velocity dari Jubelio</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#f59e0b', marginBottom: 8 }}>Cara Export Velocity dari Jubelio</div>
               <div style={{ fontSize: 12, color: '#374151', lineHeight: 1.9 }}>
                 <strong style={{ color: '#111827' }}>1.</strong> Buka <strong>Jubelio</strong> → menu <strong>Laporan</strong> → <strong>Laporan Penjualan</strong><br />
                 <strong style={{ color: '#111827' }}>2.</strong> Filter periode <strong>30 hari terakhir</strong> → klik <strong>Export Excel/CSV</strong><br />
@@ -570,7 +577,7 @@ export default function SettingsPage() {
                 <strong style={{ color: '#111827' }}>4.</strong> Buat CSV 2 kolom: <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>SKU,avg_harian</code> → paste di bawah
               </div>
               <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(100,116,139,0.1)', borderRadius: 6, fontSize: 11, color: '#6B7280' }}>
-                ℹ️ Jubelio API tidak menyediakan data penjualan per SKU — harus export manual. Data velocity dipakai untuk Forecast Stok, Reorder Point, dan Dashboard.
+                Jubelio API tidak menyediakan data penjualan per SKU — harus export manual. Data velocity dipakai untuk Forecast Stok, Reorder Point, dan Dashboard.
               </div>
             </div>
 
@@ -617,7 +624,7 @@ export default function SettingsPage() {
           <div style={s.card}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, flexWrap: 'wrap', gap: 8 }}>
               <div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>📦 Snapshot Stok (opsional)</div>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>Snapshot Stok (opsional)</div>
                 <div style={{ fontSize: 13, color: '#6B7280' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,stok</code>&nbsp; Jika kosong, planner pakai data Jubelio live.</div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
@@ -663,10 +670,10 @@ export default function SettingsPage() {
       {tab === 'leadtime' && (
         <div>
           <div style={s.card}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 8 }}>⏱️ Lead Time per Supplier</div>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 8 }}>Lead Time per Supplier</div>
             <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>Lead time = hari dari pesan ke tiba. Dipakai untuk menghitung Reorder Point. Assign supplier ke SKU di tab HPP agar lookup akurat.</div>
             <div style={{ padding: '16px 20px', background: '#F9FAFB', borderRadius: 10, marginBottom: 20, border: '1px solid #E4E7ED' }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: 10 }}>🌐 Default Lead Time (berlaku jika supplier tidak dikonfigurasi)</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#111827', marginBottom: 10 }}>Default Lead Time (berlaku jika supplier tidak dikonfigurasi)</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <input type="number" min="1" max="90" value={ltDefault} onChange={e => setLtDefault(e.target.value)}
                   style={{ ...s.input, width: 80, marginBottom: 0, textAlign: 'center' }} />
@@ -717,7 +724,7 @@ export default function SettingsPage() {
           </div>
 
           <div style={{ ...s.card, background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.15)' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#60a5fa', marginBottom: 8 }}>📖 Cara kerja Lead Time</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#60a5fa', marginBottom: 8 }}>Cara kerja Lead Time</div>
             <div style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.7 }}>
               <strong style={{ color: '#374151' }}>Reorder Point</strong> = (Avg Jual/Hari × Lead Time) + Safety Stock<br />
               <strong style={{ color: '#374151' }}>Safety Stock</strong> = Avg Jual/Hari × Multiplier (A: 3×, B: 2×, C: 1×)<br /><br />
@@ -731,9 +738,9 @@ export default function SettingsPage() {
       {/* ─── JUBELIO TAB ────────────────────────────────────── */}
       {tab === 'jubelio' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>🔗 Jubelio WMS Integration</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>Jubelio WMS Integration</div>
           <div style={{ padding: '12px 16px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: 8, marginBottom: 20, fontSize: 13, color: '#374151' }}>
-            ✅ <strong style={{ color: '#10b981' }}>Fase 2 Aktif:</strong> Koneksi Jubelio sudah terhubung via environment variable di Vercel. Credentials dikonfigurasi langsung di Vercel project settings.
+            <strong style={{ color: '#10b981' }}>Fase 2 Aktif:</strong> Koneksi Jubelio sudah terhubung via environment variable di Vercel. Credentials dikonfigurasi langsung di Vercel project settings.
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
             {[
@@ -764,7 +771,7 @@ export default function SettingsPage() {
       {/* ─── PARAMETERS TAB ─────────────────────────────────── */}
       {tab === 'parameters' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>📐 Parameter Bisnis</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>Parameter Bisnis</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div><label style={s.label}>Budget PO Bulanan (Rp)</label><input type="number" value={budgetPO} onChange={e => setBudgetPO(e.target.value)} style={s.input} /></div>
             <div><label style={s.label}>Target COGS % dari Revenue</label><input type="number" value={targetCOGS} onChange={e => setTargetCOGS(e.target.value)} style={s.input} /></div>
@@ -783,7 +790,7 @@ export default function SettingsPage() {
       {/* ─── EVENT CALENDAR TAB ─────────────────────────────── */}
       {tab === 'events' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>📅 Event Calendar — Demand Multiplier</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>Event Calendar — Demand Multiplier</div>
           <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>
             Tambahkan event yang akan meningkatkan permintaan (Lebaran, Harbolnas, musim hujan, dll). Forecast Stok dan Purchase Planner akan menyesuaikan rekomendasi qty.
           </div>
@@ -907,7 +914,7 @@ export default function SettingsPage() {
           )}
 
           <div style={{ marginTop: 16, padding: '12px 16px', background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: 8, fontSize: 12, color: '#6B7280' }}>
-            💡 Event ini digunakan di halaman <strong style={{ color: '#8b5cf6' }}>Forecast Stok</strong> dan <strong style={{ color: '#8b5cf6' }}>Purchase Planner</strong> untuk menyesuaikan proyeksi demand. Isi <strong>Tanggal Event</strong> agar sistem dapat menghitung deadline order otomatis di Dashboard.
+            Event ini digunakan di halaman <strong style={{ color: '#8b5cf6' }}>Forecast Stok</strong> dan <strong style={{ color: '#8b5cf6' }}>Purchase Planner</strong> untuk menyesuaikan proyeksi demand. Isi <strong>Tanggal Event</strong> agar sistem dapat menghitung deadline order otomatis di Dashboard.
           </div>
         </div>
       )}
@@ -915,7 +922,7 @@ export default function SettingsPage() {
       {/* ─── ROADMAP TAB ────────────────────────────────────── */}
       {tab === 'roadmap' && (
         <div style={s.card}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>🗺️ Roadmap Pengembangan</div>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 16 }}>Roadmap Pengembangan</div>
           {[
             { fase: 'Fase 1',   label: 'Web App Live',              done: true,  desc: 'Dashboard Next.js online di Vercel, dark theme, data demo' },
             { fase: 'Fase 2',   label: 'Jubelio Live Integration',  done: true,  desc: 'Data real-time stok 399 SKU, tagihan, sales per channel' },
@@ -926,8 +933,12 @@ export default function SettingsPage() {
             { fase: 'Fase 4',   label: 'COGS & Laporan Live',       done: false, desc: 'True COGS otomatis dari data Jubelio, laporan profit lengkap' },
           ].map(item => (
             <div key={item.fase} style={{ display: 'flex', alignItems: 'flex-start', gap: 14, padding: '12px 0', borderBottom: '1px solid #E4E7ED' }}>
-              <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: item.done ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>
-                {item.done ? '✅' : '⏳'}
+              <div style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, background: item.done ? 'rgba(16,185,129,0.15)' : 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: item.done ? '#10b981' : '#3b82f6' }}>
+                {item.done ? (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                ) : (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                )}
               </div>
               <div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{item.fase}: {item.label}</div>
