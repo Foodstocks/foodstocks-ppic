@@ -204,9 +204,17 @@ ${inventoryContext}
 Total SKU: ${inventoryItems.length} | Kritis: ${criticalCount}
 
 TUGAS:
-1. Deteksi event/momen Indonesia dalam 60 hari ke depan dari ${todayISO} yang relevan untuk bisnis snack (hari raya, harbolnas, tanggal kembar, long weekend, libur nasional, libur sekolah, dll).
+1. Deteksi event/momen dalam 60 hari ke depan MULAI DARI BESOK (${todayISO} + 1 hari). PENTING: tanggal event HARUS lebih besar dari ${todayISO}. Jangan rekomendasikan event yang sudah lewat.
+   Cakup event Indonesia DAN internasional yang relevan untuk bisnis snack:
+   - Indonesia: libur nasional, hari raya (Idul Adha, Natal, dll), harbolnas, tanggal kembar (7.7, 8.8, dst), long weekend, libur sekolah, tahun ajaran baru
+   - Internasional: Valentine's Day, Halloween, Piala Dunia/Euro (jika ada), Natal & Tahun Baru, event olahraga besar
 2. Rekomendasikan produk dari inventory yang perlu distok lebih banyak per event.
-3. recommendedAdditionalQty = round(avgDailySales * durationDays * (demandMultiplier - 1))
+3. Untuk recommendedAdditionalQty:
+   - Jika Jual/hr > 0: round(avgDailySales * durationDays * (demandMultiplier - 1))
+   - Jika Jual/hr = 0 (data belum ada): estimasi berdasarkan stok saat ini × 20% sebagai buffer pengaman minimum, minimal 10 pcs
+   - avgDailySales boleh diisi estimasi wajar (misal 2-5/hari untuk snack) jika data 0
+4. estimatedCost = recommendedAdditionalQty × hpp (WAJIB diisi, jangan biarkan 0 jika hpp tersedia)
+5. totalEstimatedCost = jumlah semua estimatedCost dalam event tersebut
 
 Jawab HANYA dengan JSON valid tanpa markdown:
 {
@@ -237,7 +245,7 @@ Jawab HANYA dengan JSON valid tanpa markdown:
   "generalSummary": "string"
 }
 
-Aturan: hanya SKU yang ada di inventory, maks 5 event, maks 5 rekomendasi per event, prioritaskan SKU dengan velocity > 0.`;
+Aturan: hanya SKU yang ada di inventory, maks 5 event, maks 5 rekomendasi per event, semua event harus di masa depan dari ${todayISO}.`;
 
   try {
     const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -274,15 +282,21 @@ Aturan: hanya SKU yang ada di inventory, maks 5 event, maks 5 rekomendasi per ev
       }, { status: 500 });
     }
 
-    const events: DetectedEvent[] = (parsed.events ?? []).map(ev => ({
-      ...ev,
-      recommendations: (ev.recommendations ?? []).map(r => ({
-        ...r,
-        hpp: r.hpp || hppMap[r.sku] || 0,
-        estimatedCost: r.estimatedCost || (r.recommendedAdditionalQty * (r.hpp || hppMap[r.sku] || 0)),
-      })),
-      totalEstimatedCost: ev.totalEstimatedCost || (ev.recommendations ?? []).reduce((s, r) => s + (r.estimatedCost || 0), 0),
-    }));
+    const events: DetectedEvent[] = (parsed.events ?? [])
+      .map(ev => {
+        // Recalculate daysUntil server-side from actual date to prevent AI errors
+        const evDate = new Date(ev.date);
+        const daysUntil = Math.ceil((evDate.getTime() - today.getTime()) / 86400000);
+        const recs = (ev.recommendations ?? []).map(r => {
+          const hpp = r.hpp || hppMap[r.sku] || 0;
+          const estimatedCost = r.estimatedCost || (r.recommendedAdditionalQty * hpp);
+          return { ...r, hpp, estimatedCost };
+        });
+        const totalEstimatedCost = recs.reduce((s, r) => s + r.estimatedCost, 0);
+        return { ...ev, daysUntil, recommendations: recs, totalEstimatedCost };
+      })
+      // Filter out past events
+      .filter(ev => ev.daysUntil > 0);
 
     const totalBudgetNeeded = events.reduce((s, ev) => s + ev.totalEstimatedCost, 0);
 
