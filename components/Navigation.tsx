@@ -164,20 +164,14 @@ export default function Navigation() {
       }} className="hidden md:flex">
 
         {/* Logo */}
-        <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{
-              width: 34, height: 34, borderRadius: 9,
-              background: 'linear-gradient(135deg, #D60001 0%, #FF3B3B 100%)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0, boxShadow: '0 2px 8px rgba(214,0,1,0.35)',
-            }}>
-              <span style={{ color: 'white', fontWeight: 800, fontSize: 13, letterSpacing: -0.5 }}>FS</span>
-            </div>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.2, letterSpacing: -0.2 }}>Foodstocks</div>
-              <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>PPIC Dashboard</div>
-            </div>
+        <div style={{ padding: '14px 16px 12px', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img
+              src="/logo.png"
+              alt="Foodstocks"
+              style={{ height: 36, width: 'auto', objectFit: 'contain', flexShrink: 0 }}
+            />
+            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>PPIC Dashboard</div>
           </div>
         </div>
 

@@ -193,15 +193,11 @@ export default function LoginPage() {
 
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, position: 'relative' }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              background: 'rgba(255,255,255,0.2)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              backdropFilter: 'blur(4px)',
-            }}>
-              <span style={{ color: 'white', fontWeight: 800, fontSize: 15, letterSpacing: -0.5 }}>FS</span>
-            </div>
-            <span style={{ color: 'white', fontWeight: 700, fontSize: 16, letterSpacing: -0.3 }}>Foodstocks</span>
+            <img
+              src="/logo.png"
+              alt="Foodstocks"
+              style={{ height: 44, width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }}
+            />
           </div>
 
           {/* Headline */}

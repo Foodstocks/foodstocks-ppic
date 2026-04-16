@@ -7,6 +7,7 @@ import AuthGuard from "@/components/AuthGuard";
 export const metadata: Metadata = {
   title: "Foodstocks PPIC — Purchasing Control",
   description: "Dashboard kontrol pembelian, stok, COGS, dan supplier untuk Foodstocks",
+  icons: { icon: '/logo.png', apple: '/logo.png' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
