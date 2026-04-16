@@ -97,6 +97,61 @@ async function saveHistory(history: SmartEventResult[]) {
   }
 }
 
+// ── Indonesian holiday API fetch ─────────────────────────────
+
+// International recurring events (month-day format)
+const INTL_EVENTS: { name: string; md: string; type: DetectedEvent['type']; multiplier: number }[] = [
+  { name: "Valentine's Day", md: '02-14', type: 'cultural', multiplier: 1.4 },
+  { name: 'Hari Perempuan Internasional', md: '03-08', type: 'cultural', multiplier: 1.2 },
+  { name: 'April Mop / April Fools', md: '04-01', type: 'cultural', multiplier: 1.1 },
+  { name: 'Hari Ibu (Mother\'s Day)', md: '05-12', type: 'cultural', multiplier: 1.3 },
+  { name: 'Hari Anak Internasional', md: '06-01', type: 'cultural', multiplier: 1.3 },
+  { name: 'Halloween', md: '10-31', type: 'cultural', multiplier: 1.3 },
+  { name: 'Harbolnas 11.11', md: '11-11', type: 'promo', multiplier: 2.0 },
+  { name: 'Harbolnas 12.12', md: '12-12', type: 'promo', multiplier: 2.0 },
+  { name: 'Natal', md: '12-25', type: 'holiday', multiplier: 1.8 },
+  { name: 'Malam Tahun Baru', md: '12-31', type: 'holiday', multiplier: 1.8 },
+];
+
+async function fetchUpcomingHolidays(todayISO: string): Promise<{ date: string; name: string; type: string }[]> {
+  const today = new Date(todayISO);
+  const in60 = new Date(todayISO);
+  in60.setDate(in60.getDate() + 60);
+
+  const years = Array.from(new Set([today.getFullYear(), in60.getFullYear()]));
+  const holidays: { date: string; name: string; type: string }[] = [];
+
+  // Fetch national holidays from API
+  for (const year of years) {
+    try {
+      const res = await fetch(`https://api-harilibur.vercel.app/api?year=${year}`, { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json() as { holiday_date: string; holiday_name: string; is_national_holiday: boolean }[];
+        for (const h of data) {
+          if (!h.holiday_date) continue;
+          const d = new Date(h.holiday_date);
+          if (d > today && d <= in60) {
+            holidays.push({ date: h.holiday_date, name: h.holiday_name, type: 'holiday' });
+          }
+        }
+      }
+    } catch { /* skip if API fails */ }
+  }
+
+  // Add international events
+  for (const ev of INTL_EVENTS) {
+    for (const year of years) {
+      const date = `${year}-${ev.md}`;
+      const d = new Date(date);
+      if (d > today && d <= in60) {
+        holidays.push({ date, name: ev.name, type: ev.type });
+      }
+    }
+  }
+
+  return holidays.sort((a, b) => a.date.localeCompare(b.date));
+}
+
 // ── Jubelio inventory fetch ───────────────────────────────────
 
 async function fetchInventory() {
@@ -179,6 +234,12 @@ export async function POST(req: NextRequest) {
   const todayStr = today.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const todayISO = today.toISOString().split('T')[0];
 
+  // Fetch accurate upcoming holidays from API
+  const upcomingHolidays = await fetchUpcomingHolidays(todayISO);
+  const holidayContext = upcomingHolidays.length > 0
+    ? upcomingHolidays.map(h => `- ${h.date} | ${h.name} | ${h.type}`).join('\n')
+    : '(tidak ada data libur dari API, gunakan pengetahuanmu)';
+
   const inventoryContext = inventoryItems
     .slice(0, 80)
     .map(item => {
@@ -198,16 +259,17 @@ export async function POST(req: NextRequest) {
 
 Hari ini: ${todayStr} (${todayISO})
 
+EVENT & HARI LIBUR MENDATANG (data akurat dari kalender resmi, 60 hari ke depan):
+${holidayContext}
+
 Inventory (SKU|Nama|Stok|Jual/hr|HPP|Sisa):
 ${inventoryContext}
 
 Total SKU: ${inventoryItems.length} | Kritis: ${criticalCount}
 
 TUGAS:
-1. Deteksi event/momen dalam 60 hari ke depan MULAI DARI BESOK (${todayISO} + 1 hari). PENTING: tanggal event HARUS lebih besar dari ${todayISO}. Jangan rekomendasikan event yang sudah lewat.
-   Cakup event Indonesia DAN internasional yang relevan untuk bisnis snack:
-   - Indonesia: libur nasional, hari raya (Idul Adha, Natal, dll), harbolnas, tanggal kembar (7.7, 8.8, dst), long weekend, libur sekolah, tahun ajaran baru
-   - Internasional: Valentine's Day, Halloween, Piala Dunia/Euro (jika ada), Natal & Tahun Baru, event olahraga besar
+1. GUNAKAN DAFTAR EVENT DI ATAS sebagai acuan tanggal yang akurat. Pilih event yang paling relevan untuk bisnis snack (maks 5 event). Kamu boleh tambahkan event internasional lain yang tidak ada di daftar (Valentine, Halloween, Piala Dunia, dll) HANYA jika tanggalnya benar-benar dalam 60 hari ke depan dari ${todayISO}.
+   PENTING: jangan pernah merekomendasikan event yang tanggalnya sudah lewat dari ${todayISO}.
 2. Rekomendasikan produk dari inventory yang perlu distok lebih banyak per event.
 3. Untuk recommendedAdditionalQty:
    - Jika Jual/hr > 0: round(avgDailySales * durationDays * (demandMultiplier - 1))
