@@ -250,7 +250,7 @@ function buildSmartAlerts(params: {
     alerts.push({ level: 'PELUANG', icon: 'ok', title: 'Semua indikator aman — tidak ada aksi mendesak hari ini', detail: undefined });
   }
 
-  return alerts.slice(0, 5);
+  return alerts;
 }
 
 // SVG dot icon for alerts
@@ -312,6 +312,8 @@ export default function Overview() {
   const [poItems, setPoItems] = useState<POItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncing, setSyncing] = useState(false);
+  const [lastSync, setLastSync] = useState<Date | null>(null);
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
 
   const [monthStartSnapshot, setMonthStartSnapshot] = useState<MonthStartSnapshot | null>(null);
   const [hppMap, setHppMap] = useState<Record<string, number>>({});
@@ -343,6 +345,7 @@ export default function Overview() {
       }
     } finally {
       setLoading(false);
+      setLastSync(new Date());
     }
   }
 
@@ -527,7 +530,14 @@ export default function Overview() {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ fontSize: 22, fontWeight: 700, color: '#111827', letterSpacing: '-0.3px' }}>Dashboard</div>
-          <div style={{ fontSize: 13, color: '#6B7280', marginTop: 3 }}>{dateStr}</div>
+          <div style={{ fontSize: 13, color: '#6B7280', marginTop: 3 }}>
+            {dateStr}
+            {lastSync && (
+              <span style={{ marginLeft: 10, color: '#9CA3AF' }}>
+                · Sync terakhir: {lastSync.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            )}
+          </div>
         </div>
         <button
           onClick={async () => {
@@ -613,18 +623,70 @@ export default function Overview() {
               </div>
               <div style={{ fontSize: 12, color: '#6B7280', fontWeight: 500, marginBottom: 4 }}>Modal Ratio</div>
               <div style={{ fontSize: 26, fontWeight: 700, color: modalRatioColor, letterSpacing: '-0.5px' }}>{modalRatio}</div>
-              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>vs awal bulan</div>
+              <div style={{ fontSize: 12, color: '#6B7280', marginTop: 4 }}>Nilai stok aktual vs awal bulan</div>
             </div>
           </div>
+
+          {/* ── PO Jatuh Tempo Banner ───────────────────────── */}
+          {(() => {
+            const weekEnd = new Date(today); weekEnd.setDate(weekEnd.getDate() + 7);
+            const dueThisWeek = poKpis.pendingItems.filter(p => {
+              if (!p.dueDate) return false;
+              const d = new Date(p.dueDate);
+              return d >= today && d <= weekEnd;
+            });
+            const overdueItems = poKpis.pendingItems.filter(p => {
+              if (!p.dueDate) return false;
+              return new Date(p.dueDate) < today;
+            });
+            if (dueThisWeek.length === 0 && overdueItems.length === 0) return null;
+            const totalDue = dueThisWeek.reduce((s, p) => s + p.total, 0);
+            const totalOverdue = overdueItems.reduce((s, p) => s + p.total, 0);
+            return (
+              <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+                {overdueItems.length > 0 && (
+                  <div style={{ flex: 1, minWidth: 240, background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D60001" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                      <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#B91C1C' }}>{overdueItems.length} PO Terlambat Bayar</div>
+                      <div style={{ fontSize: 12, color: '#DC2626' }}>{formatRupiah(totalOverdue)} — hubungi supplier segera</div>
+                    </div>
+                    <Link href="/po-budget" style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 600, color: '#D60001', textDecoration: 'none', whiteSpace: 'nowrap' }}>Lihat →</Link>
+                  </div>
+                )}
+                {dueThisWeek.length > 0 && (
+                  <div style={{ flex: 1, minWidth: 240, background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 10, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                      <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#92400E' }}>{dueThisWeek.length} PO Jatuh Tempo Minggu Ini</div>
+                      <div style={{ fontSize: 12, color: '#B45309' }}>{formatRupiah(totalDue)} perlu disiapkan</div>
+                    </div>
+                    <Link href="/po-budget" style={{ marginLeft: 'auto', fontSize: 11, fontWeight: 600, color: '#D97706', textDecoration: 'none', whiteSpace: 'nowrap' }}>Lihat →</Link>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* ── Smart Alerts ────────────────────────────────── */}
           <div style={{ background: '#fff', border: '1px solid #E4E7ED', borderRadius: 12, padding: '20px 20px 16px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)', marginBottom: 24 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <div style={{ fontSize: 15, fontWeight: 600, color: '#111827' }}>Analisa Hari Ini</div>
-              <span style={{ fontSize: 11, color: '#9CA3AF' }}>Diperbarui otomatis</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{ fontSize: 15, fontWeight: 600, color: '#111827' }}>Analisa Hari Ini</div>
+                <span style={{ fontSize: 11, fontWeight: 600, padding: '2px 8px', borderRadius: 20, background: smartAlerts.filter(a => a.level === 'URGENT').length > 0 ? '#FEF2F2' : '#F3F4F6', color: smartAlerts.filter(a => a.level === 'URGENT').length > 0 ? '#D60001' : '#6B7280' }}>
+                  {smartAlerts.filter(a => a.level === 'URGENT').length > 0 ? `${smartAlerts.filter(a => a.level === 'URGENT').length} URGENT` : `${smartAlerts.length} notifikasi`}
+                </span>
+              </div>
+              <span style={{ fontSize: 11, color: '#9CA3AF' }}>
+                {lastSync ? `Diperbarui ${lastSync.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}` : 'Diperbarui otomatis'}
+              </span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {smartAlerts.map((alert, i) => (
+              {(showAllAlerts ? smartAlerts : smartAlerts.slice(0, 5)).map((alert, i) => (
                 <div
                   key={i}
                   style={{
@@ -651,6 +713,15 @@ export default function Overview() {
                 </div>
               ))}
             </div>
+            {smartAlerts.length > 5 && (
+              <button
+                type="button"
+                onClick={() => setShowAllAlerts(p => !p)}
+                style={{ marginTop: 10, width: '100%', padding: '8px', background: 'none', border: '1px solid #E4E7ED', borderRadius: 8, cursor: 'pointer', fontSize: 12, color: '#6B7280', fontWeight: 500 }}
+              >
+                {showAllAlerts ? 'Tampilkan lebih sedikit ▲' : `Lihat ${smartAlerts.length - 5} notifikasi lainnya ▼`}
+              </button>
+            )}
           </div>
 
           {/* ── Two column: Stock Health Chart + Recent POs ── */}
@@ -759,27 +830,34 @@ export default function Overview() {
             <div style={{ fontSize: 15, fontWeight: 600, color: '#111827', marginBottom: 14 }}>Akses Cepat</div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10 }}>
               {[
-                { href: '/inventory', label: 'Inventory', desc: `${invItems.length} SKU aktif`, accentColor: '#D60001', iconBg: '#FEF2F2' },
-                { href: '/planner', label: 'Planner', desc: 'Buat draft PO', accentColor: '#3B82F6', iconBg: '#EFF6FF' },
-                { href: '/cogs', label: 'COGS', desc: `Avg margin ${invKpis.avgMargin.toFixed(1)}%`, accentColor: '#8B5CF6', iconBg: '#F5F3FF' },
-                { href: '/suppliers', label: 'Suppliers', desc: `${suppliers.length} supplier`, accentColor: '#10B981', iconBg: '#F0FDF4' },
-                { href: '/po-budget', label: 'PO & Budget', desc: `${poItems.length} total PO`, accentColor: '#F59E0B', iconBg: '#FFFBEB' },
+                { href: '/inventory', label: 'Inventory', desc: `${invItems.length} SKU aktif`, accentColor: '#D60001', iconBg: '#FEF2F2',
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> },
+                { href: '/planner', label: 'Purchase Planner', desc: 'Buat & kelola draft PO', accentColor: '#3B82F6', iconBg: '#EFF6FF',
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> },
+                { href: '/cogs', label: 'COGS & Margin', desc: `Avg margin ${invKpis.avgMargin.toFixed(1)}%`, accentColor: '#8B5CF6', iconBg: '#F5F3FF',
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg> },
+                { href: '/suppliers', label: 'Supplier Hub', desc: `${suppliers.length} supplier terdaftar`, accentColor: '#10B981', iconBg: '#F0FDF4',
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="3" width="15" height="13" rx="1.5"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg> },
+                { href: '/po-budget', label: 'PO & Budget', desc: `${poKpis.pendingCount} PO pending`, accentColor: '#F59E0B', iconBg: '#FFFBEB',
+                  icon: <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="7" y1="15" x2="10" y2="15"/><line x1="14" y1="15" x2="17" y2="15"/></svg> },
               ].map(link => (
                 <Link
                   key={link.href}
                   href={link.href}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '14px 14px',
+                    padding: '12px 14px',
                     background: '#FAFAFA',
                     border: '1px solid #E4E7ED',
                     borderRadius: 10,
                     textDecoration: 'none',
-                    transition: 'border-color 0.15s',
+                    transition: 'border-color 0.15s, background 0.15s',
                   }}
+                  onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.background = '#F3F4F6'; }}
+                  onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => { e.currentTarget.style.background = '#FAFAFA'; }}
                 >
-                  <div style={{ width: 36, height: 36, borderRadius: 8, background: link.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <div style={{ width: 12, height: 12, borderRadius: 3, background: link.accentColor }} />
+                  <div style={{ width: 36, height: 36, borderRadius: 9, background: link.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, color: link.accentColor }}>
+                    {link.icon}
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{link.label}</div>
