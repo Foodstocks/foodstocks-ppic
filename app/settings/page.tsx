@@ -563,6 +563,23 @@ export default function SettingsPage() {
                 <div style={{ fontSize: 13, color: '#6B7280' }}>Format: <code style={{ color: '#f59e0b', fontSize: 12 }}>SKU,avg_harian</code>&nbsp;&nbsp;Contoh: <code style={{ color: '#374151', fontSize: 11 }}>GH-MR-MK-PJ-0648,4.5</code></div>
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
+                <button onClick={() => {
+                  if (effectiveInventory.length === 0) { alert('Tunggu inventory Jubelio selesai dimuat dulu'); return; }
+                  // Generate realistic sample velocities (cheaper items sell faster)
+                  const demo: Record<string, number> = {};
+                  for (const item of effectiveInventory) {
+                    const price = item.sellPrice || 15000;
+                    // Base velocity: inversely proportional to price, with randomness
+                    const base = price < 10000 ? 12 : price < 20000 ? 7 : price < 50000 ? 4 : price < 100000 ? 2 : 1;
+                    // Pseudo-random but deterministic per SKU (based on char codes)
+                    const seed = item.sku.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+                    const rand = 0.5 + ((seed * 7 + 13) % 100) / 100;
+                    demo[item.sku] = Math.round(base * rand * 10) / 10;
+                  }
+                  setVelMap(demo);
+                  saveLocal(VEL_KEY, demo);
+                  syncVelocityToCloud(demo);
+                }} style={{ ...s.btn, background: 'rgba(139,92,246,0.1)', color: '#8b5cf6', border: '1px solid rgba(139,92,246,0.3)', padding: '7px 12px', fontSize: 12 }}>✨ Demo Data</button>
                 <button onClick={() => exportCsv('SKU,avg_jual_harian', Object.entries(velMap), 'velocity.csv')} style={{ ...s.btn, background: '#F9FAFB', color: '#374151', border: '1px solid #E4E7ED', padding: '7px 12px', fontSize: 12 }}>📥 Export</button>
                 <button onClick={() => { if (confirm('Reset data velocity?')) { setVelMap({}); saveLocal(VEL_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 12px', fontSize: 12 }}>🗑️ Reset</button>
               </div>
