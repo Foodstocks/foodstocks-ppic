@@ -250,7 +250,7 @@ Aturan: hanya SKU yang ada di inventory, maks 5 event, maks 5 rekomendasi per ev
         model: 'gpt-4o-mini',
         messages: [{ role: 'user', content: prompt }],
         response_format: { type: 'json_object' },
-        max_tokens: 2000,
+        max_tokens: 4000,
         temperature: 0.3,
       }),
     });
@@ -267,7 +267,11 @@ Aturan: hanya SKU yang ada di inventory, maks 5 event, maks 5 rekomendasi per ev
     try {
       parsed = JSON.parse(rawText);
     } catch {
-      return NextResponse.json({ success: false, error: 'AI mengembalikan format tidak valid.' }, { status: 500 });
+      const finishReason = openaiData.choices?.[0]?.finish_reason ?? 'unknown';
+      return NextResponse.json({
+        success: false,
+        error: `AI mengembalikan format tidak valid. finish_reason: ${finishReason}. Raw (200 chars): ${rawText.slice(0, 200)}`,
+      }, { status: 500 });
     }
 
     const events: DetectedEvent[] = (parsed.events ?? []).map(ev => ({
