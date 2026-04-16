@@ -18,61 +18,46 @@ async function probe(token: string, path: string) {
 export async function GET() {
   try {
     const token = await getJubelioToken();
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 
-    // Fetch first page of completed orders to inspect structure
-    const listRes = await probe(token, `/sales/orders/completed/?createdSince=${thirtyDaysAgo}&page=1&pageSize=3`);
-    const listBody = listRes.body as Record<string, unknown>;
-    const orders = Array.isArray(listBody) ? listBody : (Array.isArray(listBody.data) ? listBody.data : []) as Record<string, unknown>[];
+    // Get full variant structure from first inventory item
+    const invRes = await probe(token, `/inventory/items/?page=1&pageSize=1`);
+    const invBody2 = invRes.body as Record<string, unknown>;
+    const groups = Array.isArray(invBody2) ? invBody2 : (Array.isArray(invBody2.data) ? invBody2.data : []) as Record<string, unknown>[];
+    const firstGroup = groups[0] as Record<string, unknown> | undefined;
+    const firstVariant = firstGroup && Array.isArray(firstGroup.variants) ? (firstGroup.variants[0] as Record<string, unknown>) : undefined;
+    const variantKeys = firstVariant ? Object.keys(firstVariant) : [];
+    const variantSample = firstVariant ? JSON.stringify(firstVariant) : null;
 
-    const firstOrder = orders[0] as Record<string, unknown> | undefined;
-    const orderId = firstOrder
-      ? (firstOrder.salesorder_id ?? firstOrder.id ?? firstOrder.order_id ?? firstOrder.no ?? 'unknown')
-      : 'none';
-
-    // Try detail endpoints with actual order ID
-    const [det1, det2, det3] = await Promise.all([
-      orderId !== 'none' ? probe(token, `/sales/orders/completed/${orderId}/`) : Promise.resolve({ status: 0, body: 'no id' }),
-      orderId !== 'none' ? probe(token, `/sales/orders/${orderId}/`) : Promise.resolve({ status: 0, body: 'no id' }),
-      orderId !== 'none' ? probe(token, `/salesorder/${orderId}/`) : Promise.resolve({ status: 0, body: 'no id' }),
-    ]);
-
-    function summarize(r: { status: number; body: unknown }) {
-      if (r.status !== 200) return { status: r.status, err: JSON.stringify(r.body).slice(0, 200) };
-      const b = r.body as Record<string, unknown>;
-      const arr = Array.isArray(b) ? b : (Array.isArray(b.data) ? b.data : null);
-      if (arr) return { status: 200, count: arr.length, keys: arr.length > 0 ? Object.keys(arr[0] as Record<string,unknown>) : [] };
-      return { status: 200, keys: Object.keys(b), sample: JSON.stringify(b).slice(0, 400) };
-    }
-
-    // Probe inventory items structure for built-in sales fields
-    const [invRes, invDetail, movRes, ledgerRes, doRes] = await Promise.all([
-      probe(token, `/inventory/items/?page=1&pageSize=1`),
-      probe(token, `/inventory/items/?page=1&pageSize=1&include=sales`),
-      probe(token, `/inventory/item-movements/?page=1&pageSize=3`),
-      probe(token, `/inventory/ledger/?page=1&pageSize=3`),
-      probe(token, `/delivery-order/outbound/?page=1&pageSize=3`),
+    // Probe more endpoints using known IDs
+    const itemGroupId = firstGroup ? String(firstGroup.item_group_id ?? '') : '';
+    const itemId = firstVariant ? String(firstVariant.item_id ?? '') : '';
+    const [grpDetail, itemHistory, itemSales, doRes, repSales] = await Promise.all([
+      itemGroupId ? probe(token, `/inventory/items/${itemGroupId}/`) : Promise.resolve({ status: 0, body: 'no gid' }),
+      itemId ? probe(token, `/inventory/items/${itemId}/history/?page=1&pageSize=3`) : Promise.resolve({ status: 0, body: 'no id' }),
+      itemId ? probe(token, `/inventory/items/${itemId}/sales/?page=1&pageSize=3`) : Promise.resolve({ status: 0, body: 'no id' }),
+      probe(token, `/delivery-order/?page=1&pageSize=3`),
+      probe(token, `/reports/item-sales/?page=1&pageSize=3`),
     ]);
 
     function firstItem(r: { status: number; body: unknown }) {
-      if (r.status !== 200) return { status: r.status, err: JSON.stringify(r.body).slice(0, 150) };
+      if (r.status !== 200) return { status: r.status, err: JSON.stringify(r.body).slice(0, 200) };
       const b = r.body as Record<string, unknown>;
       const arr = Array.isArray(b) ? b : (Array.isArray(b.data) ? b.data : null);
       if (!arr || arr.length === 0) return { status: 200, keys: Object.keys(b), note: 'no array' };
       const item = arr[0] as Record<string, unknown>;
-      return { status: 200, keys: Object.keys(item), sample: JSON.stringify(item).slice(0, 500) };
+      return { status: 200, keys: Object.keys(item), sample: JSON.stringify(item).slice(0, 400) };
     }
 
     return NextResponse.json({
-      probedOrderId: orderId,
-      'orders detail /completed/{id}': summarize(det1),
-      'orders detail /orders/{id}': summarize(det2),
-      'orders detail /salesorder/{id}': summarize(det3),
-      '/inventory/items/ first item': firstItem(invRes),
-      '/inventory/items/?include=sales': firstItem(invDetail),
-      '/inventory/item-movements/': firstItem(movRes),
-      '/inventory/ledger/': firstItem(ledgerRes),
-      '/delivery-order/outbound/': firstItem(doRes),
+      variantKeys,
+      variantSample,
+      probedGroupId: itemGroupId,
+      probedItemId: itemId,
+      '/inventory/items/{groupId}/': firstItem(grpDetail),
+      '/inventory/items/{itemId}/history/': firstItem(itemHistory),
+      '/inventory/items/{itemId}/sales/': firstItem(itemSales),
+      '/delivery-order/': firstItem(doRes),
+      '/reports/item-sales/': firstItem(repSales),
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
