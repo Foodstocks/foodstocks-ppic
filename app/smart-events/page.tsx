@@ -224,6 +224,12 @@ export default function SmartEventsPage() {
     setHistory(updated);
     saveStorage(HISTORY_STORAGE_KEY, updated);
     if (currentResult?.id === id) setCurrentResult(updated[0] ?? null);
+    // Also delete from Supabase so it doesn't come back on reload
+    fetch('/api/smart-events', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    }).catch(() => { /* noop — local state already updated */ });
   }
 
   const today = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });

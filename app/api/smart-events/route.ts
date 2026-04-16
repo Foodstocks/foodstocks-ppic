@@ -213,6 +213,20 @@ export async function GET() {
   return NextResponse.json({ success: true, history });
 }
 
+// ── DELETE — remove one history entry by id ──────────────────
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const { id } = await req.json();
+    if (!id) return NextResponse.json({ success: false, error: 'id required' }, { status: 400 });
+    const history = await loadHistory();
+    await saveHistory(history.filter(h => h.id !== id));
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    return NextResponse.json({ success: false, error: String(err) }, { status: 500 });
+  }
+}
+
 // ── POST — generate new AI recommendation ────────────────────
 
 export async function POST(req: NextRequest) {
