@@ -99,18 +99,31 @@ async function saveHistory(history: SmartEventResult[]) {
 
 // ── Indonesian holiday API fetch ─────────────────────────────
 
-// International recurring events (month-day format)
+// International & campaign recurring events (month-day format)
 const INTL_EVENTS: { name: string; md: string; type: DetectedEvent['type']; multiplier: number }[] = [
-  { name: "Valentine's Day", md: '02-14', type: 'cultural', multiplier: 1.4 },
+  // Tanggal kembar — campaign dates
+  { name: 'Campaign 1.1 (Tahun Baru)',  md: '01-01', type: 'promo', multiplier: 1.6 },
+  { name: 'Campaign 2.2',               md: '02-02', type: 'promo', multiplier: 1.4 },
+  { name: 'Campaign 3.3',               md: '03-03', type: 'promo', multiplier: 1.4 },
+  { name: 'Campaign 4.4',               md: '04-04', type: 'promo', multiplier: 1.4 },
+  { name: 'Campaign 5.5',               md: '05-05', type: 'promo', multiplier: 1.5 },
+  { name: 'Campaign 6.6',               md: '06-06', type: 'promo', multiplier: 1.5 },
+  { name: 'Campaign 7.7',               md: '07-07', type: 'promo', multiplier: 1.5 },
+  { name: 'Campaign 8.8',               md: '08-08', type: 'promo', multiplier: 1.5 },
+  { name: 'Campaign 9.9',               md: '09-09', type: 'promo', multiplier: 1.5 },
+  { name: 'Campaign 10.10',             md: '10-10', type: 'promo', multiplier: 1.6 },
+  { name: 'Harbolnas 11.11',            md: '11-11', type: 'promo', multiplier: 2.0 },
+  { name: 'Harbolnas 12.12',            md: '12-12', type: 'promo', multiplier: 2.0 },
+  // Hari peringatan & budaya
+  { name: "Valentine's Day",            md: '02-14', type: 'cultural', multiplier: 1.4 },
   { name: 'Hari Perempuan Internasional', md: '03-08', type: 'cultural', multiplier: 1.2 },
-  { name: 'April Mop / April Fools', md: '04-01', type: 'cultural', multiplier: 1.1 },
-  { name: 'Hari Ibu Nasional', md: '12-22', type: 'cultural', multiplier: 1.3 },
-  { name: 'Hari Anak Internasional', md: '06-01', type: 'cultural', multiplier: 1.3 },
-  { name: 'Halloween', md: '10-31', type: 'cultural', multiplier: 1.3 },
-  { name: 'Harbolnas 11.11', md: '11-11', type: 'promo', multiplier: 2.0 },
-  { name: 'Harbolnas 12.12', md: '12-12', type: 'promo', multiplier: 2.0 },
-  { name: 'Natal', md: '12-25', type: 'holiday', multiplier: 1.8 },
-  { name: 'Malam Tahun Baru', md: '12-31', type: 'holiday', multiplier: 1.8 },
+  { name: 'April Mop',                  md: '04-01', type: 'cultural', multiplier: 1.1 },
+  { name: 'Hari Anak Internasional',    md: '06-01', type: 'cultural', multiplier: 1.3 },
+  { name: 'Hari Kemerdekaan RI',        md: '08-17', type: 'holiday',  multiplier: 1.7 },
+  { name: 'Halloween',                  md: '10-31', type: 'cultural', multiplier: 1.3 },
+  { name: 'Hari Ibu Nasional',          md: '12-22', type: 'cultural', multiplier: 1.3 },
+  { name: 'Natal',                      md: '12-25', type: 'holiday',  multiplier: 1.8 },
+  { name: 'Malam Tahun Baru',           md: '12-31', type: 'holiday',  multiplier: 1.8 },
 ];
 
 async function fetchUpcomingHolidays(todayISO: string): Promise<{ date: string; name: string; type: string }[]> {
@@ -268,7 +281,11 @@ ${inventoryContext}
 Total SKU: ${inventoryItems.length} | Kritis: ${criticalCount}
 
 TUGAS:
-1. GUNAKAN DAFTAR EVENT DI ATAS sebagai acuan tanggal yang akurat. Pilih event yang paling relevan untuk bisnis snack (maks 5 event). Kamu boleh tambahkan event internasional lain yang tidak ada di daftar (Valentine, Halloween, Piala Dunia, dll) HANYA jika tanggalnya benar-benar dalam 60 hari ke depan dari ${todayISO}.
+1. GUNAKAN DAFTAR EVENT DI ATAS sebagai acuan tanggal yang akurat. Pilih event yang paling relevan untuk bisnis snack (maks 5 event).
+   Prioritas event yang relevan untuk snack:
+   - Hari libur nasional & hari raya → permintaan snack naik tinggi
+   - Tanggal kembar campaign (1.1, 2.2, 3.3, dst.) → momen promo & beli stok lebih
+   - Event budaya & peringatan → peluang bundling & hadiah
    PENTING: jangan pernah merekomendasikan event yang tanggalnya sudah lewat dari ${todayISO}.
 2. Rekomendasikan produk dari inventory yang perlu distok lebih banyak per event.
 3. Untuk recommendedAdditionalQty:
