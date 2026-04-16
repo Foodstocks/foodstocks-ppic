@@ -47,6 +47,16 @@ export async function GET() {
       return { status: 200, keys: Object.keys(b), sample: JSON.stringify(b).slice(0, 400) };
     }
 
+    // More endpoint patterns to try
+    const salesorderNo = firstOrder ? String(firstOrder.salesorder_no ?? '') : '';
+    const [det5, det6, det7, det8, det9] = await Promise.all([
+      probe(token, `/sales/orders/completed/${orderId}`),           // no trailing slash
+      probe(token, `/sales/orders/completed/?salesorder_id=${orderId}&page=1&pageSize=1`),
+      probe(token, `/sales/invoices/?page=1&pageSize=3`),
+      probe(token, `/sales/transactions/?page=1&pageSize=3`),
+      salesorderNo ? probe(token, `/sales/orders/completed/?salesorder_no=${encodeURIComponent(salesorderNo)}&page=1&pageSize=1`) : Promise.resolve({ status: 0, body: 'no no' }),
+    ]);
+
     return NextResponse.json({
       listStatus: listRes.status,
       listTopKeys: Object.keys(listBody),
@@ -54,10 +64,16 @@ export async function GET() {
       firstOrderKeys: orderKeys,
       firstOrderSample: firstOrder ? JSON.stringify(firstOrder).slice(0, 500) : null,
       probedId: orderId,
+      probedNo: salesorderNo,
       'detail /completed/{id}': summarize(det1),
       'detail /orders/{id}': summarize(det2),
       'detail /salesorder/{id}': summarize(det3),
       'list filter ?id=': summarize(det4),
+      'detail /completed/{id} no slash': summarize(det5),
+      'list ?salesorder_id=': summarize(det6),
+      '/sales/invoices/': summarize(det7),
+      '/sales/transactions/': summarize(det8),
+      'list ?salesorder_no=': summarize(det9),
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
