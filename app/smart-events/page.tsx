@@ -346,12 +346,51 @@ export default function SmartEventsPage() {
                 </div>
               )}
 
-              {/* Event cards */}
-              {currentResult.events.length > 0 ? (
-                currentResult.events
-                  .sort((a, b) => a.daysUntil - b.daysUntil)
-                  .map(event => <EventCard key={event.name + event.date} event={event} />)
-              ) : (
+              {/* Event cards — grouped by quarter */}
+              {currentResult.events.length > 0 ? (() => {
+                const QUARTERS = [
+                  { label: 'Q1', months: [1,2,3], color: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE' },
+                  { label: 'Q2', months: [4,5,6], color: '#10B981', bg: '#F0FDF4', border: '#BBF7D0' },
+                  { label: 'Q3', months: [7,8,9], color: '#F59E0B', bg: '#FFFBEB', border: '#FDE68A' },
+                  { label: 'Q4', months: [10,11,12], color: '#8B5CF6', bg: '#F5F3FF', border: '#DDD6FE' },
+                ];
+                const MONTH_ID = ['', 'Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+                const sorted = [...currentResult.events].sort((a, b) => a.daysUntil - b.daysUntil);
+                return QUARTERS.map(q => {
+                  const events = sorted.filter(ev => {
+                    const m = new Date(ev.date).getMonth() + 1;
+                    return q.months.includes(m);
+                  });
+                  if (events.length === 0) return null;
+                  const qBudget = events.reduce((s, ev) => s + ev.totalEstimatedCost, 0);
+                  return (
+                    <div key={q.label} style={{ marginBottom: 24 }}>
+                      {/* Quarter header */}
+                      <div style={{
+                        display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12,
+                        padding: '10px 16px', borderRadius: 10,
+                        background: q.bg, border: `1px solid ${q.border}`,
+                      }}>
+                        <span style={{ fontWeight: 800, fontSize: 15, color: q.color }}>{q.label}</span>
+                        <span style={{ fontSize: 13, color: q.color, fontWeight: 500 }}>
+                          {MONTH_ID[q.months[0]]} – {MONTH_ID[q.months[2]]}
+                        </span>
+                        <span style={{ fontSize: 12, color: '#6B7280', marginLeft: 4 }}>·</span>
+                        <span style={{ fontSize: 12, color: '#6B7280' }}>{events.length} event</span>
+                        {qBudget > 0 && (
+                          <>
+                            <span style={{ fontSize: 12, color: '#6B7280' }}>·</span>
+                            <span style={{ fontSize: 12, fontWeight: 600, color: q.color }}>
+                              Est. {formatRupiah(qBudget)}
+                            </span>
+                          </>
+                        )}
+                      </div>
+                      {events.map(event => <EventCard key={event.name + event.date} event={event} />)}
+                    </div>
+                  );
+                });
+              })() : (
                 <div style={{ ...s.card, textAlign: 'center', color: '#6B7280', padding: 40 }}>
                   AI tidak mendeteksi event relevan dalam 60 hari ke depan.
                 </div>
