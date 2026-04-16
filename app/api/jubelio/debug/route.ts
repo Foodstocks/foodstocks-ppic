@@ -45,30 +45,34 @@ export async function GET() {
       return { status: 200, keys: Object.keys(b), sample: JSON.stringify(b).slice(0, 400) };
     }
 
-    const salesorderNo = firstOrder ? String(firstOrder.salesorder_no ?? '') : '';
-    const internalSoNo = firstOrder ? String(firstOrder.internal_so_number ?? '') : '';
-
-    const [det5, det6, det7, det8, det9] = await Promise.all([
-      salesorderNo ? probe(token, `/sales/orders/completed/${encodeURIComponent(salesorderNo)}/`) : Promise.resolve({ status: 0, body: 'no no' }),
-      internalSoNo ? probe(token, `/sales/orders/completed/${encodeURIComponent(internalSoNo)}/`) : Promise.resolve({ status: 0, body: 'no so' }),
-      probe(token, `/reporting/item-sales/?page=1&pageSize=3`),
-      probe(token, `/inventory/stock-mutations/?page=1&pageSize=3`),
-      probe(token, `/sales/reports/items/?page=1&pageSize=3`),
+    // Probe inventory items structure for built-in sales fields
+    const [invRes, invDetail, movRes, ledgerRes, doRes] = await Promise.all([
+      probe(token, `/inventory/items/?page=1&pageSize=1`),
+      probe(token, `/inventory/items/?page=1&pageSize=1&include=sales`),
+      probe(token, `/inventory/item-movements/?page=1&pageSize=3`),
+      probe(token, `/inventory/ledger/?page=1&pageSize=3`),
+      probe(token, `/delivery-order/outbound/?page=1&pageSize=3`),
     ]);
 
+    function firstItem(r: { status: number; body: unknown }) {
+      if (r.status !== 200) return { status: r.status, err: JSON.stringify(r.body).slice(0, 150) };
+      const b = r.body as Record<string, unknown>;
+      const arr = Array.isArray(b) ? b : (Array.isArray(b.data) ? b.data : null);
+      if (!arr || arr.length === 0) return { status: 200, keys: Object.keys(b), note: 'no array' };
+      const item = arr[0] as Record<string, unknown>;
+      return { status: 200, keys: Object.keys(item), sample: JSON.stringify(item).slice(0, 500) };
+    }
+
     return NextResponse.json({
-      probedId: orderId,
-      salesorderNo,
-      internalSoNo,
-      firstOrderSample: firstOrder ? JSON.stringify(firstOrder).slice(0, 600) : null,
-      'detail /completed/{id}': summarize(det1),
-      'detail /orders/{id}': summarize(det2),
-      'detail /salesorder/{id}': summarize(det3),
-      'detail via salesorder_no string': summarize(det5),
-      'detail via internal_so_number': summarize(det6),
-      '/reporting/item-sales/': summarize(det7),
-      '/inventory/stock-mutations/': summarize(det8),
-      '/sales/reports/items/': summarize(det9),
+      probedOrderId: orderId,
+      'orders detail /completed/{id}': summarize(det1),
+      'orders detail /orders/{id}': summarize(det2),
+      'orders detail /salesorder/{id}': summarize(det3),
+      '/inventory/items/ first item': firstItem(invRes),
+      '/inventory/items/?include=sales': firstItem(invDetail),
+      '/inventory/item-movements/': firstItem(movRes),
+      '/inventory/ledger/': firstItem(ledgerRes),
+      '/delivery-order/outbound/': firstItem(doRes),
     });
   } catch (err) {
     return NextResponse.json({ error: String(err) }, { status: 500 });
