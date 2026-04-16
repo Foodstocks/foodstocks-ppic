@@ -34,6 +34,7 @@ interface InventoryRow {
   status: 'KRITIS' | 'RENDAH' | 'AMAN' | 'OVERSTOCK';
   abc: 'A' | 'B' | 'C';
   movement: MovementCategory;
+  hasVelocity: boolean;
   daysInWarehouse: number;
   agingCategory: AgingCategory;
   costOfFund: number;
@@ -125,7 +126,7 @@ export default function InventoryPage() {
           const agingCategory = calcAgingCategory(daysInWarehouse);
           const costOfFund = calcCostOfFund(item.stock * hpp, daysInWarehouse);
 
-          return { sku: item.sku, name: item.name, category: item.category, stock: item.stock, sellPrice: item.sellPrice, hpp, daysRemaining, reorderPoint, status, abc: abcMap[item.sku] ?? 'C', movement, daysInWarehouse, agingCategory, costOfFund };
+          return { sku: item.sku, name: item.name, category: item.category, stock: item.stock, sellPrice: item.sellPrice, hpp, daysRemaining, reorderPoint, status, abc: abcMap[item.sku] ?? 'C', movement, hasVelocity: avgDailySales > 0, daysInWarehouse, agingCategory, costOfFund };
         });
 
         setRows(computed);
@@ -149,11 +150,20 @@ export default function InventoryPage() {
     deadStock: rows.filter(r => r.agingCategory === 'DEAD').length,
   };
 
+  // Movement counts: only count SKUs that have velocity data
+  const movementCounts: Record<string, number> = {
+    SUPER_FAST: rows.filter(r => r.hasVelocity && r.movement === 'SUPER_FAST').length,
+    FAST:       rows.filter(r => r.hasVelocity && r.movement === 'FAST').length,
+    MEDIUM:     rows.filter(r => r.hasVelocity && r.movement === 'MEDIUM').length,
+    SLOW:       rows.filter(r => r.hasVelocity && r.movement === 'SLOW').length,
+  };
+
   const filtered = rows.filter(item => {
     const matchSearch = search === '' || item.name.toLowerCase().includes(search.toLowerCase()) || item.sku.toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === 'ALL' || item.status === filterStatus;
     const matchABC = filterABC === 'ALL' || item.abc === filterABC;
-    const matchMovement = filterMovement === 'ALL' || item.movement === filterMovement;
+    // For movement filter: only match SKUs that have velocity; no-velocity SKUs are excluded from specific movement filters
+    const matchMovement = filterMovement === 'ALL' || (item.hasVelocity && item.movement === filterMovement);
     return matchSearch && matchStatus && matchABC && matchMovement;
   });
 
@@ -377,21 +387,28 @@ export default function InventoryPage() {
         </div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           {([
-            ['ALL', 'Semua Gerak'],
-            ['SUPER_FAST', 'Super Fast'],
-            ['FAST', 'Fast'],
-            ['MEDIUM', 'Medium'],
-            ['SLOW', 'Slow'],
-          ] as [string, string][]).map(([key, label]) => {
+            ['ALL', 'Semua Gerak', null],
+            ['SUPER_FAST', 'Super Fast', '#ef4444'],
+            ['FAST', 'Fast', '#f59e0b'],
+            ['MEDIUM', 'Medium', '#3b82f6'],
+            ['SLOW', 'Slow', '#64748b'],
+          ] as [string, string, string | null][]).map(([key, label, dotColor]) => {
             const mc = key !== 'ALL' ? MOVEMENT_CONFIGS[key as MovementCategory] : null;
             const activeColor = mc?.color ?? '#3B82F6';
+            const count = key !== 'ALL' ? movementCounts[key] ?? 0 : rows.filter(r => r.hasVelocity).length;
             return (
               <button key={key} type="button" onClick={() => { setFilterMovement(key); resetPage(); }} style={{
                 ...s.btn, padding: '6px 12px', fontSize: 12,
                 background: filterMovement === key ? activeColor : '#fff',
                 color: filterMovement === key ? '#fff' : '#374151',
                 border: `1px solid ${filterMovement === key ? activeColor : '#E5E7EB'}`,
-              }}>{label}</button>
+                display: 'flex', alignItems: 'center', gap: 5,
+              }}>
+                {dotColor && key !== 'ALL' && (
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: filterMovement === key ? 'rgba(255,255,255,0.8)' : dotColor, flexShrink: 0 }} />
+                )}
+                {label} ({count})
+              </button>
             );
           })}
         </div>
@@ -512,7 +529,24 @@ export default function InventoryPage() {
               </tbody>
             </table>
             {filtered.length === 0 && !loading && (
-              <div style={{ textAlign: 'center', padding: 40, color: '#9CA3AF' }}>Tidak ada SKU yang cocok dengan filter</div>
+              <div style={{ textAlign: 'center', padding: 48, color: '#9CA3AF' }}>
+                {filterMovement !== 'ALL' && rows.filter(r => r.hasVelocity).length === 0 ? (
+                  <div>
+                    <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 8 }}>
+                      Filter pergerakan memerlukan data velocity.
+                    </div>
+                    <a href="/settings" style={{ fontSize: 12, color: '#D60001', fontWeight: 600 }}>
+                      Import Velocity di Settings →
+                    </a>
+                  </div>
+                ) : filterMovement !== 'ALL' ? (
+                  <div style={{ fontSize: 13, color: '#6B7280' }}>
+                    Tidak ada SKU dengan kategori ini — coba filter lain atau periksa data velocity.
+                  </div>
+                ) : (
+                  <div style={{ fontSize: 13 }}>Tidak ada SKU yang cocok dengan filter</div>
+                )}
+              </div>
             )}
           </div>
         )}
