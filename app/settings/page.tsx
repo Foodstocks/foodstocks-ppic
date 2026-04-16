@@ -143,6 +143,8 @@ export default function SettingsPage() {
   const [velSavedOk, setVelSavedOk] = useState(false);
   const [velSync, setVelSync]       = useState<SyncState>('idle');
   const [velSyncMsg, setVelSyncMsg] = useState('');
+  const [xlsxUploadState, setXlsxUploadState] = useState<'idle'|'loading'|'ok'|'error'>('idle');
+  const [xlsxUploadMsg, setXlsxUploadMsg] = useState('');
 
   // ── Jubelio test ───────────────────────────────────────────
   const [testState, setTestState] = useState<'idle'|'testing'|'ok'|'fail'>('idle');
@@ -370,6 +372,32 @@ export default function SettingsPage() {
     setTimeout(() => setVelPullState('idle'), 8000);
   }
 
+  // Upload Jubelio Excel/CSV export → auto-parse velocity
+  async function uploadJubelioExcel(file: File) {
+    setXlsxUploadState('loading'); setXlsxUploadMsg('');
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch('/api/parse-velocity', { method: 'POST', body: fd });
+      const json = await res.json();
+      if (json.success && json.data) {
+        const merged = { ...velMap, ...json.data };
+        setVelMap(merged);
+        saveLocal(VEL_KEY, merged);
+        syncVelocityToCloud(merged);
+        setXlsxUploadState('ok');
+        setXlsxUploadMsg(`✅ ${json.skuCount} SKU · ${json.orderCount} transaksi · periode ${json.days} hari — velocity tersimpan & sync ke cloud`);
+      } else {
+        setXlsxUploadState('error');
+        setXlsxUploadMsg(`❌ ${json.error ?? 'Parse gagal'}`);
+      }
+    } catch (e) {
+      setXlsxUploadState('error');
+      setXlsxUploadMsg(`❌ ${String(e)}`);
+    }
+    setTimeout(() => setXlsxUploadState('idle'), 10000);
+  }
+
   // ── Derived ────────────────────────────────────────────────
   // If Jubelio returns no data, fall back to showing SKUs from saved HPP map
   const effectiveInventory: SkuRow[] = inventory.length > 0
@@ -584,18 +612,40 @@ export default function SettingsPage() {
                 <button onClick={() => { if (confirm('Reset data velocity?')) { setVelMap({}); saveLocal(VEL_KEY, {}); } }} style={{ ...s.btn, background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '7px 12px', fontSize: 12 }}>🗑️ Reset</button>
               </div>
             </div>
-            {/* Panduan export manual dari Jubelio */}
-            <div style={{ padding: '14px 16px', background: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 8, marginBottom: 16 }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#f59e0b', marginBottom: 8 }}>Cara Export Velocity dari Jubelio</div>
-              <div style={{ fontSize: 12, color: '#374151', lineHeight: 1.9 }}>
-                <strong style={{ color: '#111827' }}>1.</strong> Buka <strong>Jubelio</strong> → menu <strong>Laporan</strong> → <strong>Laporan Penjualan</strong><br />
-                <strong style={{ color: '#111827' }}>2.</strong> Filter periode <strong>30 hari terakhir</strong> → klik <strong>Export Excel/CSV</strong><br />
-                <strong style={{ color: '#111827' }}>3.</strong> Di Excel: tambah kolom baru = <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>total_qty ÷ 30</code> per SKU<br />
-                <strong style={{ color: '#111827' }}>4.</strong> Buat CSV 2 kolom: <code style={{ color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '1px 5px', borderRadius: 3 }}>SKU,avg_harian</code> → paste di bawah
+            {/* Upload Jubelio Excel — auto parse */}
+            <div style={{ padding: '16px 18px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 10, marginBottom: 16 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#10b981', marginBottom: 6 }}>Upload Laporan Jubelio (Otomatis)</div>
+              <div style={{ fontSize: 12, color: '#374151', lineHeight: 1.8, marginBottom: 12 }}>
+                <strong style={{ color: '#111827' }}>1.</strong> Jubelio → <strong>Laporan</strong> → <strong>Laporan Penjualan</strong> → <strong>Penjualan Produk</strong><br />
+                <strong style={{ color: '#111827' }}>2.</strong> Set tanggal <strong>30 hari terakhir</strong> → klik <strong>Cetak</strong> → di halaman laporan klik <strong>Export Excel</strong><br />
+                <strong style={{ color: '#111827' }}>3.</strong> Upload file .xlsx di bawah — velocity dihitung otomatis
               </div>
-              <div style={{ marginTop: 10, padding: '8px 12px', background: 'rgba(100,116,139,0.1)', borderRadius: 6, fontSize: 11, color: '#6B7280' }}>
-                Jubelio API tidak menyediakan data penjualan per SKU — harus export manual. Data velocity dipakai untuk Forecast Stok, Reorder Point, dan Dashboard.
-              </div>
+              <label style={{ display: 'inline-block', cursor: xlsxUploadState === 'loading' ? 'wait' : 'pointer' }}>
+                <input
+                  type="file"
+                  accept=".xlsx,.xls,.csv"
+                  style={{ display: 'none' }}
+                  disabled={xlsxUploadState === 'loading'}
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) { uploadJubelioExcel(file); e.target.value = ''; }
+                  }}
+                />
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+                  background: xlsxUploadState === 'loading' ? '#E5E7EB' : '#10b981',
+                  color: xlsxUploadState === 'loading' ? '#6B7280' : 'white',
+                  border: 'none', cursor: xlsxUploadState === 'loading' ? 'wait' : 'pointer',
+                }}>
+                  {xlsxUploadState === 'loading' ? '⏳ Memproses...' : '📂 Upload File Excel / CSV'}
+                </span>
+              </label>
+              {xlsxUploadMsg && (
+                <div style={{ marginTop: 10, fontSize: 13, color: xlsxUploadState === 'error' ? '#ef4444' : '#10b981', lineHeight: 1.5 }}>
+                  {xlsxUploadMsg}
+                </div>
+              )}
             </div>
 
             {/* SKU match counter */}
