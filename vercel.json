@@ -8,12 +8,8 @@
       "schedule": "0 1 * * *"
     },
     {
-      "path": "/api/notify-forecast",
+      "path": "/api/notify-daily",
       "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/notify-po",
-      "schedule": "0 3 * * *"
     }
   ]
 }
