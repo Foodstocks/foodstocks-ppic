@@ -94,7 +94,7 @@ function EventCard({ event }: { event: DetectedEvent }) {
             <tbody>
               {event.recommendations.map(rec => (
                 <tr key={rec.sku}>
-                  <td style={{ ...s.td, fontWeight: 600, maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{rec.name}</td>
+                  <td style={{ ...s.td, fontWeight: 600, minWidth: 160, maxWidth: 260, wordBreak: 'break-word' }}>{rec.name}</td>
                   <td style={s.td}><span style={{ fontFamily: 'monospace', fontSize: 11, color: '#9CA3AF' }}>{rec.sku}</span></td>
                   <td style={{ ...s.td, fontWeight: 700 }}>{rec.currentStock} pcs</td>
                   <td style={s.td}>{rec.avgDailySales > 0 ? `${rec.avgDailySales}/hr` : '—'}</td>

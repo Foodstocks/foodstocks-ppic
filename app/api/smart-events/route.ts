@@ -104,7 +104,7 @@ const INTL_EVENTS: { name: string; md: string; type: DetectedEvent['type']; mult
   { name: "Valentine's Day", md: '02-14', type: 'cultural', multiplier: 1.4 },
   { name: 'Hari Perempuan Internasional', md: '03-08', type: 'cultural', multiplier: 1.2 },
   { name: 'April Mop / April Fools', md: '04-01', type: 'cultural', multiplier: 1.1 },
-  { name: 'Hari Ibu (Mother\'s Day)', md: '05-12', type: 'cultural', multiplier: 1.3 },
+  { name: 'Hari Ibu Nasional', md: '12-22', type: 'cultural', multiplier: 1.3 },
   { name: 'Hari Anak Internasional', md: '06-01', type: 'cultural', multiplier: 1.3 },
   { name: 'Halloween', md: '10-31', type: 'cultural', multiplier: 1.3 },
   { name: 'Harbolnas 11.11', md: '11-11', type: 'promo', multiplier: 2.0 },
