@@ -8,31 +8,37 @@ export async function GET() {
   const partnerKey = process.env.SHOPEE_PARTNER_KEY;
 
   if (!partnerId || !partnerKey) {
-    return NextResponse.json({ error: 'Env vars tidak ditemukan', SHOPEE_PARTNER_ID: partnerId ?? 'KOSONG', SHOPEE_PARTNER_KEY: partnerKey ? '(ada)' : 'KOSONG' });
+    return NextResponse.json({ error: 'Env vars tidak ditemukan' });
   }
 
   const partnerIdInt = parseInt(partnerId, 10);
   const path = '/api/v2/shop/auth_partner';
   const ts = Math.floor(Date.now() / 1000);
   const baseString = `${partnerIdInt}${path}${ts}`;
-  const keyTrimmed = partnerKey.trim();
-  const keyHexOnly = keyTrimmed.startsWith('shpk') ? keyTrimmed.slice(4) : keyTrimmed;
+  const redirect = encodeURIComponent('https://foodstocks-ppic.vercel.app/api/shopee/callback');
 
-  // 3 variasi key — salah satunya yang benar
-  const sign_A = crypto.createHmac('sha256', Buffer.from(keyTrimmed)).update(baseString).digest('hex');         // full key as string
-  const sign_B = crypto.createHmac('sha256', Buffer.from(keyHexOnly)).update(baseString).digest('hex');        // key tanpa prefix shpk
-  const sign_C = crypto.createHmac('sha256', Buffer.from(keyHexOnly, 'hex')).update(baseString).digest('hex'); // key tanpa prefix, hex-decoded
+  const keyFull   = partnerKey.trim();                                                   // shpk + hex
+  const keyNoShpk = keyFull.startsWith('shpk') ? keyFull.slice(4) : keyFull;           // hex only
+  const keyDecoded = Buffer.from(keyNoShpk, 'hex');                                     // decoded bytes
 
-  const redirect = 'https://foodstocks-ppic.vercel.app/api/shopee/callback';
-  const makeUrl = (s: string) => `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${s}&redirect=${encodeURIComponent(redirect)}`;
+  function sign(key: string | Buffer, upper: boolean) {
+    const h = crypto.createHmac('sha256', key).update(baseString).digest('hex');
+    return upper ? h.toUpperCase() : h;
+  }
 
-  return NextResponse.json({
-    baseString,
-    sign_A_fullKey: sign_A,
-    sign_B_noPrefix: sign_B,
-    sign_C_hexDecoded: sign_C,
-    url_A: makeUrl(sign_A),
-    url_B: makeUrl(sign_B),
-    url_C: makeUrl(sign_C),
-  });
+  const variants: Record<string, string> = {
+    '1_fullKey_lower':   sign(keyFull,    false),
+    '2_fullKey_upper':   sign(keyFull,    true),
+    '3_noShpk_lower':    sign(keyNoShpk,  false),
+    '4_noShpk_upper':    sign(keyNoShpk,  true),
+    '5_decoded_lower':   sign(keyDecoded, false),
+    '6_decoded_upper':   sign(keyDecoded, true),
+  };
+
+  const urls: Record<string, string> = {};
+  for (const [name, s] of Object.entries(variants)) {
+    urls[name] = `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${s}&redirect=${redirect}`;
+  }
+
+  return NextResponse.json({ baseString, partnerIdInt, ts, variants, urls });
 }
