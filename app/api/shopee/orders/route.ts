@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const SHOPEE_BASE = 'https://partner.shopeemobile.com';
+const SHOPEE_BASE = 'https://partner.test-stable.shopeemobile.com';
 const DAYS = 90;
 
 function shopeeSign(partnerKey: string, partnerId: string, path: string, ts: number, accessToken: string, shopId: string) {

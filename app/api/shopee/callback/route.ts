@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const SHOPEE_BASE = 'https://partner.shopeemobile.com';
+const SHOPEE_BASE = 'https://partner.test-stable.shopeemobile.com';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
