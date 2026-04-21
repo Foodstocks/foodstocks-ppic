@@ -16,7 +16,11 @@ export async function GET(req: Request) {
   const path = '/api/v2/shop/auth_partner';
   const ts = Math.floor(Date.now() / 1000);
   const baseString = `${partnerIdInt}${path}${ts}`;
-  const sign = crypto.createHmac('sha256', partnerKey.trim()).update(baseString).digest('hex');
+  // Shopee test key format: "shpk" prefix + hex-encoded bytes
+  const keyTrimmed = partnerKey.trim();
+  const keyHex = keyTrimmed.startsWith('shpk') ? keyTrimmed.slice(4) : keyTrimmed;
+  const keyBytes = /^[0-9a-fA-F]+$/.test(keyHex) ? Buffer.from(keyHex, 'hex') : Buffer.from(keyTrimmed);
+  const sign = crypto.createHmac('sha256', keyBytes).update(baseString).digest('hex');
 
   const redirect = 'https://foodstocks-ppic.vercel.app/api/shopee/callback';
   const authUrl = `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${sign}&redirect=${encodeURIComponent(redirect)}`;
