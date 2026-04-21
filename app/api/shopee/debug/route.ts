@@ -16,19 +16,23 @@ export async function GET() {
   const ts = Math.floor(Date.now() / 1000);
   const baseString = `${partnerIdInt}${path}${ts}`;
   const keyTrimmed = partnerKey.trim();
-  const keyHex = keyTrimmed.startsWith('shpk') ? keyTrimmed.slice(4) : keyTrimmed;
-  const keyBytes = /^[0-9a-fA-F]+$/.test(keyHex) ? Buffer.from(keyHex, 'hex') : Buffer.from(keyTrimmed);
-  const sign = crypto.createHmac('sha256', keyBytes).update(baseString).digest('hex');
+  const keyHexOnly = keyTrimmed.startsWith('shpk') ? keyTrimmed.slice(4) : keyTrimmed;
+
+  // 3 variasi key — salah satunya yang benar
+  const sign_A = crypto.createHmac('sha256', Buffer.from(keyTrimmed)).update(baseString).digest('hex');         // full key as string
+  const sign_B = crypto.createHmac('sha256', Buffer.from(keyHexOnly)).update(baseString).digest('hex');        // key tanpa prefix shpk
+  const sign_C = crypto.createHmac('sha256', Buffer.from(keyHexOnly, 'hex')).update(baseString).digest('hex'); // key tanpa prefix, hex-decoded
+
   const redirect = 'https://foodstocks-ppic.vercel.app/api/shopee/callback';
-  const authUrl = `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${sign}&redirect=${encodeURIComponent(redirect)}`;
+  const makeUrl = (s: string) => `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${s}&redirect=${encodeURIComponent(redirect)}`;
 
   return NextResponse.json({
-    partnerIdRaw: partnerId,
-    partnerIdInt,
-    partnerIdLength: partnerId.length,
-    partnerKeyLength: partnerKey.length,
     baseString,
-    sign,
-    authUrl,
+    sign_A_fullKey: sign_A,
+    sign_B_noPrefix: sign_B,
+    sign_C_hexDecoded: sign_C,
+    url_A: makeUrl(sign_A),
+    url_B: makeUrl(sign_B),
+    url_C: makeUrl(sign_C),
   });
 }
