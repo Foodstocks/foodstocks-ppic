@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
     const path = '/api/v2/auth/token/get';
     const ts = Math.floor(Date.now() / 1000);
     const baseString = `${partnerId}${path}${ts}`;
-    const sign = crypto.createHmac('sha256', partnerKey).update(baseString).digest('hex');
+    const sign = crypto.createHmac('sha256', partnerKey.trim()).update(baseString).digest('hex').toUpperCase();
 
     const tokenUrl = `${SHOPEE_BASE}${path}?partner_id=${partnerId}&timestamp=${ts}&sign=${sign}`;
     const body = { code, shop_id: parseInt(shopId), partner_id: parseInt(partnerId) };

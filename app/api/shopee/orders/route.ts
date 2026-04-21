@@ -5,7 +5,7 @@ const SHOPEE_BASE = 'https://partner.test-stable.shopeemobile.com';
 const DAYS = 90;
 
 function shopeeSign(partnerKey: string, partnerId: string, path: string, ts: number, accessToken: string, shopId: string) {
-  return crypto.createHmac('sha256', partnerKey).update(`${partnerId}${path}${ts}${accessToken}${shopId}`).digest('hex');
+  return crypto.createHmac('sha256', partnerKey.trim()).update(`${partnerId}${path}${ts}${accessToken}${shopId}`).digest('hex').toUpperCase();
 }
 
 async function fetchOrderList(partnerId: string, partnerKey: string, accessToken: string, shopId: string): Promise<string[]> {
