@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import crypto from 'crypto';
 
-const SHOPEE_BASE = 'https://partner.shopeemobile.com';
+const SHOPEE_BASE = 'https://partner.test-stable.shopeemobile.com';
 
 export async function GET() {
   const partnerId = process.env.SHOPEE_PARTNER_ID;
