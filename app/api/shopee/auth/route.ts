@@ -11,13 +11,14 @@ export async function GET() {
     return NextResponse.json({ error: 'SHOPEE_PARTNER_ID atau SHOPEE_PARTNER_KEY belum diset di environment' }, { status: 500 });
   }
 
+  const partnerIdInt = parseInt(partnerId, 10);
   const path = '/api/v2/shop/auth_partner';
   const ts = Math.floor(Date.now() / 1000);
-  const baseString = `${partnerId}${path}${ts}`;
-  const sign = crypto.createHmac('sha256', partnerKey).update(baseString).digest('hex');
+  const baseString = `${partnerIdInt}${path}${ts}`;
+  const sign = crypto.createHmac('sha256', partnerKey.trim()).update(baseString).digest('hex');
 
   const redirect = 'https://foodstocks-ppic.vercel.app/api/shopee/callback';
-  const authUrl = `${SHOPEE_BASE}${path}?partner_id=${partnerId}&timestamp=${ts}&sign=${sign}&redirect=${encodeURIComponent(redirect)}`;
+  const authUrl = `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${sign}&redirect=${encodeURIComponent(redirect)}`;
 
   return NextResponse.redirect(authUrl);
 }
