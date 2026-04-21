@@ -3,7 +3,8 @@ import crypto from 'crypto';
 
 const SHOPEE_BASE = 'https://partner.test-stable.shopeemobile.com';
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
   const partnerId = process.env.SHOPEE_PARTNER_ID;
   const partnerKey = process.env.SHOPEE_PARTNER_KEY;
 
@@ -19,6 +20,10 @@ export async function GET() {
 
   const redirect = 'https://foodstocks-ppic.vercel.app/api/shopee/callback';
   const authUrl = `${SHOPEE_BASE}${path}?partner_id=${partnerIdInt}&timestamp=${ts}&sign=${sign}&redirect=${encodeURIComponent(redirect)}`;
+
+  if (searchParams.get('json') === '1') {
+    return NextResponse.json({ baseString, sign, authUrl, partnerIdInt, ts });
+  }
 
   return NextResponse.redirect(authUrl);
 }
