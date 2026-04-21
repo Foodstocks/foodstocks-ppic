@@ -149,6 +149,12 @@ export default function SettingsPage() {
   // ── Jubelio test ───────────────────────────────────────────
   const [testState, setTestState] = useState<'idle'|'testing'|'ok'|'fail'>('idle');
 
+  // ── Shopee ─────────────────────────────────────────────────
+  const [shopeeConnected, setShopeeConnected] = useState(false);
+  const [shopeeShopId, setShopeeShopId]       = useState<string | null>(null);
+  const [shopeeVelState, setShopeeVelState]   = useState<'idle'|'loading'|'ok'|'error'>('idle');
+  const [shopeeVelMsg, setShopeeVelMsg]       = useState('');
+
   // ── Params ─────────────────────────────────────────────────
   const [budgetPO, setBudgetPO]     = useState('50000000');
   const [targetCOGS, setTargetCOGS] = useState('55');
@@ -242,6 +248,19 @@ export default function SettingsPage() {
 
     fetchInventory();
     fetchSuppliers();
+
+    // Cek Shopee token dari localStorage
+    const sToken = localStorage.getItem('shopee_access_token');
+    const sShopId = localStorage.getItem('shopee_shop_id');
+    if (sToken && sShopId) { setShopeeConnected(true); setShopeeShopId(sShopId); }
+
+    // Cek query param setelah OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'shopee') {
+      setTab('shopee');
+      if (urlParams.get('connected') === '1') { setShopeeConnected(true); setShopeeShopId(localStorage.getItem('shopee_shop_id')); }
+      window.history.replaceState({}, '', '/settings');
+    }
   }, [fetchInventory, fetchSuppliers]);
 
   // ── HPP handlers ───────────────────────────────────────────
@@ -372,6 +391,48 @@ export default function SettingsPage() {
     setTimeout(() => setVelPullState('idle'), 8000);
   }
 
+  // Tarik velocity dari Shopee orders (90 hari)
+  async function pullVelocityFromShopee() {
+    setShopeeVelState('loading'); setShopeeVelMsg('');
+    try {
+      const accessToken = localStorage.getItem('shopee_access_token');
+      const shopId = localStorage.getItem('shopee_shop_id');
+      if (!accessToken || !shopId) {
+        setShopeeVelState('error');
+        setShopeeVelMsg('❌ Shopee belum terkoneksi. Klik "Hubungkan Shopee" dulu.');
+        return;
+      }
+      const res = await fetch(`/api/shopee/orders?access_token=${encodeURIComponent(accessToken)}&shop_id=${encodeURIComponent(shopId)}`);
+      const json = await res.json();
+      if (json.ok && json.velocity) {
+        const merged = { ...velMap, ...json.velocity };
+        setVelMap(merged);
+        saveLocal(VEL_KEY, merged);
+        syncVelocityToCloud(merged);
+        setShopeeVelState('ok');
+        setShopeeVelMsg(`✅ ${json.skuCount} SKU · ${json.orderCount} orders · 90 hari — velocity tersimpan & sync ke cloud`);
+      } else {
+        setShopeeVelState('error');
+        setShopeeVelMsg(`❌ ${json.error ?? 'Gagal menarik data Shopee'}`);
+      }
+    } catch (e) {
+      setShopeeVelState('error');
+      setShopeeVelMsg(`❌ ${String(e)}`);
+    }
+    setTimeout(() => setShopeeVelState('idle'), 10000);
+  }
+
+  function disconnectShopee() {
+    localStorage.removeItem('shopee_access_token');
+    localStorage.removeItem('shopee_refresh_token');
+    localStorage.removeItem('shopee_shop_id');
+    localStorage.removeItem('shopee_token_expiry');
+    setShopeeConnected(false);
+    setShopeeShopId(null);
+    setShopeeVelState('idle');
+    setShopeeVelMsg('');
+  }
+
   // Upload Jubelio Excel/CSV export → auto-parse velocity
   async function uploadJubelioExcel(file: File) {
     setXlsxUploadState('loading'); setXlsxUploadMsg('');
@@ -421,6 +482,7 @@ export default function SettingsPage() {
     { id: 'leadtime',   label: 'Lead Time' },
     { id: 'events',     label: 'Event Calendar' },
     { id: 'jubelio',    label: 'Jubelio API' },
+    { id: 'shopee',     label: 'Shopee API' },
     { id: 'parameters', label: 'Parameter Bisnis' },
     { id: 'roadmap',    label: 'Roadmap' },
   ];
@@ -833,6 +895,70 @@ export default function SettingsPage() {
             {testState === 'ok' && <span style={{ fontSize: 13, color: '#10b981' }}>✅ Koneksi berhasil! {inventory.length} SKU loaded.</span>}
             {testState === 'fail' && <span style={{ fontSize: 13, color: '#ef4444' }}>❌ Koneksi gagal. Cek Vercel env vars.</span>}
           </div>
+        </div>
+      )}
+
+      {/* ─── SHOPEE TAB ─────────────────────────────────────── */}
+      {tab === 'shopee' && (
+        <div style={s.card}>
+          <div style={{ fontSize: 16, fontWeight: 600, color: '#111827', marginBottom: 4 }}>Shopee API Integration</div>
+          <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 20 }}>Hubungkan akun Shopee untuk menarik data velocity otomatis dari 90 hari terakhir.</div>
+
+          {/* Status koneksi */}
+          <div style={{ padding: '14px 16px', background: shopeeConnected ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.06)', border: `1px solid ${shopeeConnected ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.2)'}`, borderRadius: 10, marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: shopeeConnected ? '#10b981' : '#ef4444' }}>
+                {shopeeConnected ? '✅ Shopee Terhubung' : '🔴 Belum Terhubung'}
+              </div>
+              {shopeeConnected && shopeeShopId && (
+                <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>Shop ID: {shopeeShopId}</div>
+              )}
+            </div>
+            {shopeeConnected ? (
+              <button onClick={disconnectShopee} style={{ ...s.btn, background: 'rgba(239,68,68,0.08)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.2)', padding: '8px 14px', fontSize: 12 }}>
+                🔌 Putuskan Koneksi
+              </button>
+            ) : (
+              <button onClick={() => { window.location.href = '/api/shopee/auth'; }} style={{ ...s.btn, background: '#EE4D2D', color: 'white', padding: '10px 20px' }}>
+                🛍 Hubungkan Shopee
+              </button>
+            )}
+          </div>
+
+          {/* Info */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+            {[
+              { icon: '📅', label: 'Periode Data', value: '90 hari terakhir' },
+              { icon: '📊', label: 'Status Order', value: 'COMPLETED saja' },
+              { icon: '🔄', label: 'Hasil', value: 'Velocity avg/hari per SKU' },
+              { icon: '☁️', label: 'Sync', value: 'Otomatis ke cloud setelah tarik' },
+            ].map(e => (
+              <div key={e.label} style={{ padding: '10px 14px', background: '#F9FAFB', borderRadius: 8 }}>
+                <div style={{ fontSize: 11, color: '#6B7280', marginBottom: 3 }}>{e.icon} {e.label}</div>
+                <div style={{ fontSize: 13, color: '#111827' }}>{e.value}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Tombol Sync Velocity */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <button
+              onClick={pullVelocityFromShopee}
+              disabled={!shopeeConnected || shopeeVelState === 'loading'}
+              style={{ ...s.btn, background: shopeeConnected ? '#EE4D2D' : '#E4E7ED', color: shopeeConnected ? 'white' : '#9CA3AF', opacity: shopeeVelState === 'loading' ? 0.7 : 1, padding: '11px 22px' }}
+            >
+              {shopeeVelState === 'loading' ? '⏳ Menarik data...' : '📥 Sync Velocity dari Shopee'}
+            </button>
+            {shopeeVelMsg && (
+              <span style={{ fontSize: 13, color: shopeeVelState === 'ok' ? '#10b981' : '#ef4444' }}>{shopeeVelMsg}</span>
+            )}
+          </div>
+
+          {!shopeeConnected && (
+            <div style={{ marginTop: 16, padding: '10px 14px', background: 'rgba(251,191,36,0.08)', border: '1px solid rgba(251,191,36,0.25)', borderRadius: 8, fontSize: 12, color: '#92400e' }}>
+              ⚠️ Klik <strong>"Hubungkan Shopee"</strong> untuk login via OAuth. Kamu akan diarahkan ke halaman Shopee dan kembali otomatis setelah berhasil.
+            </div>
+          )}
         </div>
       )}
 
